@@ -1,0 +1,84 @@
+{
+  "input": "examples/probability_course/probability.pdf",
+  "parser": "docling",
+  "parser_warnings": [],
+  "llm": {
+    "backend": "initial development run"
+  },
+  "slides": {
+    "count": 12,
+    "attempts_per_chunk": [
+      [
+        {
+          "number": 1,
+          "ok": true,
+          "errors": []
+        }
+      ]
+    ]
+  },
+  "timings_s": {
+    "parse": 710.87,
+    "slides": 25.64,
+    "script": 27.1,
+    "render_tts_video": 84.95
+  },
+  "script": {
+    "llm": {
+      "backend": "initial development run"
+    },
+    "attempts_per_batch": [
+      [
+        {
+          "number": 1,
+          "ok": true,
+          "errors": []
+        }
+      ],
+      [
+        {
+          "number": 1,
+          "ok": true,
+          "errors": []
+        }
+      ]
+    ]
+  },
+  "alignment": {
+    "overall_coverage": 0.968,
+    "flagged_slides": [
+      7
+    ]
+  },
+  "lecture": {
+    "frames": 21,
+    "kinds": [
+      "title",
+      "agenda",
+      "section",
+      "content",
+      "section",
+      "content",
+      "content",
+      "section",
+      "content",
+      "content",
+      "section",
+      "content",
+      "content",
+      "content",
+      "section",
+      "content",
+      "content",
+      "section",
+      "content",
+      "content",
+      "closing"
+    ]
+  },
+  "video": {
+    "tts": "piper",
+    "renderer": "pillow",
+    "duration_s": 640.39
+  }
+}

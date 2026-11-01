@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "course2video"
+version = "0.1.0"
+description = "Self-hostable pipeline: course PDF -> validated slides -> lecturer review -> narrated video"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.10"
+dependencies = [
+    "pydantic>=2.6",
+    "pyyaml>=6.0",
+    "python-pptx>=1.0",
+    "pillow>=10.0",
+    "pypdf>=4.0",
+    "httpx>=0.27",
+]
+
+[project.optional-dependencies]
+docling = ["docling>=2.0"]
+piper = ["piper-tts>=1.2"]
+math = ["matplotlib>=3.8"]
+dev = ["pytest>=8.0", "jsonschema>=4.0", "fpdf2>=2.7", "ruff>=0.5"]
+
+[project.scripts]
+course2video = "course2video.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+markers = [
+    "llm: needs a real LLM backend (set C2V_SMOKE_CONFIG); skipped by default",
+    "ffmpeg: needs ffmpeg on PATH",
+]
+addopts = "-m 'not llm'"
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B"]

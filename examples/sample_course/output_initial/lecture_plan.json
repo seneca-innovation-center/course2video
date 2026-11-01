@@ -1,0 +1,266 @@
+[
+  {
+    "kind": "title",
+    "narration": "Welcome. In this lecture we study Vector Spaces: A Short Introduction. Generated with course2video (prototype).",
+    "heading": "Vector Spaces: A Short Introduction",
+    "items": [
+      "Generated with course2video (prototype)"
+    ],
+    "section_index": null,
+    "index": 0,
+    "total": 19,
+    "slide_id": null
+  },
+  {
+    "kind": "agenda",
+    "narration": "Here is the plan. We will go through 7 parts: Introduction, Vectors in R n, Definition of a vector space, Subspaces, Linear combinations and span, Linear independence and basis and Exercise and solution.",
+    "heading": "Outline",
+    "items": [
+      "Introduction",
+      "Vectors in R^n",
+      "Definition of a vector space",
+      "Subspaces",
+      "Linear combinations and span",
+      "Linear independence and basis",
+      "Exercise and solution"
+    ],
+    "section_index": null,
+    "index": 1,
+    "total": 19,
+    "slide_id": null
+  },
+  {
+    "kind": "section",
+    "narration": "Let's start with part 1: Introduction.",
+    "heading": "Introduction",
+    "items": [
+      "Introduction",
+      "Vectors in R^n",
+      "Definition of a vector space",
+      "Subspaces",
+      "Linear combinations and span",
+      "Linear independence and basis",
+      "Exercise and solution"
+    ],
+    "section_index": 0,
+    "index": 2,
+    "total": 19,
+    "slide_id": null
+  },
+  {
+    "kind": "content",
+    "narration": "Let's begin with a quick overview of where we're headed. This is an introduction to vector spaces, aimed at a first course in linear algebra. We'll start with vectors in R n, the most concrete setting, and then move to the axioms that define a vector space in general. From there we'll look at subspaces, which are vector spaces sitting inside larger ones. After that come three closely linked ideas: span, linear independence, and bases. Together they let us describe a space efficiently and measure its size. Finally, we'll close with a short exercise and walk through its solution, so you can check your understanding of everything we've built up along the way.",
+    "heading": "Vector Spaces: Overview",
+    "items": [],
+    "section_index": 0,
+    "index": 3,
+    "total": 19,
+    "slide_id": 1
+  },
+  {
+    "kind": "section",
+    "narration": "Now we move on to part 2: Vectors in R n.",
+    "heading": "Vectors in R^n",
+    "items": [
+      "Introduction",
+      "Vectors in R^n",
+      "Definition of a vector space",
+      "Subspaces",
+      "Linear combinations and span",
+      "Linear independence and basis",
+      "Exercise and solution"
+    ],
+    "section_index": 1,
+    "index": 4,
+    "total": 19,
+    "slide_id": null
+  },
+  {
+    "kind": "content",
+    "narration": "With that roadmap in mind, let's start with the most familiar example: vectors in R n. A vector in R n is simply an ordered list of n real numbers, written u equals u one through u n. Addition is done component by component: u plus v equals the vector whose entries are u one plus v one, up to u n plus v n. In other words, we add corresponding components. Scalar multiplication works similarly: a times u equals a u one through a u n, so multiplying by a scalar a multiplies every component by a. The zero vector is the one whose components are all zero. And in R two and R three, we can picture vectors as arrows drawn from the origin, which gives useful geometric intuition.",
+    "heading": "Vectors in R^n",
+    "items": [],
+    "section_index": 1,
+    "index": 5,
+    "total": 19,
+    "slide_id": 2
+  },
+  {
+    "kind": "section",
+    "narration": "Now we move on to part 3: Definition of a vector space.",
+    "heading": "Definition of a vector space",
+    "items": [
+      "Introduction",
+      "Vectors in R^n",
+      "Definition of a vector space",
+      "Subspaces",
+      "Linear combinations and span",
+      "Linear independence and basis",
+      "Exercise and solution"
+    ],
+    "section_index": 2,
+    "index": 6,
+    "total": 19,
+    "slide_id": null
+  },
+  {
+    "kind": "content",
+    "narration": "Now that we've seen how addition and scaling behave in R n, we can abstract those properties into a general definition. A real vector space is a set V equipped with an addition and a scalar multiplication that satisfy certain axioms. Addition must be commutative and associative, so order and grouping don't matter. There must be a zero vector, and every vector must have an additive inverse that cancels it out. Scalar multiplication must distribute both over vector addition and over scalar addition. The equation shows the first of these: a times the quantity u plus v equals a u plus a v. Put simply, scaling a sum of vectors gives the same result as summing the scaled vectors.",
+    "heading": "Vector Space Axioms",
+    "items": [],
+    "section_index": 2,
+    "index": 7,
+    "total": 19,
+    "slide_id": 3
+  },
+  {
+    "kind": "content",
+    "narration": "Having stated the axioms, let's see what they buy us. First, R n is itself a vector space, which is the model we started from. But the axioms also capture objects that don't look like lists of numbers at first. Polynomials of degree at most n form a vector space, since we can add them and multiply them by scalars. Likewise, the set of all m by n matrices forms a vector space. This is exactly why the axioms matter: any theorem we prove using only the axioms automatically holds in all of these examples at once. We do the work one time and get results for every vector space.",
+    "heading": "Examples and Why Axioms Matter",
+    "items": [],
+    "section_index": 2,
+    "index": 8,
+    "total": 19,
+    "slide_id": 4
+  },
+  {
+    "kind": "section",
+    "narration": "Now we move on to part 4: Subspaces.",
+    "heading": "Subspaces",
+    "items": [
+      "Introduction",
+      "Vectors in R^n",
+      "Definition of a vector space",
+      "Subspaces",
+      "Linear combinations and span",
+      "Linear independence and basis",
+      "Exercise and solution"
+    ],
+    "section_index": 3,
+    "index": 9,
+    "total": 19,
+    "slide_id": null
+  },
+  {
+    "kind": "content",
+    "narration": "Since we now have the general definition of a vector space, a natural next question is what vector spaces live inside other ones. A subset W of V is a subspace if it is itself a vector space using the same operations. In practice, we check just a few things. First, W must contain the zero vector. Second, W must be closed under addition and under scalar multiplication, meaning sums and scalar multiples of elements of W stay in W. For example, the line y equals two x in R two is a subspace. By contrast, the line y equals two x plus one is not, because it does not contain the zero vector.",
+    "heading": "Subspaces",
+    "items": [],
+    "section_index": 3,
+    "index": 10,
+    "total": 19,
+    "slide_id": 5
+  },
+  {
+    "kind": "section",
+    "narration": "Now we move on to part 5: Linear combinations and span.",
+    "heading": "Linear combinations and span",
+    "items": [
+      "Introduction",
+      "Vectors in R^n",
+      "Definition of a vector space",
+      "Subspaces",
+      "Linear combinations and span",
+      "Linear independence and basis",
+      "Exercise and solution"
+    ],
+    "section_index": 4,
+    "index": 11,
+    "total": 19,
+    "slide_id": null
+  },
+  {
+    "kind": "content",
+    "narration": "Subspaces raise the question of how to build them, and that brings us to linear combinations and span. A linear combination of vectors v one through v k uses scalar coefficients: we form a one v one plus a two v two, and so on, up to a k v k. Each vector is scaled by a coefficient and the results are added together. The span of a set is the collection of all such linear combinations. An important fact is that the span is always a subspace. For a geometric picture, in R three, the span of two vectors that are not multiples of each other is a plane passing through the origin.",
+    "heading": "Linear Combinations and Span",
+    "items": [],
+    "section_index": 4,
+    "index": 12,
+    "total": 19,
+    "slide_id": 6
+  },
+  {
+    "kind": "section",
+    "narration": "Now we move on to part 6: Linear independence and basis.",
+    "heading": "Linear independence and basis",
+    "items": [
+      "Introduction",
+      "Vectors in R^n",
+      "Definition of a vector space",
+      "Subspaces",
+      "Linear combinations and span",
+      "Linear independence and basis",
+      "Exercise and solution"
+    ],
+    "section_index": 5,
+    "index": 13,
+    "total": 19,
+    "slide_id": null
+  },
+  {
+    "kind": "content",
+    "narration": "Once we know how sets of vectors can span a space, it's natural to ask whether any of those vectors are redundant. That is the idea of linear independence. Vectors v one through v k are linearly independent if the only way to obtain the zero vector as a linear combination of them is by taking all coefficients equal to zero. If some other choice of coefficients also gives zero, the vectors are linearly dependent. And when they are dependent, at least one of the vectors can be written as a combination of the others, so it adds nothing new to the span.",
+    "heading": "Linear Independence",
+    "items": [],
+    "section_index": 5,
+    "index": 14,
+    "total": 19,
+    "slide_id": 7
+  },
+  {
+    "kind": "content",
+    "narration": "Combining span and linear independence gives us the notion of a basis. A basis of V is a set that is linearly independent and also spans V, so it describes the whole space with no redundancy. A key fact is that every basis of the same space has the same number of elements. That common number is called the dimension of the space. For example, the standard basis of R n consists of n vectors, so the dimension of R n is n, which matches our intuition that R two is a plane and R three is ordinary space.",
+    "heading": "Basis and Dimension",
+    "items": [],
+    "section_index": 5,
+    "index": 15,
+    "total": 19,
+    "slide_id": 8
+  },
+  {
+    "kind": "section",
+    "narration": "Now we move on to part 7: Exercise and solution.",
+    "heading": "Exercise and solution",
+    "items": [
+      "Introduction",
+      "Vectors in R^n",
+      "Definition of a vector space",
+      "Subspaces",
+      "Linear combinations and span",
+      "Linear independence and basis",
+      "Exercise and solution"
+    ],
+    "section_index": 6,
+    "index": 16,
+    "total": 19,
+    "slide_id": null
+  },
+  {
+    "kind": "content",
+    "narration": "Having seen what a basis is and how dimension counts its vectors, let's put those ideas to work with a short exercise. Are the vectors one, two and three, six linearly independent? Look closely and you'll notice that the second vector is exactly three times the first. That observation gives us a relation right away: three times the vector one, two, minus the vector three, six, equals the zero vector, zero, zero. This is a nontrivial linear combination, because the coefficients, three and minus one, are not all zero, and yet the result is the zero vector. That is precisely what it means to prove linear dependence. So these two vectors are linearly dependent. Geometrically, both point along the same direction, so together they span only a line through the origin, not the whole plane, and therefore they cannot form a basis for it.",
+    "heading": "Exercise: Are (1, 2) and (3, 6) Independent?",
+    "items": [],
+    "section_index": 6,
+    "index": 17,
+    "total": 19,
+    "slide_id": 9
+  },
+  {
+    "kind": "closing",
+    "narration": "That brings us to the end of this lecture. We covered Introduction, Vectors in R n, Definition of a vector space, Subspaces, Linear combinations and span, Linear independence and basis and Exercise and solution. Thank you for watching.",
+    "heading": "Summary",
+    "items": [
+      "Introduction",
+      "Vectors in R^n",
+      "Definition of a vector space",
+      "Subspaces",
+      "Linear combinations and span",
+      "Linear independence and basis",
+      "Exercise and solution"
+    ],
+    "section_index": null,
+    "index": 18,
+    "total": 19,
+    "slide_id": null
+  }
+]

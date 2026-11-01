@@ -1,0 +1,6 @@
+llm:
+  backend: mock
+parser:
+  backend: pypdf
+tts:
+  backend: stub

@@ -1,0 +1,18 @@
+services:
+  course2video:
+    build:
+      context: .
+      args:
+        EXTRAS: math,piper,docling
+    volumes:
+      - ./out:/data/out
+    depends_on: [ollama]
+
+  ollama:
+    image: ollama/ollama
+    volumes:
+      - ollama:/root/.ollama
+    ports: ["11434:11434"]
+
+volumes:
+  ollama:

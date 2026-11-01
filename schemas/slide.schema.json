@@ -1,0 +1,142 @@
+{
+  "$defs": {
+    "Equation": {
+      "additionalProperties": false,
+      "properties": {
+        "latex": {
+          "description": "Equation in LaTeX, without $ delimiters.",
+          "minLength": 1,
+          "title": "Latex",
+          "type": "string"
+        },
+        "explanation": {
+          "description": "One or two sentences saying in words what the equation means.",
+          "minLength": 1,
+          "title": "Explanation",
+          "type": "string"
+        }
+      },
+      "required": [
+        "latex",
+        "explanation"
+      ],
+      "title": "Equation",
+      "type": "object"
+    },
+    "Slide": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "1-based slide number, unique within the deck.",
+          "minimum": 1,
+          "title": "Id",
+          "type": "integer"
+        },
+        "title": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "bullets": {
+          "description": "Short bullet points shown on the slide.",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 7,
+          "minItems": 1,
+          "title": "Bullets",
+          "type": "array"
+        },
+        "equations": {
+          "items": {
+            "$ref": "#/$defs/Equation"
+          },
+          "maxItems": 3,
+          "title": "Equations",
+          "type": "array"
+        },
+        "talking_points": {
+          "description": "What the lecturer explains while the slide is shown and that is NOT written on it: intuition, why it matters, a worked example with its numbers, a common mistake. Taken from the source documents; reviewed with the slide.",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 8,
+          "title": "Talking Points",
+          "type": "array"
+        },
+        "notes": {
+          "default": "",
+          "description": "Optional lecturer notes; not shown on the slide.",
+          "title": "Notes",
+          "type": "string"
+        },
+        "source_section": {
+          "default": "",
+          "description": "Heading of the source section this slide was derived from.",
+          "title": "Source Section",
+          "type": "string"
+        },
+        "kind": {
+          "default": "theory",
+          "description": "theory: from lecture notes; exercise: a problem statement; solution: steps of the official solution.",
+          "enum": [
+            "theory",
+            "exercise",
+            "solution"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "source_doc": {
+          "default": "",
+          "description": "Source document (and problem), e.g. 'Problem Set 2, Problem 2'. Set by the pipeline from the course index, not by the LLM.",
+          "title": "Source Doc",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "bullets"
+      ],
+      "title": "Slide",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "title": {
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    },
+    "language": {
+      "default": "en",
+      "description": "BCP-47 language code of the slide text.",
+      "title": "Language",
+      "type": "string"
+    },
+    "slides": {
+      "items": {
+        "$ref": "#/$defs/Slide"
+      },
+      "minItems": 1,
+      "title": "Slides",
+      "type": "array"
+    },
+    "approved": {
+      "default": false,
+      "description": "Set to true by the lecturer review step, never by the LLM.",
+      "title": "Approved",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "title",
+    "slides"
+  ],
+  "title": "Deck",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

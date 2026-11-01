@@ -1,0 +1,14 @@
+llm:
+  backend: openai_compat
+  base_url: http://localhost:11434/v1
+  model: gpt-oss:120b
+  effort: medium
+  max_tokens: 16000
+  structured_output: true
+parser:
+  backend: docling
+tts:
+  backend: piper
+  piper_model: models/piper/en_US-ljspeech-medium.onnx
+lecture:
+  subtitle: "Generated with course2video (prototype)"

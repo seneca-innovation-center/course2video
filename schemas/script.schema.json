@@ -1,0 +1,43 @@
+{
+  "$defs": {
+    "SlideScript": {
+      "additionalProperties": false,
+      "properties": {
+        "slide_id": {
+          "minimum": 1,
+          "title": "Slide Id",
+          "type": "integer"
+        },
+        "text": {
+          "description": "What the narrator says for this slide.",
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "slide_id",
+        "text"
+      ],
+      "title": "SlideScript",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "slides": {
+      "items": {
+        "$ref": "#/$defs/SlideScript"
+      },
+      "minItems": 1,
+      "title": "Slides",
+      "type": "array"
+    }
+  },
+  "required": [
+    "slides"
+  ],
+  "title": "Script",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

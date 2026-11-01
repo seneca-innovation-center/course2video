@@ -1,0 +1,149 @@
+{
+  "title": "Vector Spaces: A Short Introduction",
+  "language": "en",
+  "slides": [
+    {
+      "id": 1,
+      "title": "Vector Spaces: Overview",
+      "bullets": [
+        "Introduction to vector spaces for a first course in linear algebra",
+        "Topics: vectors in R^n, vector space axioms, subspaces",
+        "Also: span, linear independence and bases",
+        "Closes with a short exercise and its solution"
+      ],
+      "equations": [],
+      "notes": "Roadmap of the notes.",
+      "source_section": "Vector Spaces: A Short Introduction"
+    },
+    {
+      "id": 2,
+      "title": "Vectors in R^n",
+      "bullets": [
+        "A vector in R^n is an ordered list of n real numbers: u = (u1, ..., un)",
+        "Addition is done component by component",
+        "Scalar multiplication multiplies every component by a real number",
+        "The zero vector has every component equal to zero",
+        "Vectors in R^2 and R^3 can be drawn as arrows from the origin"
+      ],
+      "equations": [
+        {
+          "latex": "\\mathbf{u} + \\mathbf{v} = (u_1 + v_1, \\dots, u_n + v_n)",
+          "explanation": "Two vectors are added by adding their corresponding components."
+        },
+        {
+          "latex": "a\\mathbf{u} = (a u_1, \\dots, a u_n) \\quad (2)",
+          "explanation": "Multiplying a vector by a scalar a multiplies each of its components by a."
+        }
+      ],
+      "notes": "The source equations were typeset irregularly; shown here in cleaned form.",
+      "source_section": "1. Vectors in R^n"
+    },
+    {
+      "id": 3,
+      "title": "Vector Space Axioms",
+      "bullets": [
+        "A real vector space is a set V with addition and scalar multiplication satisfying axioms",
+        "Addition is commutative and associative",
+        "There is a zero vector; every vector has an additive inverse",
+        "Scalar multiplication distributes over vector addition and over scalar addition"
+      ],
+      "equations": [
+        {
+          "latex": "a(u + v) = a\\,u + a\\,v \\quad (3)",
+          "explanation": "Scaling a sum of vectors gives the same result as summing the scaled vectors."
+        }
+      ],
+      "notes": "Emphasize the distributive laws as part of the axioms.",
+      "source_section": "2. Definition of a vector space"
+    },
+    {
+      "id": 4,
+      "title": "Examples and Why Axioms Matter",
+      "bullets": [
+        "R^n is a vector space",
+        "Polynomials of degree at most n form a vector space",
+        "All m by n matrices form a vector space",
+        "Any theorem proved from the axioms holds in all these examples at once"
+      ],
+      "equations": [],
+      "notes": "Stress the economy of the axiomatic approach.",
+      "source_section": "2. Definition of a vector space"
+    },
+    {
+      "id": 5,
+      "title": "Subspaces",
+      "bullets": [
+        "W ⊆ V is a subspace if it is a vector space with the same operations",
+        "Check: W contains the zero vector",
+        "Check: W is closed under addition and under scalar multiplication",
+        "Example: the line y = 2x in R^2 is a subspace",
+        "Non-example: y = 2x + 1 does not contain the zero vector"
+      ],
+      "equations": [],
+      "notes": "Three-condition test is enough in practice.",
+      "source_section": "3. Subspaces"
+    },
+    {
+      "id": 6,
+      "title": "Linear Combinations and Span",
+      "bullets": [
+        "A linear combination of v1, ..., vk uses scalar coefficients",
+        "The span of a set is the set of all its linear combinations",
+        "The span is always a subspace",
+        "In R^3, the span of two non-multiple vectors is a plane through the origin"
+      ],
+      "equations": [
+        {
+          "latex": "a_1 v_1 + a_2 v_2 + \\dots + a_k v_k \\quad (4)",
+          "explanation": "A general linear combination: each vector is scaled by a coefficient and the results are added."
+        }
+      ],
+      "notes": "Connect span back to subspaces.",
+      "source_section": "4. Linear combinations and span"
+    },
+    {
+      "id": 7,
+      "title": "Linear Independence",
+      "bullets": [
+        "v1, ..., vk are linearly independent if zero is only obtained with all coefficients zero",
+        "Otherwise they are linearly dependent",
+        "If dependent, at least one vector is a combination of the others"
+      ],
+      "equations": [],
+      "notes": "Independence means no redundancy among the vectors.",
+      "source_section": "5. Linear independence and basis"
+    },
+    {
+      "id": 8,
+      "title": "Basis and Dimension",
+      "bullets": [
+        "A basis of V is a linearly independent set that spans V",
+        "Every basis of the same space has the same number of elements",
+        "This number is called the dimension",
+        "The standard basis of R^n has n vectors, so dim R^n = n"
+      ],
+      "equations": [],
+      "notes": "Dimension is well defined because all bases have equal size.",
+      "source_section": "5. Linear independence and basis"
+    },
+    {
+      "id": 9,
+      "title": "Exercise: Are (1, 2) and (3, 6) Independent?",
+      "bullets": [
+        "The second vector is three times the first",
+        "So 3(1, 2) - (3, 6) = (0, 0) with coefficients not all zero",
+        "Hence the vectors are linearly dependent",
+        "They span only a line, not the whole plane"
+      ],
+      "equations": [
+        {
+          "latex": "3(1, 2) - (3, 6) = (0, 0)",
+          "explanation": "A nontrivial linear combination equals the zero vector, proving linear dependence."
+        }
+      ],
+      "notes": "Let students attempt before revealing the solution.",
+      "source_section": "6. Exercise and solution"
+    }
+  ],
+  "approved": true
+}

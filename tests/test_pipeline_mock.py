@@ -1,0 +1,109 @@
+import json
+
+import pytest
+
+from course2video.cli import main
+from course2video.config import Config
+from course2video.pipeline import run_stage1, run_stage2
+from course2video.render.subtitles import build_srt
+from course2video.review import ReviewError, deck_to_markdown, markdown_to_deck
+from course2video.tts.base import wav_duration
+
+from .conftest import requires_ffmpeg
+
+
+def _cfg() -> Config:
+    cfg = Config()
+    cfg.render.width, cfg.render.height = 640, 360
+    return cfg
+
+
+def test_stage1_stops_for_review(sample_pdf, tmp_path):
+    st = run_stage1(sample_pdf, tmp_path, _cfg())
+    assert st["stage"] == "awaiting_review"
+    deck = json.loads((tmp_path / "slides.json").read_text())
+    assert deck["approved"] is False
+    assert deck["title"] == "Vector Spaces: A Short Introduction"
+    assert len(deck["slides"]) >= 5
+    assert (tmp_path / "slides.md").exists()
+    assert not (tmp_path / "script.json").exists()
+
+
+def test_invalid_review_edit_is_rejected(sample_pdf, tmp_path):
+    run_stage1(sample_pdf, tmp_path, _cfg())
+    d = json.loads((tmp_path / "slides.json").read_text())
+    d["slides"][0]["bullets"] = []
+    (tmp_path / "slides.json").write_text(json.dumps(d))
+    with pytest.raises(ReviewError):
+        run_stage2(tmp_path, _cfg(), video=False)
+    assert not (tmp_path / "script.json").exists()
+
+
+def test_markdown_review_roundtrip(good_deck):
+    md = deck_to_markdown(good_deck)
+    back = markdown_to_deck(md)
+    assert back.model_dump() == good_deck.model_dump()
+
+
+def test_markdown_edit_is_applied(sample_pdf, tmp_path):
+    run_stage1(sample_pdf, tmp_path, _cfg())
+    md = (tmp_path / "slides.md").read_text()
+    md = md.replace("## Slide 1:", "## Slide 1: EDITED", 1)
+    (tmp_path / "slides.md").write_text(md)
+    run_stage2(tmp_path, _cfg(), source="md", video=False)
+    deck = json.loads((tmp_path / "slides.json").read_text())
+    assert deck["approved"] is True
+    assert deck["slides"][0]["title"].startswith("EDITED")
+    assert (tmp_path / "deck.pptx").exists()
+    assert json.loads((tmp_path / "alignment.json").read_text())["overall_coverage"] > 0.9
+
+
+@requires_ffmpeg
+def test_full_pipeline_produces_video(sample_pdf, tmp_path):
+    out = tmp_path / "out"
+    rc = main(["run", str(sample_pdf), "--out", str(out), "--auto-approve", "--llm", "mock",
+               "--tts", "stub"])
+    assert rc == 0
+    for name in ("parsed.md", "slides.json", "script.json", "alignment.json", "deck.pptx",
+                 "video.mp4", "subtitles.srt", "meta.json"):
+        assert (out / name).exists(), name
+    meta = json.loads((out / "meta.json").read_text())
+    plan = json.loads((out / "lecture_plan.json").read_text())
+    kinds = [f["kind"] for f in plan]
+    assert kinds[:3] == ["title", "agenda", "section"] and kinds[-1] == "closing"
+    assert kinds.count("content") == meta["slides"]["count"]
+    assert kinds.count("section") >= 5
+    n = len(plan)
+    assert len(list((out / "images").glob("*.png"))) == n
+    assert len(list((out / "audio").glob("*.wav"))) == n
+    speech = sum(wav_duration(p) for p in (out / "audio").glob("*.wav"))
+    assert meta["video"]["duration_s"] == pytest.approx(speech + n * 0.6, abs=0.05)
+    srt = (out / "subtitles.srt").read_text()
+    assert srt.split("\n")[2].startswith("Welcome.")
+    assert json.loads((out / "state.json").read_text())["stage"] == "done"
+
+
+def test_srt_timing():
+    texts = ["First sentence. Second one.", "Third."]
+    srt = build_srt(texts, durations=[4.0, 2.0], speech_durations=[3.0, 1.5])
+    blocks = srt.strip().split("\n\n")
+    assert len(blocks) == 3
+    assert blocks[0].splitlines()[1].startswith("00:00:00,000 --> ")
+    assert blocks[2].splitlines()[1] == "00:00:04,000 --> 00:00:05,500"
+
+
+def test_render_command_rebuilds_without_llm(sample_pdf, tmp_path):
+    from course2video.llm.mock_backend import MockBackend
+
+    run_stage1(sample_pdf, tmp_path, _cfg())
+    run_stage2(tmp_path, _cfg(), video=False)
+    script_before = (tmp_path / "script.json").read_text()
+    import course2video.pipeline as pipeline
+
+    pipeline.get_backend = lambda cfg: MockBackend(responses=[])
+    cfg = _cfg()
+    cfg.lecture.agenda = False
+    assert main(["render", str(tmp_path), "--no-video"]) == 0
+    assert (tmp_path / "script.json").read_text() == script_before
+    plan = json.loads((tmp_path / "lecture_plan.json").read_text())
+    assert plan[0]["kind"] == "title"

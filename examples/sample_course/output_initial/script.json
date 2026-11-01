@@ -1,0 +1,40 @@
+{
+  "slides": [
+    {
+      "slide_id": 1,
+      "text": "Let's begin with a quick overview of where we're headed. This is an introduction to vector spaces, aimed at a first course in linear algebra. We'll start with vectors in R n, the most concrete setting, and then move to the axioms that define a vector space in general. From there we'll look at subspaces, which are vector spaces sitting inside larger ones. After that come three closely linked ideas: span, linear independence, and bases. Together they let us describe a space efficiently and measure its size. Finally, we'll close with a short exercise and walk through its solution, so you can check your understanding of everything we've built up along the way."
+    },
+    {
+      "slide_id": 2,
+      "text": "With that roadmap in mind, let's start with the most familiar example: vectors in R n. A vector in R n is simply an ordered list of n real numbers, written u equals u one through u n. Addition is done component by component: u plus v equals the vector whose entries are u one plus v one, up to u n plus v n. In other words, we add corresponding components. Scalar multiplication works similarly: a times u equals a u one through a u n, so multiplying by a scalar a multiplies every component by a. The zero vector is the one whose components are all zero. And in R two and R three, we can picture vectors as arrows drawn from the origin, which gives useful geometric intuition."
+    },
+    {
+      "slide_id": 3,
+      "text": "Now that we've seen how addition and scaling behave in R n, we can abstract those properties into a general definition. A real vector space is a set V equipped with an addition and a scalar multiplication that satisfy certain axioms. Addition must be commutative and associative, so order and grouping don't matter. There must be a zero vector, and every vector must have an additive inverse that cancels it out. Scalar multiplication must distribute both over vector addition and over scalar addition. The equation shows the first of these: a times the quantity u plus v equals a u plus a v. Put simply, scaling a sum of vectors gives the same result as summing the scaled vectors."
+    },
+    {
+      "slide_id": 4,
+      "text": "Having stated the axioms, let's see what they buy us. First, R n is itself a vector space, which is the model we started from. But the axioms also capture objects that don't look like lists of numbers at first. Polynomials of degree at most n form a vector space, since we can add them and multiply them by scalars. Likewise, the set of all m by n matrices forms a vector space. This is exactly why the axioms matter: any theorem we prove using only the axioms automatically holds in all of these examples at once. We do the work one time and get results for every vector space."
+    },
+    {
+      "slide_id": 5,
+      "text": "Since we now have the general definition of a vector space, a natural next question is what vector spaces live inside other ones. A subset W of V is a subspace if it is itself a vector space using the same operations. In practice, we check just a few things. First, W must contain the zero vector. Second, W must be closed under addition and under scalar multiplication, meaning sums and scalar multiples of elements of W stay in W. For example, the line y equals two x in R two is a subspace. By contrast, the line y equals two x plus one is not, because it does not contain the zero vector."
+    },
+    {
+      "slide_id": 6,
+      "text": "Subspaces raise the question of how to build them, and that brings us to linear combinations and span. A linear combination of vectors v one through v k uses scalar coefficients: we form a one v one plus a two v two, and so on, up to a k v k. Each vector is scaled by a coefficient and the results are added together. The span of a set is the collection of all such linear combinations. An important fact is that the span is always a subspace. For a geometric picture, in R three, the span of two vectors that are not multiples of each other is a plane passing through the origin."
+    },
+    {
+      "slide_id": 7,
+      "text": "Once we know how sets of vectors can span a space, it's natural to ask whether any of those vectors are redundant. That is the idea of linear independence. Vectors v one through v k are linearly independent if the only way to obtain the zero vector as a linear combination of them is by taking all coefficients equal to zero. If some other choice of coefficients also gives zero, the vectors are linearly dependent. And when they are dependent, at least one of the vectors can be written as a combination of the others, so it adds nothing new to the span."
+    },
+    {
+      "slide_id": 8,
+      "text": "Combining span and linear independence gives us the notion of a basis. A basis of V is a set that is linearly independent and also spans V, so it describes the whole space with no redundancy. A key fact is that every basis of the same space has the same number of elements. That common number is called the dimension of the space. For example, the standard basis of R n consists of n vectors, so the dimension of R n is n, which matches our intuition that R two is a plane and R three is ordinary space."
+    },
+    {
+      "slide_id": 9,
+      "text": "Having seen what a basis is and how dimension counts its vectors, let's put those ideas to work with a short exercise. Are the vectors one, two and three, six linearly independent? Look closely and you'll notice that the second vector is exactly three times the first. That observation gives us a relation right away: three times the vector one, two, minus the vector three, six, equals the zero vector, zero, zero. This is a nontrivial linear combination, because the coefficients, three and minus one, are not all zero, and yet the result is the zero vector. That is precisely what it means to prove linear dependence. So these two vectors are linearly dependent. Geometrically, both point along the same direction, so together they span only a line through the origin, not the whole plane, and therefore they cannot form a basis for it."
+    }
+  ]
+}

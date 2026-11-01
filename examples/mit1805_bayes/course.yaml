@@ -1,0 +1,18 @@
+title: "Conditional Probability, Independence and Bayes' Theorem"
+language: en
+target_minutes: 20
+documents:
+  - path: lecture/mit18_05_s22_class03-prep.pdf
+    type: lecture
+    label: "Reading 3"
+  - path: exercises/mit18_05_s22_pset02.pdf
+    type: exercises
+    label: "Problem Set 2"
+    select: [1, 2, 3]
+  - path: solutions/mit18_05_s22_pset02_sol.pdf
+    type: solutions
+    solves: exercises/mit18_05_s22_pset02.pdf
+source:
+  name: "MIT 18.05 Introduction to Probability and Statistics, Spring 2022 (Jeremy Orloff, Jonathan Bloom)"
+  url: "https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/"
+  licence: "CC BY-NC-SA 4.0"
