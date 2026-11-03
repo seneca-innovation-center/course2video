@@ -8,9 +8,11 @@ Two sample courses are included (both CC-BY-4.0, written for this project):
 | [`probability_course/`](probability_course/) Introduction to probability | 3 pages, 5 chapters | 8, **typeset as images** |
 
 The numbers below come from real runs on 2026-10-29 (Apple Silicon laptop, no NVIDIA GPU)
-with **Docling + an LLM + Piper** (initial development runs, to be reproduced with
-gpt-oss-120b). Their output files are in each course's `output_initial/` folder (slides, script, alignment report, lecture plan,
-subtitles and sample frames; videos are not committed).
+with **Docling + a hosted LLM API + Piper**. These were development runs, made before the
+local gpt-oss setup, on openly licensed sample material; they will be reproduced with
+gpt-oss-120b. Their output files are in each course's `output_v1/` folder (slides, script,
+alignment report, lecture plan, subtitles and sample frames; videos are not committed).
+`output_v1/` predates the teaching-style change described in `docs/teaching_style.md`.
 
 > To run on premises with gpt-oss-120b, use `configs/gpt-oss-vllm.yaml`; see
 > [`../docs/local-llm.md`](../docs/local-llm.md).
@@ -120,7 +122,8 @@ evaluation. For that, use [`../eval/rubric.md`](../eval/rubric.md).
 `examples/mit1805_bayes/`: Reading 3 (12 pages) + Problem Set 2 + its official solutions,
 from MIT OpenCourseWare (CC BY-NC-SA 4.0, downloaded by `scripts/fetch_mit1805_example.sh`,
 not committed; outputs are not committed either, since they are derivatives under the same
-licence). Initial run on 2026-10-31 with Docling + an LLM + Piper, slides approved without edits:
+licence). Development run on 2026-10-31 with Docling + a hosted LLM API + Piper, slides approved
+without edits:
 
 | | Result |
 |---|---|

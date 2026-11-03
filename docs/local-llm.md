@@ -51,7 +51,7 @@ make test-llm CONFIG=configs/gpt-oss-20b-ollama.yaml
 ```
 
 Then compare the runs' `meta.json` (retry attempts, timings), `alignment.json` (coverage,
-spoken-to-slide word ratio) and `grounding.json` (flagged talking points) with the initial
+spoken-to-slide word ratio) and `grounding.json` (flagged talking points) with the development
 results in `examples/demo.md` and `docs/teaching_style.md`, and score 20-30 slides from
 each with `eval/rubric.md`.
 

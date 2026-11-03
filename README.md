@@ -8,8 +8,9 @@
 slides and narrated videos, without sending course material to a cloud service.**
 
 > **Status: early development.** Pipeline v0 runs end to end on the sample courses and on a
-> real 3-document course. The results in [`examples/demo.md`](examples/demo.md) are initial
-> development runs; reproducing them with gpt-oss-120b is the next step. Output quality has
+> real 3-document course. The results in [`examples/demo.md`](examples/demo.md) are development runs made
+> with a hosted LLM API on openly licensed sample material, before the local setup;
+> reproducing them with gpt-oss-120b is the next step. Output quality has
 > **not** been formally evaluated yet (see [`eval/rubric.md`](eval/rubric.md)).
 
 ## The problem
