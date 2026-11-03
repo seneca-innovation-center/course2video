@@ -177,3 +177,18 @@ def test_numbers_are_read_from_docling_latex():
     assert Fraction(83, 1000) in numbers(r"\approx 8 . 3 \%")
     assert Fraction(20, 217) not in numbers("0.9 × 0.005 / 0.05425")
     assert Fraction(3, 8) in numbers("We know that P(A) = 3/8. Since")
+
+
+def test_cli_language_is_used_for_a_folder_without_language(tmp_path):
+    run_stage1(COURSE, tmp_path, _cfg(), language="fr")
+    assert Deck.model_validate_json((tmp_path / "slides.json").read_text()).language == "fr"
+
+
+def test_course_yaml_language_wins_over_cli(tmp_path):
+    src = tmp_path / "course"
+    src.mkdir()
+    (src / "notes.md").write_text("# T\n\n## 1. A\n\nSome text here. More text there.")
+    (src / "course.yaml").write_text("title: T\nlanguage: es\ndocuments:\n"
+                                     "  - {path: notes.md, type: lecture}\n")
+    run_stage1(src, tmp_path / "out", _cfg(), language="fr")
+    assert Deck.model_validate_json((tmp_path / "out/slides.json").read_text()).language == "es"

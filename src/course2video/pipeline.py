@@ -60,7 +60,7 @@ def run_stage1(
 
     out.mkdir(parents=True, exist_ok=True)
     course = load_course(input_path)
-    language = course.language if input_path.is_dir() else language
+    language = course.language or language
     target = cfg.lecture.target_minutes or course.target_minutes
     if target:
         cfg.lecture.target_minutes = target
@@ -174,7 +174,7 @@ def run_stage2(
     video: bool = True,
 ) -> dict:
     st = _state(out)
-    if st.get("stage") not in {"awaiting_review", "done", "script_done"}:
+    if st.get("stage") not in {"awaiting_review", "approved", "done", "script_done"}:
         raise RuntimeError(f"{out} has no slides awaiting review; run `course2video run` first")
     deck = import_reviewed(out, source)
     _set_state(out, stage="approved")

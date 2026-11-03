@@ -92,7 +92,7 @@ def test_srt_timing():
     assert blocks[2].splitlines()[1] == "00:00:04,000 --> 00:00:05,500"
 
 
-def test_render_command_rebuilds_without_llm(sample_pdf, tmp_path):
+def test_render_command_rebuilds_without_llm(sample_pdf, tmp_path, monkeypatch):
     from course2video.llm.mock_backend import MockBackend
 
     run_stage1(sample_pdf, tmp_path, _cfg())
@@ -100,10 +100,24 @@ def test_render_command_rebuilds_without_llm(sample_pdf, tmp_path):
     script_before = (tmp_path / "script.json").read_text()
     import course2video.pipeline as pipeline
 
-    pipeline.get_backend = lambda cfg: MockBackend(responses=[])
+    monkeypatch.setattr(pipeline, "get_backend", lambda cfg: MockBackend(responses=[]))
     cfg = _cfg()
     cfg.lecture.agenda = False
     assert main(["render", str(tmp_path), "--no-video"]) == 0
     assert (tmp_path / "script.json").read_text() == script_before
     plan = json.loads((tmp_path / "lecture_plan.json").read_text())
     assert plan[0]["kind"] == "title"
+
+
+def test_continue_can_be_retried_after_a_stage2_failure(sample_pdf, tmp_path):
+    from course2video.llm.base import LLMError
+    from course2video.llm.mock_backend import MockBackend
+    from course2video.slides.validate import GenerationFailed
+
+    run_stage1(sample_pdf, tmp_path, _cfg())
+    with pytest.raises(GenerationFailed):
+        run_stage2(tmp_path, _cfg(), llm=MockBackend(responses=[LLMError("timeout")] * 10),
+                   video=False)
+    assert json.loads((tmp_path / "state.json").read_text())["stage"] == "approved"
+    run_stage2(tmp_path, _cfg(), video=False)
+    assert json.loads((tmp_path / "state.json").read_text())["stage"] == "script_done"
