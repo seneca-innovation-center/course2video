@@ -178,3 +178,49 @@ def test_one_video_per_part(sample_pdf, tmp_path):
     assert all((tmp_path / "parts" / f"part_{p['part']:02d}.mp4").exists() for p in parts)
     assert all((tmp_path / "parts" / f"part_{p['part']:02d}.srt").exists() for p in parts)
     assert sum(p["duration_s"] for p in parts) == pytest.approx(meta["video"]["duration_s"], abs=0.1)
+
+
+@requires_ffmpeg
+def test_temp_files_removed_when_ffmpeg_fails(tmp_path, monkeypatch):
+    import subprocess
+
+    from PIL import Image
+
+    from course2video.render import video_assembly
+    from course2video.tts.backends import StubTTS
+
+    img = tmp_path / "f.png"
+    Image.new("RGB", (64, 36)).save(img)
+    wav = StubTTS().synthesize("a few words here", tmp_path / "a.wav")
+
+    def fail(*a, **k):
+        raise subprocess.CalledProcessError(1, "ffmpeg")
+
+    monkeypatch.setattr(video_assembly.subprocess, "run", fail)
+    with pytest.raises(subprocess.CalledProcessError):
+        video_assembly.assemble_video([img], [wav], tmp_path / "video.mp4")
+    assert not (tmp_path / "video.wav").exists() and not (tmp_path / "video.frames.txt").exists()
+
+
+@requires_ffmpeg
+def test_stale_outputs_are_cleaned(sample_pdf, tmp_path):
+    cfg = _cfg()
+    cfg.render.per_part_videos = True
+    run_stage1(sample_pdf, tmp_path, cfg)
+    (tmp_path / "segments").mkdir()
+    run_stage2(tmp_path, cfg)
+    assert (tmp_path / "parts").exists() and not (tmp_path / "segments").exists()
+    cfg.render.per_part_videos = False
+    run_stage2(tmp_path, cfg)
+    assert not (tmp_path / "parts").exists()
+    assert "parts" not in json.loads((tmp_path / "meta.json").read_text())
+
+
+def test_single_part_lecture_warns(tmp_path, caplog):
+    from course2video.render.lecture import Frame
+    from course2video.render.parts import write_part_videos
+
+    frames = [Frame("title", "x", index=0), Frame("content", "x", index=1)]
+    with caplog.at_level("WARNING"):
+        assert write_part_videos(frames, [], [], tmp_path / "parts", pause_s=0.6, fps=5) == []
+    assert "fewer than 2 parts" in caplog.text

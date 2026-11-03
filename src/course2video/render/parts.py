@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 
 from .lecture import Frame
 from .subtitles import write_srt
 from .video_assembly import assemble_video
+
+log = logging.getLogger(__name__)
 
 
 def split_parts(frames: list[Frame]) -> list[list[int]]:
@@ -21,7 +24,11 @@ def write_part_videos(frames: list[Frame], images: list[Path], audios: list[Path
     for old in list(out_dir.glob("part_*.mp4")) + list(out_dir.glob("part_*.srt")):
         old.unlink()
     parts = []
-    for n, idx in enumerate(split_parts(frames), start=1):
+    groups = split_parts(frames)
+    if not groups:
+        log.warning("per_part_videos is on, but the lecture has fewer than 2 parts; "
+                    "only the full video was written")
+    for n, idx in enumerate(groups, start=1):
         video = out_dir / f"part_{n:02d}.mp4"
         durations = assemble_video([images[i] for i in idx], [audios[i] for i in idx], video,
                                    pause_s=pause_s, fps=fps)

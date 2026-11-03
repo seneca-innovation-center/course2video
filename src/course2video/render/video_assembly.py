@@ -49,24 +49,25 @@ def assemble_video(
     ff = _ffmpeg()
     out_path.parent.mkdir(parents=True, exist_ok=True)
     track = out_path.with_suffix(".wav")
-    durations = build_audio_track(audios, track, pause_s)
-
     listing = out_path.with_suffix(".frames.txt")
-    lines = [concat_line(img) + f"duration {d:.6f}\n" for img, d in zip(images, durations, strict=True)]
-    lines.append(concat_line(images[-1]))
-    listing.write_text("".join(lines), encoding="utf-8")
-
-    subprocess.run(
-        [ff, "-y", "-loglevel", "error",
-         "-f", "concat", "-safe", "0", "-i", str(listing),
-         "-i", str(track),
-         "-vf", f"fps={fps},format=yuv420p",
-         "-c:v", "libx264", "-tune", "stillimage",
-         "-c:a", "aac", "-b:a", "128k", "-ar", "44100", "-ac", "1",
-         "-t", f"{sum(durations):.3f}",
-         "-movflags", "+faststart", str(out_path)],
-        check=True,
-    )
-    listing.unlink()
-    track.unlink()
+    try:
+        durations = build_audio_track(audios, track, pause_s)
+        lines = [concat_line(img) + f"duration {d:.6f}\n"
+                 for img, d in zip(images, durations, strict=True)]
+        lines.append(concat_line(images[-1]))
+        listing.write_text("".join(lines), encoding="utf-8")
+        subprocess.run(
+            [ff, "-y", "-loglevel", "error",
+             "-f", "concat", "-safe", "0", "-i", str(listing),
+             "-i", str(track),
+             "-vf", f"fps={fps},format=yuv420p",
+             "-c:v", "libx264", "-tune", "stillimage",
+             "-c:a", "aac", "-b:a", "128k", "-ar", "44100", "-ac", "1",
+             "-t", f"{sum(durations):.3f}",
+             "-movflags", "+faststart", str(out_path)],
+            check=True,
+        )
+    finally:
+        listing.unlink(missing_ok=True)
+        track.unlink(missing_ok=True)
     return durations
