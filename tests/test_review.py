@@ -54,3 +54,21 @@ def test_line_numbers_match_the_file_with_the_help_comment(good_deck):
 def test_roundtrip_still_exact(good_deck):
     good_deck.slides[0].talking_points = ["Why it matters.", "Example: two coins."]
     assert markdown_to_deck(deck_to_markdown(good_deck)).model_dump() == good_deck.model_dump()
+
+
+def test_blank_line_ends_a_field():
+    with pytest.raises(ReviewError) as e:
+        markdown_to_deck(HEAD + "- short bullet\nSay: a talking point\n\n"
+                         "The lecturer adds a new paragraph here.\n")
+    assert "line 8" in str(e.value) and "new paragraph" in str(e.value)
+
+
+def test_heading_inside_a_slide_is_rejected():
+    with pytest.raises(ReviewError) as e:
+        markdown_to_deck(HEAD + "- short bullet\n### Remark\n")
+    assert "line 6" in str(e.value) and "Remark" in str(e.value)
+
+
+def test_explanation_right_after_its_equation_still_works():
+    deck = markdown_to_deck(HEAD + "- b\n\n$$ x = 1 $$\n> one\n")
+    assert deck.slides[0].equations[0].explanation == "one"

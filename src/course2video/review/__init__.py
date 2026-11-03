@@ -73,12 +73,19 @@ def markdown_to_deck(md: str) -> Deck:
                            "talking_points": []})
             last = None
             continue
-        if not line or (not slides and (line.startswith("# ") or line.startswith("<!--"))):
+        if not line:
+            last = None
+            continue
+        if not slides and (line.startswith("# ") or line.startswith("<!--")):
             continue
         if not slides:
             errors.append(f"line {n}: text before the first '## Slide' heading: {line[:60]!r}")
             continue
         cur = slides[-1]
+        if line.startswith("#"):
+            errors.append(f"line {n}: headings are not allowed inside a slide: {line[:60]!r}")
+            last = None
+            continue
         bullet = re.match(r"^(?:[-*]|\d+[.)])\s+(.*)$", line)
         if line.startswith("$$") and line.endswith("$$") and len(line) > 4:
             last = add_equation(cur, line[2:-2])
