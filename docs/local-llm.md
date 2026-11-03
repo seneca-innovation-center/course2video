@@ -5,6 +5,8 @@ an open-weight model served inside the institution's network, so course content 
 leaves it. The reference model is **gpt-oss-120b**; gpt-oss-20b is a smaller option for
 testing on modest hardware. Switching between them is a config change.
 
+Hardware, run times and disk space: [`requirements.md`](requirements.md).
+
 ## 1. Serve the model
 
 **vLLM** (recommended for a GPU server; one 80 GB GPU such as H100 or A100-80GB for 120b):
