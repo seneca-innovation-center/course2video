@@ -258,6 +258,13 @@ def render_outputs(
             pause_s=cfg.render.pause_after_slide_s, fps=cfg.render.fps,
         )
         write_srt([f.narration for f in frames], durations, speech, out / "subtitles.srt")
+        if cfg.render.per_part_videos:
+            from .render.parts import write_part_videos
+
+            parts = write_part_videos(frames, images, audios, out / "parts",
+                                      pause_s=cfg.render.pause_after_slide_s, fps=cfg.render.fps)
+            meta["parts"] = parts
+            summary["parts"] = len(parts)
         meta.setdefault("timings_s", {})["render_tts_video"] = round(time.time() - t0, 2)
         meta["video"] = {"tts": tts.name, "renderer": cfg.render.renderer,
                          "duration_s": round(sum(durations), 2)}

@@ -154,3 +154,27 @@ def test_video_audio_and_subtitles_stay_in_sync(tmp_path):
     assert probe("a:0") == pytest.approx(total, abs=0.05)
     assert probe("v:0") == pytest.approx(total, abs=0.25)
     assert not list(folder.glob("*.frames.txt")) and not (folder / "video.wav").exists()
+
+
+def test_split_parts_groups_frames_by_section():
+    from course2video.render.lecture import Frame
+    from course2video.render.parts import split_parts
+
+    kinds = ["title", "agenda", "section", "content", "section", "content", "content", "closing"]
+    frames = [Frame(k, "x", index=i) for i, k in enumerate(kinds)]
+    assert split_parts(frames) == [[0, 1, 2, 3], [4, 5, 6, 7]]
+    assert split_parts([Frame("title", "x", index=0), Frame("content", "x", index=1)]) == []
+
+
+@requires_ffmpeg
+def test_one_video_per_part(sample_pdf, tmp_path):
+    cfg = _cfg()
+    cfg.render.per_part_videos = True
+    run_stage1(sample_pdf, tmp_path, cfg)
+    run_stage2(tmp_path, cfg)
+    meta = json.loads((tmp_path / "meta.json").read_text())
+    parts = meta["parts"]
+    assert len(parts) >= 5
+    assert all((tmp_path / "parts" / f"part_{p['part']:02d}.mp4").exists() for p in parts)
+    assert all((tmp_path / "parts" / f"part_{p['part']:02d}.srt").exists() for p in parts)
+    assert sum(p["duration_s"] for p in parts) == pytest.approx(meta["video"]["duration_s"], abs=0.1)
