@@ -121,3 +121,36 @@ def test_continue_can_be_retried_after_a_stage2_failure(sample_pdf, tmp_path):
     assert json.loads((tmp_path / "state.json").read_text())["stage"] == "approved"
     run_stage2(tmp_path, _cfg(), video=False)
     assert json.loads((tmp_path / "state.json").read_text())["stage"] == "script_done"
+
+
+@requires_ffmpeg
+def test_video_audio_and_subtitles_stay_in_sync(tmp_path):
+    import subprocess
+
+    from course2video.render.video_assembly import assemble_video
+    from course2video.tts.backends import StubTTS
+
+    folder = tmp_path / "Lecturer's course"
+    tts = StubTTS(sample_rate=22050)
+    from PIL import Image
+
+    images, audios = [], []
+    for i in range(30):
+        img = folder / f"f{i}.png"
+        folder.mkdir(exist_ok=True)
+        Image.new("RGB", (64, 36), (i * 8, 0, 0)).save(img)
+        images.append(img)
+        audios.append(tts.synthesize("word " * (3 + i % 7), folder / f"a{i}.wav"))
+    out = folder / "video.mp4"
+    durations = assemble_video(images, audios, out, pause_s=0.6, fps=5)
+
+    def probe(stream):
+        r = subprocess.run(["ffprobe", "-v", "error", "-select_streams", stream, "-show_entries",
+                            "stream=duration", "-of", "csv=p=0", str(out)],
+                           capture_output=True, text=True, check=True)
+        return float(r.stdout.split()[0])
+
+    total = sum(durations)
+    assert probe("a:0") == pytest.approx(total, abs=0.05)
+    assert probe("v:0") == pytest.approx(total, abs=0.25)
+    assert not list(folder.glob("*.frames.txt")) and not (folder / "video.wav").exists()

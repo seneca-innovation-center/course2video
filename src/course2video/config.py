@@ -55,7 +55,7 @@ class RenderConfig(BaseModel):
     width: int = 1920
     height: int = 1080
     pause_after_slide_s: float = 0.6
-    fps: int = 2
+    fps: int = 5
 
 
 class LectureConfig(BaseModel):
