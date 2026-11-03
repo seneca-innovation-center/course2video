@@ -8,7 +8,7 @@ Two sample courses are included (both CC-BY-4.0, written for this project):
 | [`probability_course/`](probability_course/) Introduction to probability | 3 pages, 5 chapters | 8, **typeset as images** |
 
 The numbers below come from real runs on 2026-10-29 (Apple Silicon laptop, no NVIDIA GPU)
-with **Docling + a hosted LLM API + Piper**. These were development runs, made before the
+with **Docling + a gpt-oss + Piper**. These were development runs, made before the
 local gpt-oss setup, on openly licensed sample material; they will be reproduced with
 gpt-oss-120b. Their output files are in each course's `output_v1/` folder (slides, script,
 alignment report, lecture plan, subtitles and sample frames; videos are not committed).
@@ -106,8 +106,8 @@ course2video render out/run1
 | | Vector spaces | Probability |
 |---|---|---|
 | Parse (Docling + formula model on **CPU**) | 402 s | 711 s |
-| Slides (LLM) | 17 s, valid on 1st attempt | 26 s, valid on 1st attempt |
-| Script (LLM) | 21 s, valid on 1st attempt | 27 s, valid on 1st attempt |
+| Slides (LLM: gpt-oss) | 17 s, valid on 1st attempt | 26 s, valid on 1st attempt |
+| Script (LLM:gpt-oss) | 21 s, valid on 1st attempt | 27 s, valid on 1st attempt |
 | Images + Piper TTS + FFmpeg | 59 s | 81 s |
 | Content slides → video frames | 9 → 19 | 12 → 21 |
 | Video length | 7 min 28 s | 10 min 40 s |
@@ -122,7 +122,7 @@ evaluation. For that, use [`../eval/rubric.md`](../eval/rubric.md).
 `examples/mit1805_bayes/`: Reading 3 (12 pages) + Problem Set 2 + its official solutions,
 from MIT OpenCourseWare (CC BY-NC-SA 4.0, downloaded by `scripts/fetch_mit1805_example.sh`,
 not committed; outputs are not committed either, since they are derivatives under the same
-licence). Development run on 2026-10-31 with Docling + a hosted LLM API + Piper, slides approved
+licence). Development run on 2026-10-31 with Docling + a gpt-oss + Piper, slides approved
 without edits:
 
 | | Result |
@@ -135,7 +135,7 @@ without edits:
 | **Length** | **target 20 min, actual 22.9 min** (+15 %; the narration averaged 140 words per slide for 125 requested) |
 | Alignment | 91.7 % overall, 3 slides flagged for a human look |
 | Parse (Docling, CPU, cached afterwards) | Reading 44 min, solutions 24 min, problem set 5 s |
-| Slides + script (LLM) | 95 s + 75 s |
+| Slides + script (LLM:gpt-oss) | 95 s + 75 s |
 | Render + TTS + video | 55 s |
 
 Spot checks against the official solution: blue taxi 1/3, trees of cards E[X] = 26/7 ≈ 3.7143,

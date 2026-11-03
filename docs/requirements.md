@@ -42,7 +42,7 @@ faster; **not measured yet**.
 ## One typical course, end to end
 
 **Measured** on the MIT 18.05 package (12-page reading + problem set + solutions, 20-minute
-target, development run with a hosted LLM API):
+target, development run with a gpt-oss):
 
 | Stage | Time |
 |---|---|
