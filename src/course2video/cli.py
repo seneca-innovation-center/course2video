@@ -86,6 +86,21 @@ def cmd_render(a) -> int:
     return 0
 
 
+def cmd_score(a) -> int:
+    from .scoring import report_markdown, score_report
+
+    sheets = {Path(x).stem: Path(x) for x in a.sheets}
+    report = score_report(sheets, Path(a.out) if a.out else None,
+                          Path(a.review_log) if a.review_log else None)
+    text = report_markdown(report)
+    if a.report:
+        Path(a.report).parent.mkdir(parents=True, exist_ok=True)
+        Path(a.report).write_text(text, encoding="utf-8")
+        Path(a.report).with_suffix(".json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    print(text)
+    return 0
+
+
 def cmd_validate(a) -> int:
     from .slides.validate import validate_deck_file
 
@@ -152,6 +167,13 @@ def main(argv: list[str] | None = None) -> int:
     rr.add_argument("out")
     _add_common(rr)
     rr.set_defaults(func=cmd_render)
+
+    sc = sub.add_parser("score", help="summarise reviewers' score sheets (eval/rubric.md)")
+    sc.add_argument("sheets", nargs="+", help="one CSV per reviewer (eval/templates/score_sheet.csv)")
+    sc.add_argument("--out", help="run folder, to compare with grounding.json / alignment.json")
+    sc.add_argument("--review-log", help="CSV with review times (eval/templates/review_log.csv)")
+    sc.add_argument("--report", help="write the report here (.md, plus .json)")
+    sc.set_defaults(func=cmd_score)
 
     v = sub.add_parser("validate", help="validate a slides.json file")
     v.add_argument("file")

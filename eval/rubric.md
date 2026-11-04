@@ -37,3 +37,22 @@ source count as *not supported*.
 | Slide | Accuracy | Completeness | Formulas | Clarity | Faithfulness | Equation reading | Comment |
 |---|---|---|---|---|---|---|---|
 | 1 | | | | | | | |
+
+## Running a scoring session
+
+1. Each reviewer copies `eval/templates/score_sheet.csv`, one row per slide of the run
+   (`slide_id` as in `slides.md`), and scores each criterion 0, 1 or 2 (empty if not
+   applicable, e.g. `formulas` on a slide without formulas).
+2. The lecturer who reviews the slides records time and corrections in a copy of
+   `eval/templates/review_log.csv`, with an estimate of the time to make the same material by
+   hand.
+3. Produce the report:
+
+```bash
+course2video score anna.csv mohamed.csv --out out/run1 --review-log review_log.csv \
+    --report eval/results/run1.md
+```
+
+The report gives the mean per criterion and per reviewer, agreement and Cohen's kappa, the
+slides where reviewers disagree, whether the slides flagged by `grounding.json` /
+`alignment.json` scored lower than the others, and the review time.
