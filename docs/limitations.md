@@ -9,7 +9,8 @@ the pipeline currently detects it, if at all.
 |---|---|---|
 | **Scanned PDFs / handwriting** | pypdf finds no text; Docling output is empty or poor | `parser_warnings` in `meta.json` when pages have no text layer. OCR (OCRmyPDF) is a roadmap item |
 | **Equations depend on the parser** | Without formula enrichment, Docling writes `<!-- formula-not-decoded -->`. With it, LaTeX can still be wrong (see below) | Undecoded formulas are counted in `parser_warnings`. Wrong-but-valid LaTeX is **not** detected automatically: lecturer review is required |
-| **Figures and diagrams are dropped** | Slides contain text and equations only | No |
+| **Figures depend on the parser** | Docling extracts pictures with their page; many PDFs have no machine-readable captions, so the LLM sees "[Figure F3: no caption]" and chooses from the surrounding text. Markdown sources use `![caption](file)` | Every figure is listed in `figures/figures.json`; the lecturer approves each `Figure:` line |
+| **Rights to reuse source figures** | A figure from a third-party document is shown on the slide as it is | No: the lecturer must check that the figure may be reused, and remove the `Figure:` line otherwise |
 | **Tables** | Docling extracts them as Markdown; the slide schema has no table type, so the LLM summarises them as bullets | No |
 | **Exercise ↔ solution links by number only** | "Problem 2" in the sheet is linked to "Problem 2" in the solutions. Different numbering, or solutions in a format without "Problem/Exercise N" headings, are not linked | Yes: unmatched problems and solutions are listed in `course_index.json` warnings |
 | **Roles from file names** without `course.yaml` | A file named e.g. `week3.pdf` cannot be typed and is skipped | Yes: every guess and every skipped file is a warning; use `course.yaml` |

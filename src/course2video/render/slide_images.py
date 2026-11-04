@@ -119,7 +119,21 @@ def _header(c: _Canvas, title: str, label: str, band=BAND) -> int:
     return band_h + c.px(6)
 
 
-def _content(c: _Canvas, frame: Frame, label: str, eq_dir: Path, visible: int | None = None) -> None:
+def _figure_image(figures_dir: Path | None, fid: str) -> Image.Image | None:
+    if not fid or figures_dir is None:
+        return None
+    found = sorted(figures_dir.glob(f"{fid}.*"))
+    found = [f for f in found if f.suffix.lower() in (".png", ".jpg", ".jpeg")]
+    if not found:
+        return None
+    img = Image.open(found[0]).convert("RGBA")
+    flat = Image.new("RGB", img.size, BG)
+    flat.paste(img, (0, 0), img)
+    return flat
+
+
+def _content(c: _Canvas, frame: Frame, label: str, eq_dir: Path, visible: int | None = None,
+             figures_dir: Path | None = None) -> None:
     s = frame.slide
     top = _header(c, s.title, label, KIND_BAND.get(s.kind, BAND))
     W, H, sx, margin = c.W, c.H, c.s, c.margin
@@ -132,10 +146,19 @@ def _content(c: _Canvas, frame: Frame, label: str, eq_dir: Path, visible: int | 
     footer_h = c.px(90)
     avail = H - top - c.px(50) - eq_h - footer_h
 
+    fig = _figure_image(figures_dir, s.figure)
+    text_right = int(W * 0.55) if fig else W - margin
+    if fig:
+        x0, y0 = text_right + c.px(30), top + c.px(40)
+        box_w, box_h = W - margin - x0, H - footer_h - eq_h - c.px(20) - y0
+        if box_w > 0 and box_h > 0:
+            r = min(box_w / fig.width, box_h / fig.height)
+            fig = fig.resize((max(1, int(fig.width * r)), max(1, int(fig.height * r))))
+            c.img.paste(fig, (x0 + (box_w - fig.width) // 2, y0 + (box_h - fig.height) // 2))
     for size in (44, 40, 36, 33, 30, 27, 24):
         bfont = _font(int(size * sx))
         line_h = int(size * 1.35 * sx)
-        wrapped = [_wrap(c.d, b, bfont, W - 2 * margin - c.px(50)) for b in s.bullets]
+        wrapped = [_wrap(c.d, b, bfont, text_right - margin - c.px(50)) for b in s.bullets]
         need = sum(len(w) * line_h + int(size * 0.6 * sx) for w in wrapped)
         if need <= avail:
             break
@@ -239,6 +262,7 @@ class _Context:
         self.frames, self.deck_title, self.language = frames, deck_title, language
         self.cfg, self.progress_bar = cfg, progress_bar
         self.eq_dir = out_dir.parent / "equations"
+        self.figures_dir = out_dir.parent / "figures"
         self.t = templates(language)
         self.n_sections = len({f.section_index for f in frames if f.section_index is not None})
         self.starts = []
@@ -255,14 +279,14 @@ def _draw(f: Frame, x: _Context, visible: int | None = None) -> Image.Image:
     if f.kind == "content" and f.slide.kind != "theory":
         word = t["exercise"] if f.slide.kind == "exercise" else t["solution"]
         label = f"{word}  \u00b7  {f.slide.source_doc}" if f.slide.source_doc else word
-        _content(c, f, label, x.eq_dir, visible)
+        _content(c, f, label, x.eq_dir, visible, x.figures_dir)
     elif f.kind == "content":
         label = section_label(f, x.n_sections, x.language)
         if label:
             sec = next((y.heading for y in x.frames
                         if y.kind == "section" and y.section_index == f.section_index), "")
             label = f"{label}  \u00b7  {sec}" if sec else label
-        _content(c, f, label, x.eq_dir, visible)
+        _content(c, f, label, x.eq_dir, visible, x.figures_dir)
     elif f.kind == "title":
         _title(c, f)
     elif f.kind == "agenda":

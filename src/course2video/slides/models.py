@@ -38,6 +38,11 @@ class Slide(BaseModel):
         description="theory: from lecture notes; exercise: a problem statement; "
                     "solution: steps of the official solution.",
     )
+    figure: str = Field(
+        default="",
+        description="Id of a source figure shown on this slide, e.g. F3. Only ids that appear as "
+                    "[Figure Fn: ...] in the source; empty if none.",
+    )
     source_doc: str = Field(
         default="", description="Source document (and problem), e.g. 'Problem Set 2, Problem 2'. "
                                 "Set by the pipeline from the course index, not by the LLM.",

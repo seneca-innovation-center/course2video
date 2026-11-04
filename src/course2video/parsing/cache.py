@@ -3,9 +3,12 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import shutil
 from pathlib import Path
 
-from .base import ParsedDocument
+from .base import FigureRef, ParsedDocument
+
+CACHE_FORMAT = 2
 
 
 def default_cache_dir() -> Path:
@@ -14,7 +17,7 @@ def default_cache_dir() -> Path:
 
 def cache_key(path: Path, parser: str, docling_formulas: bool) -> str:
     h = hashlib.sha256(path.read_bytes()).hexdigest()
-    return f"{h[:24]}-{parser}-{'f' if docling_formulas else 'nf'}"
+    return f"{h[:24]}-{parser}-{'f' if docling_formulas else 'nf'}-v{CACHE_FORMAT}"
 
 
 def parse_cached(path: Path, parser: str, *, docling_formulas: bool = True,
@@ -26,11 +29,20 @@ def parse_cached(path: Path, parser: str, *, docling_formulas: bool = True,
     md_file, meta_file = cache_dir / f"{key}.md", cache_dir / f"{key}.json"
     if md_file.exists() and meta_file.exists():
         meta = json.loads(meta_file.read_text(encoding="utf-8"))
+        figures = [FigureRef(path=cache_dir / f["file"], caption=f["caption"], page=f["page"])
+                   for f in meta.get("figures", [])]
         return ParsedDocument(source=path, markdown=md_file.read_text(encoding="utf-8"),
-                              parser=meta["parser"], warnings=meta["warnings"] + ["(from cache)"])
+                              parser=meta["parser"], warnings=meta["warnings"] + ["(from cache)"],
+                              figures=figures)
     doc = get_parser(parser, path, docling_formulas=docling_formulas).parse(path)
     cache_dir.mkdir(parents=True, exist_ok=True)
+    stored = []
+    for k, fig in enumerate(doc.figures):
+        name = f"{key}-fig{k}{fig.path.suffix or '.png'}"
+        shutil.copyfile(fig.path, cache_dir / name)
+        stored.append({"file": name, "caption": fig.caption, "page": fig.page})
+        fig.path = cache_dir / name
     md_file.write_text(doc.markdown, encoding="utf-8")
     meta_file.write_text(json.dumps({"parser": doc.parser, "warnings": doc.warnings,
-                                     "source": str(path)}), encoding="utf-8")
+                                     "source": str(path), "figures": stored}), encoding="utf-8")
     return doc

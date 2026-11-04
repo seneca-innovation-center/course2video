@@ -5,7 +5,13 @@ import re
 from ..config import SlidesConfig
 from ..llm.base import LLMBackend
 from .models import Deck, SlideBatch
-from .validate import Attempt, check_latex, check_lecture_style, generate_validated
+from .validate import (
+    Attempt,
+    check_figures,
+    check_latex,
+    check_lecture_style,
+    generate_validated,
+)
 
 SYSTEM = """You prepare a university lecture from course material: the slides a professor
 shows AND the talking points the professor explains while each slide is on screen.
@@ -30,6 +36,9 @@ Rules:
   knowledge, examples or numbers of your own.
 - Follow the document's order. Sub-sections may share a slide with their chapter.
 - Keep notation exactly as in the source.
+- The source marks figures as [Figure F3: caption]. If one of them is what a slide is about
+  (a diagram, a tree, a plot), set `figure` to its id and explain the figure in the talking
+  points; otherwise leave `figure` empty. Never use an id that is not in the source.
 - `source_section` is the exact heading text of the section the slide comes from.
 - Answer with a single JSON object and nothing else."""
 
@@ -116,7 +125,9 @@ def generate_deck(
             model_cls=SlideBatch,
             task="slides",
             max_retries=cfg.max_retries,
-            extra_checks=lambda b: check_latex(b) + check_lecture_style(b, cfg.max_bullet_words),
+            extra_checks=lambda b, chunk=chunk: (check_latex(b)
+                                                 + check_lecture_style(b, cfg.max_bullet_words)
+                                                 + check_figures(b, chunk)),
         )
         attempt_log.append(attempts)
         for sl in batch.slides:

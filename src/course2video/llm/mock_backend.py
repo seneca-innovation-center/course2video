@@ -55,8 +55,9 @@ class MockBackend(LLMBackend):
                     equations.append(
                         {"latex": latex, "explanation": f"This equation states that {latex}."}
                     )
-                else:
+                elif "[Figure " not in line:
                     text_lines.append(line)
+            fig = re.search(r"\[Figure (F\d+):", body)
             sentences = _sentences(" ".join(text_lines))
             bullets = [" ".join(s.split()[:10]) for s in sentences[:3]] or [title]
             talking = sentences[:5] or [title, title]
@@ -66,6 +67,7 @@ class MockBackend(LLMBackend):
                     "title": title[:120],
                     "bullets": bullets,
                     "equations": equations,
+                    "figure": fig.group(1) if fig else "",
                     "talking_points": talking if len(talking) >= 2 else talking * 2,
                     "notes": "",
                     "source_section": title,

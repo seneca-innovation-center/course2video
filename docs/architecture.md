@@ -79,6 +79,16 @@ Spanish (picked from the deck's `language`). Each element can be switched off in
 `lecture:` block of the config. The script prompt is told that the video already has its
 own welcome and closing, so the narration links slides instead of greeting.
 
+## Figures
+
+Docling's pictures (and `![caption](file)` in Markdown sources) are numbered across the whole
+course as F1, F2, … and saved in `figures/` with `figures.json` (caption, page, source). In the
+text sent to the LLM each one appears where it sits in the document, as `[Figure F3: caption]`.
+A slide may show one figure (`figure: "F3"`); ids not present in the slide's source are
+rejected and retried. In `slides.md` the lecturer sees a `Figure: F3` line, can change or delete
+it, and unknown ids are rejected. The figure is drawn in a right-hand column of the slide image
+and the PPTX, and the narration is told what is on screen.
+
 ## Shorter videos: one per part
 
 With `render: {per_part_videos: true}` the pipeline also writes `parts/part_01.mp4`,

@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from .base import ParsedDocument, Parser
+from .base import FIGURE_TOKEN, FigureRef, ParsedDocument, Parser
 
 _NUMBERED_HEADING = re.compile(r"^(\d+(\.\d+)*)\.?\s+[A-Z].{2,80}$")
 
@@ -44,4 +44,17 @@ class MarkdownParser(Parser):
     name = "markdown"
 
     def parse(self, path: Path) -> ParsedDocument:
-        return ParsedDocument(source=path, markdown=path.read_text(encoding="utf-8"), parser=self.name)
+        figures: list[FigureRef] = []
+        warnings: list[str] = []
+
+        def figure(m: re.Match) -> str:
+            img = (path.parent / m.group(2)).resolve()
+            if not img.exists():
+                warnings.append(f"figure not found: {m.group(2)}")
+                return m.group(0)
+            figures.append(FigureRef(path=img, caption=m.group(1).strip()))
+            return FIGURE_TOKEN.format(len(figures) - 1)
+
+        md = re.sub(r"!\[([^\]]*)\]\(([^)\s]+)\)", figure, path.read_text(encoding="utf-8"))
+        return ParsedDocument(source=path, markdown=md, parser=self.name, warnings=warnings,
+                              figures=figures)

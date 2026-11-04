@@ -38,6 +38,31 @@ def _set_state(out: Path, **kw) -> dict:
     return st
 
 
+def number_figures(course, parsed: dict, figures_dir: Path) -> dict[str, dict]:
+    import re
+    import shutil
+
+    from .parsing.base import FIGURE_TOKEN
+
+    shutil.rmtree(figures_dir, ignore_errors=True)
+    index: dict[str, dict] = {}
+    for doc in course.documents:
+        pd = parsed[doc.path]
+        for k, fig in enumerate(pd.figures):
+            gid = f"F{len(index) + 1}"
+            figures_dir.mkdir(parents=True, exist_ok=True)
+            dest = figures_dir / f"{gid}{fig.path.suffix or '.png'}"
+            shutil.copyfile(fig.path, dest)
+            caption = " ".join(fig.caption.split()) or "no caption"
+            index[gid] = {"file": dest.name, "caption": caption, "page": fig.page,
+                          "source": doc.label}
+            pd.markdown = pd.markdown.replace(FIGURE_TOKEN.format(k), f"[Figure {gid}: {caption}]")
+        pd.markdown = re.sub(r"\[\[FIG:\d+\]\]", "", pd.markdown)
+    if index:
+        _write_json(figures_dir / "figures.json", index)
+    return index
+
+
 def _fit_context(llm: LLMBackend, cfg: Config) -> dict | None:
     from .config import fit_to_context
 
@@ -86,6 +111,8 @@ def run_stage1(
     parsed = {}
     for doc in course.documents:
         parsed[doc.path] = _parse(doc.path, cfg)
+    figures = number_figures(course, parsed, out / "figures")
+    for doc in course.documents:
         (parsed_dir / f"{doc.path.stem}.md").write_text(parsed[doc.path].markdown, encoding="utf-8")
     lecture_md = "\n\n".join(parsed[d.path].markdown for d in course.of_type("lecture"))
     (out / "parsed.md").write_text(lecture_md, encoding="utf-8")
@@ -161,6 +188,7 @@ def run_stage1(
                                 if w != "(from cache)"],
             "llm": llm.describe(),
             "context": context,
+            "figures": len(figures),
             "budget": budget.as_dict() if budget else None,
             "slides": {"count": len(deck.slides),
                        "by_kind": {k: sum(s.kind == k for s in deck.slides)
@@ -214,8 +242,12 @@ def run_stage2(
         meta["context"] = stage2_context
     t0 = time.time()
     budget = meta.get("budget")
+    figures_file = out / "figures" / "figures.json"
+    captions = ({k: v["caption"] for k, v in json.loads(figures_file.read_text()).items()}
+                if figures_file.exists() else {})
     script, attempts = generate_script(llm, deck, cfg.script,
-                                       words_per_slide=budget["words_per_slide"] if budget else None)
+                                       words_per_slide=budget["words_per_slide"] if budget else None,
+                                       figures=captions)
     meta.setdefault("timings_s", {})["script"] = round(time.time() - t0, 2)
     meta["script"] = {"llm": llm.describe(), "attempts_per_batch": _attempts(attempts)}
     (out / "script.json").write_text(script.model_dump_json(indent=2), encoding="utf-8")
@@ -248,7 +280,8 @@ def render_outputs(
     write_plan(frames, out / "lecture_plan.json")
     meta["lecture"] = {"frames": len(frames),
                        "kinds": [f.kind for f in frames]}
-    pptx = build_pptx(frames, out / "deck.pptx", templates(deck.language)["part"])
+    pptx = build_pptx(frames, out / "deck.pptx", templates(deck.language)["part"],
+                      figures_dir=out / "figures")
     summary: dict[str, Any] = {"pptx": str(pptx), "frames": len(frames),
                                "alignment": meta.get("alignment")}
 

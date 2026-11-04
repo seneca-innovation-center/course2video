@@ -4,6 +4,15 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from pathlib import Path
 
+FIGURE_TOKEN = "[[FIG:{}]]"
+
+
+@dataclass
+class FigureRef:
+    path: Path
+    caption: str = ""
+    page: int | None = None
+
 
 @dataclass
 class ParsedDocument:
@@ -11,6 +20,7 @@ class ParsedDocument:
     markdown: str
     parser: str
     warnings: list[str] = field(default_factory=list)
+    figures: list[FigureRef] = field(default_factory=list)
 
 
 class Parser(ABC):

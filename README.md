@@ -127,7 +127,7 @@ Details, measured times and disk space: [`docs/requirements.md`](docs/requiremen
 
 Short version: born-digital PDFs only (no OCR), exercises linked by number only (no
 cross-course retrieval yet), equations decoded by
-Docling can be wrong, figures are dropped, and the coverage metric is lexical. Full list
+Docling can be wrong, figure captions are often missing, and the coverage metric is lexical. Full list
 with examples: [`docs/limitations.md`](docs/limitations.md).
 
 ## Roadmap
