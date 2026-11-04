@@ -58,6 +58,7 @@ class RenderConfig(BaseModel):
     pause_after_slide_s: float = 0.6
     fps: int = 5
     per_part_videos: bool = False
+    reveal_bullets: bool = False
 
 
 class LectureConfig(BaseModel):

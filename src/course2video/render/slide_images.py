@@ -119,7 +119,7 @@ def _header(c: _Canvas, title: str, label: str, band=BAND) -> int:
     return band_h + c.px(6)
 
 
-def _content(c: _Canvas, frame: Frame, label: str, eq_dir: Path) -> None:
+def _content(c: _Canvas, frame: Frame, label: str, eq_dir: Path, visible: int | None = None) -> None:
     s = frame.slide
     top = _header(c, s.title, label, KIND_BAND.get(s.kind, BAND))
     W, H, sx, margin = c.W, c.H, c.s, c.margin
@@ -140,11 +140,15 @@ def _content(c: _Canvas, frame: Frame, label: str, eq_dir: Path) -> None:
         if need <= avail:
             break
     y = top + c.px(50)
-    for lines in wrapped:
+    for i, lines in enumerate(wrapped):
+        shown = visible is None or i < visible
         r = c.px(7)
-        c.d.ellipse([margin, y + line_h // 2 - r, margin + 2 * r, y + line_h // 2 + r], fill=BAND)
+        if shown:
+            c.d.ellipse([margin, y + line_h // 2 - r, margin + 2 * r, y + line_h // 2 + r],
+                        fill=BAND)
         for line in lines:
-            c.d.text((margin + c.px(50), y), line, font=bfont, fill=TEXT)
+            if shown:
+                c.d.text((margin + c.px(50), y), line, font=bfont, fill=TEXT)
             y += line_h
         y += int(size * 0.6 * sx)
 
@@ -227,52 +231,82 @@ def _section(c: _Canvas, frame: Frame, part_word: str) -> None:
         y += step
 
 
+class _Context:
+    def __init__(self, frames: list[Frame], deck_title: str, language: str, out_dir: Path,
+                 cfg: RenderConfig, progress_bar: bool):
+        from .lecture import templates
+
+        self.frames, self.deck_title, self.language = frames, deck_title, language
+        self.cfg, self.progress_bar = cfg, progress_bar
+        self.eq_dir = out_dir.parent / "equations"
+        self.t = templates(language)
+        self.n_sections = len({f.section_index for f in frames if f.section_index is not None})
+        self.starts = []
+        seen = set()
+        for f in frames:
+            if f.section_index is not None and f.section_index not in seen:
+                seen.add(f.section_index)
+                self.starts.append(f.index)
+
+
+def _draw(f: Frame, x: _Context, visible: int | None = None) -> Image.Image:
+    c = _Canvas(x.cfg)
+    t = x.t
+    if f.kind == "content" and f.slide.kind != "theory":
+        word = t["exercise"] if f.slide.kind == "exercise" else t["solution"]
+        label = f"{word}  \u00b7  {f.slide.source_doc}" if f.slide.source_doc else word
+        _content(c, f, label, x.eq_dir, visible)
+    elif f.kind == "content":
+        label = section_label(f, x.n_sections, x.language)
+        if label:
+            sec = next((y.heading for y in x.frames
+                        if y.kind == "section" and y.section_index == f.section_index), "")
+            label = f"{label}  \u00b7  {sec}" if sec else label
+        _content(c, f, label, x.eq_dir, visible)
+    elif f.kind == "title":
+        _title(c, f)
+    elif f.kind == "agenda":
+        _outline(c, f, f.heading, current=None, done_upto=0)
+    elif f.kind == "section":
+        _section(c, f, t["part"])
+    elif f.kind == "closing":
+        _outline(c, f, f.heading, current=None, done_upto=0, check=True)
+        c.centered(c.H - c.px(190), t["thanks"], _font(c.px(44), bold=True), BAND)
+    if f.kind != "title":
+        _footer(c, f, x.deck_title)
+    _progress(c, f, x.starts, x.progress_bar)
+    return c.img
+
+
 def render_frames(frames: list[Frame], deck_title: str, language: str, out_dir: Path,
                   cfg: RenderConfig, progress_bar: bool = True) -> list[Path]:
-    from .lecture import templates
-
     out_dir.mkdir(parents=True, exist_ok=True)
     for old in out_dir.glob("*.png"):
         old.unlink()
-    eq_dir = out_dir.parent / "equations"
-    t = templates(language)
-    n_sections = len({f.section_index for f in frames if f.section_index is not None})
-    starts = []
-    seen = set()
-    for f in frames:
-        if f.section_index is not None and f.section_index not in seen:
-            seen.add(f.section_index)
-            starts.append(f.index)
+    x = _Context(frames, deck_title, language, out_dir, cfg, progress_bar)
     paths = []
     for f in frames:
-        c = _Canvas(cfg)
-        if f.kind == "content" and f.slide.kind != "theory":
-            word = t["exercise"] if f.slide.kind == "exercise" else t["solution"]
-            label = f"{word}  \u00b7  {f.slide.source_doc}" if f.slide.source_doc else word
-            _content(c, f, label, eq_dir)
-        elif f.kind == "content":
-            label = section_label(f, n_sections, language)
-            if label:
-                sec = next((x.heading for x in frames
-                            if x.kind == "section" and x.section_index == f.section_index), "")
-                label = f"{label}  ·  {sec}" if sec else label
-            _content(c, f, label, eq_dir)
-        elif f.kind == "title":
-            _title(c, f)
-        elif f.kind == "agenda":
-            _outline(c, f, f.heading, current=None, done_upto=0)
-        elif f.kind == "section":
-            _section(c, f, t["part"])
-        elif f.kind == "closing":
-            _outline(c, f, f.heading, current=None, done_upto=0, check=True)
-            c.centered(c.H - c.px(190), t["thanks"], _font(c.px(44), bold=True), BAND)
-        if f.kind != "title":
-            _footer(c, f, deck_title)
-        _progress(c, f, starts, progress_bar)
         p = out_dir / f"frame_{f.index + 1:03d}.png"
-        c.img.save(p)
+        _draw(f, x).save(p)
         paths.append(p)
     return paths
+
+
+def render_reveal_states(frames: list[Frame], deck_title: str, language: str, out_dir: Path,
+                         cfg: RenderConfig, progress_bar: bool = True) -> dict[int, list[Path]]:
+    x = _Context(frames, deck_title, language, out_dir, cfg, progress_bar)
+    states: dict[int, list[Path]] = {}
+    for f in frames:
+        if f.kind != "content" or len(f.slide.bullets) < 2:
+            continue
+        paths = []
+        for k in range(1, len(f.slide.bullets)):
+            p = out_dir / f"frame_{f.index + 1:03d}_b{k}.png"
+            _draw(f, x, visible=k).save(p)
+            paths.append(p)
+        paths.append(out_dir / f"frame_{f.index + 1:03d}.png")
+        states[f.index] = paths
+    return states
 
 
 def render_libreoffice(pptx: Path, out_dir: Path, cfg: RenderConfig) -> list[Path]:

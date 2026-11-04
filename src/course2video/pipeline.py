@@ -270,9 +270,22 @@ def render_outputs(
         audios = [tts.synthesize(f.narration, audio_dir / f"frame_{f.index + 1:03d}.wav")
                   for f in frames]
         speech = [wav_duration(a) for a in audios]
+        states = {}
+        if cfg.render.reveal_bullets and cfg.render.renderer == "pillow":
+            from .render.reveal import reveal_times
+            from .render.slide_images import render_reveal_states
+
+            state_images = render_reveal_states(frames, deck.title, deck.language, out / "images",
+                                                cfg.render, progress_bar=cfg.lecture.progress_bar)
+            for i, paths in state_images.items():
+                times = reveal_times(frames[i].narration, frames[i].slide.bullets, speech[i])
+                states[i] = list(zip(paths, times, strict=True))
+            meta["reveal"] = {str(i + 1): [t for _, t in v] for i, v in states.items()}
+        elif cfg.render.reveal_bullets:
+            log.warning("reveal_bullets needs render.renderer: pillow; showing full slides")
         durations = assemble_video(
             images, audios, out / "video.mp4",
-            pause_s=cfg.render.pause_after_slide_s, fps=cfg.render.fps,
+            pause_s=cfg.render.pause_after_slide_s, fps=cfg.render.fps, states=states,
         )
         write_srt([f.narration for f in frames], durations, speech, out / "subtitles.srt")
         import shutil
@@ -282,7 +295,8 @@ def render_outputs(
             from .render.parts import write_part_videos
 
             parts = write_part_videos(frames, images, audios, out / "parts",
-                                      pause_s=cfg.render.pause_after_slide_s, fps=cfg.render.fps)
+                                      pause_s=cfg.render.pause_after_slide_s, fps=cfg.render.fps,
+                                      states=states)
             meta["parts"] = parts
             if not parts:
                 meta["parts_note"] = "fewer than 2 parts: only the full video was written"
