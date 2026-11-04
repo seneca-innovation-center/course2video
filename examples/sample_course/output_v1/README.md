@@ -1,6 +1,6 @@
 # v1 output (before the teaching-style change)
 
-These files come from a **development run with a gpt-oss model**, made before the local
+These files come from a **development run with a hosted LLM API**, made before the local
 gpt-oss setup and before the change described in [`docs/teaching_style.md`](../../../docs/teaching_style.md).
 They show the earlier "slide dump" style: sentence-length bullets, no `Say:` talking points,
 narration that mostly rephrases the slide.

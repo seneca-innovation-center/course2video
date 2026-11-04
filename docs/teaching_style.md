@@ -67,7 +67,7 @@ points are approved with the slides, and the script step sees nothing else.
 
 ## Initial result on the MIT 18.05 course (20-minute target)
 
-Development runs with a gpt-oss, made before the local gpt-oss setup and only on openly
+Development runs with a hosted LLM API, made before the local gpt-oss setup and only on openly
 licensed course material; to be reproduced with gpt-oss-120b.
 
 Same three documents, same LLM, before and after this change:
