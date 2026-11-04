@@ -32,7 +32,7 @@ class CourseDocument:
 class Course:
     root: Path
     title: str
-    language: str = "en"
+    language: str | None = None
     target_minutes: float | None = None
     documents: list[CourseDocument] = field(default_factory=list)
     source: dict = field(default_factory=dict)
@@ -64,7 +64,7 @@ def _from_manifest(root: Path, data: dict) -> Course:
     course = Course(
         root=root,
         title=data.get("title") or root.name.replace("_", " "),
-        language=data.get("language", "en"),
+        language=data.get("language"),
         target_minutes=data.get("target_minutes"),
         source=data.get("source", {}),
     )

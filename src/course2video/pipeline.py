@@ -60,7 +60,7 @@ def run_stage1(
 
     out.mkdir(parents=True, exist_ok=True)
     course = load_course(input_path)
-    language = course.language if input_path.is_dir() else language
+    language = course.language or language
     target = cfg.lecture.target_minutes or course.target_minutes
     if target:
         cfg.lecture.target_minutes = target
@@ -174,7 +174,7 @@ def run_stage2(
     video: bool = True,
 ) -> dict:
     st = _state(out)
-    if st.get("stage") not in {"awaiting_review", "done", "script_done"}:
+    if st.get("stage") not in {"awaiting_review", "approved", "done", "script_done"}:
         raise RuntimeError(f"{out} has no slides awaiting review; run `course2video run` first")
     deck = import_reviewed(out, source)
     _set_state(out, stage="approved")
@@ -258,6 +258,21 @@ def render_outputs(
             pause_s=cfg.render.pause_after_slide_s, fps=cfg.render.fps,
         )
         write_srt([f.narration for f in frames], durations, speech, out / "subtitles.srt")
+        import shutil
+
+        shutil.rmtree(out / "segments", ignore_errors=True)
+        if cfg.render.per_part_videos:
+            from .render.parts import write_part_videos
+
+            parts = write_part_videos(frames, images, audios, out / "parts",
+                                      pause_s=cfg.render.pause_after_slide_s, fps=cfg.render.fps)
+            meta["parts"] = parts
+            if not parts:
+                meta["parts_note"] = "fewer than 2 parts: only the full video was written"
+            summary["parts"] = len(parts)
+        else:
+            shutil.rmtree(out / "parts", ignore_errors=True)
+            meta.pop("parts", None)
         meta.setdefault("timings_s", {})["render_tts_video"] = round(time.time() - t0, 2)
         meta["video"] = {"tts": tts.name, "renderer": cfg.render.renderer,
                          "duration_s": round(sum(durations), 2)}

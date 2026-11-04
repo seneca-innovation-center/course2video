@@ -8,9 +8,11 @@
 slides and narrated videos, without sending course material to a cloud service.**
 
 > **Status: early development.** Pipeline v0 runs end to end on the sample courses and on a
-> real 3-document course. The results in [`examples/demo.md`](examples/demo.md) are initial
-> development runs; reproducing them with gpt-oss-120b is the next step. Output quality has
-> **not** been formally evaluated yet (see [`eval/rubric.md`](eval/rubric.md)).
+> real 3-document course. The results in [`examples/demo.md`](examples/demo.md) are development runs made
+> with a hosted LLM API on openly licensed sample material. The pipeline is built to run on
+> premises: the deployment target is gpt-oss-120b served on our internal server through an
+> OpenAI-compatible API; recording the same runs there is the next step (#9).
+> Output quality has **not** been formally evaluated yet (see [`eval/rubric.md`](eval/rubric.md)).
 
 ## The problem
 
@@ -95,6 +97,16 @@ CC BY-NC-SA, downloaded rather than committed): [`examples/mit1805_bayes/`](exam
 ```bash
 make run-mit       # fetch the 3 PDFs, then slides for a 20-minute lecture; review; make continue OUT=out/mit_bayes
 ```
+
+## What you need to run it
+
+| Step | Laptop | GPU server |
+|---|---|---|
+| Parsing (Docling with formula decoding) | slow: about 4 min per formula-heavy page on CPU | recommended |
+| LLM | gpt-oss-20b with 16 GB+ memory | gpt-oss-120b on one 80 GB GPU |
+| Review, slide images, TTS, video | yes, about a minute per course | yes |
+
+Details, measured times and disk space: [`docs/requirements.md`](docs/requirements.md).
 
 ## Repository layout
 

@@ -41,41 +41,95 @@ def deck_to_markdown(deck: Deck) -> str:
 
 
 def markdown_to_deck(md: str) -> Deck:
-    md = re.sub(r"<!--(?!\s*language:).*?-->", "", md, flags=re.S)
+    md = re.sub(r"<!--(?!\s*language:).*?-->", lambda m: "\n" * m.group(0).count("\n"), md,
+                flags=re.S)
     title_m = re.search(r"(?m)^#\s+(.+)$", md)
     lang_m = re.search(r"<!--\s*language:\s*(\S+)\s*-->", md)
     slides: list[dict] = []
-    pending_eq: dict | None = None
-    for raw in md.splitlines():
+    errors: list[str] = []
+    last: tuple | None = None
+    eq_lines: list[str] | None = None
+    eq_start = 0
+
+    def add_equation(cur: dict, latex: str) -> tuple:
+        eq = {"latex": latex.strip(), "explanation": ""}
+        cur["equations"].append(eq)
+        return ("explanation", eq)
+
+    for n, raw in enumerate(md.splitlines(), start=1):
         line = raw.strip()
+        if eq_lines is not None:
+            if line.endswith("$$"):
+                eq_lines.append(line[:-2])
+                last = add_equation(slides[-1], " ".join(x for x in eq_lines if x.strip()))
+                eq_lines = None
+            else:
+                eq_lines.append(line)
+            continue
         h = re.match(r"^##\s+Slide\s+\d+\s*:\s*(.+)$", line)
         if h:
             slides.append({"title": h.group(1).strip(), "bullets": [], "equations": [],
                            "notes": "", "source_section": "", "kind": "theory", "source_doc": "",
                            "talking_points": []})
-            pending_eq = None
+            last = None
             continue
-        if not slides or not line:
+        if not line:
+            last = None
+            continue
+        if not slides and (line.startswith("# ") or line.startswith("<!--")):
+            continue
+        if not slides:
+            errors.append(f"line {n}: text before the first '## Slide' heading: {line[:60]!r}")
             continue
         cur = slides[-1]
-        eq = re.match(r"^\$\$\s*(.+?)\s*\$\$$", line)
-        if eq:
-            pending_eq = {"latex": eq.group(1), "explanation": ""}
-            cur["equations"].append(pending_eq)
-        elif line.startswith(">") and pending_eq is not None:
-            pending_eq["explanation"] = (pending_eq["explanation"] + " " + line[1:].strip()).strip()
-        elif line.startswith("- ") or line.startswith("* "):
-            cur["bullets"].append(line[2:].strip())
-        elif line.startswith("Notes:"):
-            cur["notes"] = line[6:].strip()
-        elif line.startswith("Source:"):
-            cur["source_section"] = line[7:].strip()
+        if line.startswith("#"):
+            errors.append(f"line {n}: headings are not allowed inside a slide: {line[:60]!r}")
+            last = None
+            continue
+        bullet = re.match(r"^(?:[-*]|\d+[.)])\s+(.*)$", line)
+        if line.startswith("$$") and line.endswith("$$") and len(line) > 4:
+            last = add_equation(cur, line[2:-2])
+        elif line.startswith("$$"):
+            eq_lines, eq_start = [line[2:]], n
+        elif line.startswith(">"):
+            if last and last[0] == "explanation":
+                eq = last[1]
+                eq["explanation"] = (eq["explanation"] + " " + line[1:].strip()).strip()
+            else:
+                errors.append(f"line {n}: '>' explanation without an equation above it")
+        elif bullet:
+            cur["bullets"].append(bullet.group(1).strip())
+            last = ("bullets", len(cur["bullets"]) - 1)
         elif line.startswith("Say:"):
             cur["talking_points"].append(line[4:].strip())
+            last = ("talking_points", len(cur["talking_points"]) - 1)
+        elif line.startswith("Notes:"):
+            cur["notes"] = line[6:].strip()
+            last = ("notes",)
+        elif line.startswith("Source:"):
+            cur["source_section"] = line[7:].strip()
+            last = None
         elif line.startswith("Kind:"):
             cur["kind"] = line[5:].strip().lower()
+            last = None
         elif line.startswith("From:"):
             cur["source_doc"] = line[5:].strip()
+            last = None
+        elif last and last[0] in ("bullets", "talking_points"):
+            items = cur[last[0]]
+            items[last[1]] = f"{items[last[1]]} {line}"
+        elif last and last[0] == "notes":
+            cur["notes"] = f"{cur['notes']} {line}".strip()
+        elif last and last[0] == "explanation":
+            last[1]["explanation"] = f"{last[1]['explanation']} {line}".strip()
+        else:
+            errors.append(f"line {n}: not understood (start it with '- ', 'Say:', 'Notes:', "
+                          f"'$$' or '>'): {line[:60]!r}")
+    if eq_lines is not None:
+        errors.append(f"line {eq_start}: equation opened with '$$' is never closed")
+    if errors:
+        raise ReviewError("these lines would be lost, so nothing was changed:\n" + "\n".join(errors))
+
     deck_slides = []
     for i, s in enumerate(slides, start=1):
         deck_slides.append(

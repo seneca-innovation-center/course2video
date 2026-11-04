@@ -40,7 +40,7 @@ were decoded much better, but one came back with **invented text appended**:
 P ( A \, | \, B ) = \frac { P ( A \cap B ) } { P ( B ) } \\ \intertext { a g i v e , t h e m u l i n i o t i o n ...
 ```
 
-In the initial run the LLM dropped the garbage when it made the slide, and the renderer now strips
+In the development run the LLM dropped the garbage when it made the slide, and the renderer now strips
 `\intertext` and fixes Docling's spacing (`\sum _ { i = 1 }`), which matplotlib otherwise
 draws wrongly. Nothing flags such noise automatically yet.
 
@@ -73,7 +73,7 @@ Lexical content-word overlap. Paraphrases with different words count as **misses
 mentioning the right words in a wrong statement counts as a **hit**. It is a cheap
 smoke detector, not a correctness measure. Embedding similarity is on the roadmap.
 
-Observed false negative (initial run on the sample, slide 3): the bullet
+Observed false negative (development run on the sample, slide 3): the bullet
 *"Non-example: y = 2x + 1 is not, since it lacks the zero vector"* scored 0.5, although
 the narration says *"the line y equals two x plus one is not a subspace, because it does
 not contain the zero vector"*. Formulas are spoken as words ("two x plus one"), and

@@ -1,6 +1,6 @@
 # Manual review rubric (0-2)
 
-Use this to compare runs (for example the initial results against gpt-oss-120b, or gpt-oss-120b against gpt-oss-20b) on the
+Use this to compare runs (for example the development runs against gpt-oss-120b, or gpt-oss-120b against gpt-oss-20b) on the
 same source material. Two reviewers score independently; report the disagreements as well
 as the averages.
 

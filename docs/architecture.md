@@ -79,6 +79,14 @@ Spanish (picked from the deck's `language`). Each element can be switched off in
 `lecture:` block of the config. The script prompt is told that the video already has its
 own welcome and closing, so the narration links slides instead of greeting.
 
+## Shorter videos: one per part
+
+With `render: {per_part_videos: true}` the pipeline also writes `parts/part_01.mp4`,
+`parts/part_01.srt`, … one video per part of the lecture (title and outline go with part 1,
+the summary with the last part), next to the full `video.mp4`. Each part is typically a few
+minutes, in line with the finding that shorter videos are more engaging
+([`teaching_style.md`](teaching_style.md)). Durations are listed in `meta.json` → `parts`.
+
 ## Pluggable parts
 
 | Interface | File | Implementations | Selected by |
