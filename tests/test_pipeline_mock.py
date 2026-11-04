@@ -61,8 +61,10 @@ def test_markdown_edit_is_applied(sample_pdf, tmp_path):
 @requires_ffmpeg
 def test_full_pipeline_produces_video(sample_pdf, tmp_path):
     out = tmp_path / "out"
+    small = tmp_path / "small.yaml"
+    small.write_text("render:\n  width: 640\n  height: 360\n")
     rc = main(["run", str(sample_pdf), "--out", str(out), "--auto-approve", "--llm", "mock",
-               "--tts", "stub"])
+               "--tts", "stub", "--config", str(small)])
     assert rc == 0
     for name in ("parsed.md", "slides.json", "script.json", "alignment.json", "deck.pptx",
                  "video.mp4", "subtitles.srt", "meta.json"):
