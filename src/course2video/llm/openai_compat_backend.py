@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import os
 from typing import Any
 
@@ -21,6 +22,7 @@ class OpenAICompatBackend(LLMBackend):
         effort: str | None = None,
         structured_output: bool = True,
         timeout_s: float = 600.0,
+        context_tokens: int | None = None,
     ) -> None:
         if not model:
             raise LLMError("llm.model is required for the openai_compat backend")
@@ -32,6 +34,39 @@ class OpenAICompatBackend(LLMBackend):
         self.effort = effort
         self.structured_output = structured_output
         self.timeout_s = timeout_s
+        self._context = context_tokens
+        self._context_checked = context_tokens is not None
+
+    def _headers(self) -> dict[str, str]:
+        return {"Authorization": f"Bearer {self.api_key}"} if self.api_key else {}
+
+    def context_length(self) -> int | None:
+        if not self._context_checked:
+            self._context_checked = True
+            try:
+                r = httpx.get(f"{self.base_url}/models", headers=self._headers(), timeout=30)
+                for m in r.json().get("data", []):
+                    if m.get("id") == self.model:
+                        for key in ("max_model_len", "context_length", "context_window"):
+                            if isinstance(m.get(key), int):
+                                self._context = m[key]
+                                break
+            except (httpx.HTTPError, ValueError, AttributeError):
+                self._context = None
+        return self._context
+
+    def _max_tokens_for(self, body: dict[str, Any]) -> int:
+        ctx = self.context_length()
+        if not ctx:
+            return self.max_tokens
+        prompt_tokens = int(len(json.dumps(body, ensure_ascii=False)) / 3.0) + 64
+        room = ctx - prompt_tokens
+        if room < 512:
+            raise LLMError(
+                f"prompt of about {prompt_tokens} tokens does not fit the model's context of {ctx} "
+                "tokens; lower slides.chunk_chars or script.slides_per_call"
+            )
+        return min(self.max_tokens, room)
 
     def describe(self) -> dict[str, Any]:
         return {"backend": self.name, "model": self.model, "base_url": self.base_url}
@@ -54,7 +89,8 @@ class OpenAICompatBackend(LLMBackend):
                 "type": "json_schema",
                 "json_schema": {"name": task or "output", "schema": relax_schema(schema)},
             }
-        headers = {"Authorization": f"Bearer {self.api_key}"} if self.api_key else {}
+        body["max_tokens"] = self._max_tokens_for(body)
+        headers = self._headers()
         try:
             r = httpx.post(
                 f"{self.base_url}/chat/completions", json=body, headers=headers, timeout=self.timeout_s
@@ -70,7 +106,10 @@ class OpenAICompatBackend(LLMBackend):
         except (KeyError, IndexError) as e:
             raise LLMError(f"unexpected response shape: {str(data)[:500]}") from e
         if choice.get("finish_reason") == "length":
-            raise LLMError("output truncated (finish_reason=length); raise llm.max_tokens")
+            raise LLMError(
+                f"output truncated after {body['max_tokens']} tokens (finish_reason=length); raise "
+                "llm.max_tokens, or ask for fewer slides per call on small-context servers"
+            )
         if not text.strip():
             raise LLMError("empty response")
         return text

@@ -18,6 +18,7 @@ class LLMConfig(BaseModel):
     effort: str | None = None
     structured_output: bool = True
     timeout_s: float = 600.0
+    context_tokens: int | None = None
 
 
 class ParserConfig(BaseModel):
@@ -80,6 +81,22 @@ class Config(BaseModel):
     alignment: AlignmentConfig = Field(default_factory=AlignmentConfig)
     tts: TTSConfig = Field(default_factory=TTSConfig)
     render: RenderConfig = Field(default_factory=RenderConfig)
+
+
+def fit_to_context(cfg: Config, context_tokens: int) -> list[str]:
+    changes = []
+    out_budget = context_tokens // 2
+    slides = max(1, (out_budget - 1000) // 350)
+    script = max(1, (out_budget - 1000) // int(cfg.script.words_per_slide * 1.4 + 1))
+    chunk = max(1500, int((context_tokens - out_budget - 1500) * 3.0))
+    for section, field, value in (("slides", "max_slides_per_chunk", slides),
+                                  ("script", "slides_per_call", script),
+                                  ("slides", "chunk_chars", chunk)):
+        current = getattr(getattr(cfg, section), field)
+        if value < current:
+            setattr(getattr(cfg, section), field, value)
+            changes.append(f"{section}.{field}: {current} -> {value}")
+    return changes
 
 
 def load_config(path: str | Path | None = None) -> Config:

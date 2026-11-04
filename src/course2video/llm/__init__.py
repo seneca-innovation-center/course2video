@@ -22,5 +22,6 @@ def get_backend(cfg: LLMConfig) -> LLMBackend:
             effort=cfg.effort,
             structured_output=cfg.structured_output,
             timeout_s=cfg.timeout_s,
+            context_tokens=cfg.context_tokens,
         )
     raise ValueError(f"unknown llm backend {cfg.backend!r}")

@@ -121,6 +121,7 @@ def generate_deck(
         attempt_log.append(attempts)
         for sl in batch.slides:
             sl.kind = "theory"
+            sl.source_doc = ""
         all_slides.extend(batch.slides)
     assign_chapters(all_slides, markdown)
     for i, sl in enumerate(all_slides, start=1):

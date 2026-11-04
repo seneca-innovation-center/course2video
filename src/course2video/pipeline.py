@@ -38,6 +38,18 @@ def _set_state(out: Path, **kw) -> dict:
     return st
 
 
+def _fit_context(llm: LLMBackend, cfg: Config) -> dict | None:
+    from .config import fit_to_context
+
+    ctx = llm.context_length() if hasattr(llm, "context_length") else None
+    if not ctx:
+        return None
+    changes = fit_to_context(cfg, ctx)
+    if changes:
+        log.warning("model context is %d tokens; adjusted %s", ctx, ", ".join(changes))
+    return {"tokens": ctx, "adjusted": changes}
+
+
 def _attempts(log_: list) -> list[list[dict]]:
     return [[asdict(a) for a in chunk] for chunk in log_]
 
@@ -64,8 +76,9 @@ def run_stage1(
     target = cfg.lecture.target_minutes or course.target_minutes
     if target:
         cfg.lecture.target_minutes = target
-    (out / "config.used.yaml").write_text(yaml.safe_dump(cfg.model_dump()), encoding="utf-8")
     llm = llm or get_backend(cfg.llm)
+    context = _fit_context(llm, cfg)
+    (out / "config.used.yaml").write_text(yaml.safe_dump(cfg.model_dump()), encoding="utf-8")
 
     t0 = time.time()
     parsed_dir = out / "parsed"
@@ -147,6 +160,7 @@ def run_stage1(
             "parser_warnings": [w for p in parsed.values() for w in p.warnings
                                 if w != "(from cache)"],
             "llm": llm.describe(),
+            "context": context,
             "budget": budget.as_dict() if budget else None,
             "slides": {"count": len(deck.slides),
                        "by_kind": {k: sum(s.kind == k for s in deck.slides)
@@ -195,6 +209,9 @@ def run_stage2(
                                  for t in sl["talking_points"])}
 
     llm = llm or get_backend(cfg.llm)
+    stage2_context = _fit_context(llm, cfg)
+    if stage2_context:
+        meta["context"] = stage2_context
     t0 = time.time()
     budget = meta.get("budget")
     script, attempts = generate_script(llm, deck, cfg.script,
