@@ -40,6 +40,12 @@ PDF ─► Markdown ─► slide JSON ─► LECTURER REVIEW ─► script ─�
 * **Target length.** `--minutes 20` (or `target_minutes` in `course.yaml`) sets the number of
   slides and words per slide; `meta.json` reports target versus actual. Short sources give a
   shorter video and a warning, never padding.
+* **Figures from the sources.** Diagrams found by the parser (e.g. a probability tree in the
+  official solutions) can be shown on the slide, chosen per slide and approved in review.
+* **Bullets revealed with the narration** (`render.reveal_bullets`), and optionally one short
+  video per part (`render.per_part_videos`).
+* **English and French** structure, wording and voice, picked from the course language.
+* **Scoring tools** for a review session: `course2video score` (see `eval/rubric.md`).
 * **Validated structure.** Slides follow a Pydantic schema ([`schemas/`](schemas/)). Invalid
   LLM output is sent back with the validator's errors and retried a bounded number of times.
 * **Lecturer in the loop.** The run **stops** after slide generation. Nothing is narrated
