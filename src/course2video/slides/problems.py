@@ -57,7 +57,8 @@ def _check_kinds(batch: SlideBatch, source: str = "") -> list[str]:
 
 
 def generate_problem_slides(
-    llm: LLMBackend, problem: Problem, *, n_slides: int, language: str, max_retries: int
+    llm: LLMBackend, problem: Problem, *, n_slides: int, language: str, max_retries: int,
+    worked: str = "Worked Problem",
 ) -> tuple[SlideBatch, list[Attempt]]:
     if not problem.solution:
         raise ValueError(f"{problem.ref} has no linked solution")
@@ -73,6 +74,7 @@ def generate_problem_slides(
         extra_checks=lambda b: _check_kinds(b, problem.statement + "\n" + problem.solution),
     )
     for s in batch.slides:
-        s.source_section = f"Worked {problem.display_title}"
+        s.source_section = (f"{worked} {problem.number}: {problem.title}" if problem.title
+                            else f"{worked} {problem.number}")
         s.source_doc = problem.ref
     return batch, attempts

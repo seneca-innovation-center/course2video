@@ -192,3 +192,39 @@ def test_course_yaml_language_wins_over_cli(tmp_path):
                                      "  - {path: notes.md, type: lecture}\n")
     run_stage1(src, tmp_path / "out", _cfg(), language="fr")
     assert Deck.model_validate_json((tmp_path / "out/slides.json").read_text()).language == "es"
+
+
+FRENCH = Path(__file__).parent.parent / "examples" / "cours_probabilites"
+
+
+def test_french_course_folder_end_to_end_with_mock(tmp_path):
+    import shutil
+
+    src = tmp_path / "cours"
+    shutil.copytree(FRENCH, src)
+    (src / "course.yaml").unlink()
+    run_stage1(src, tmp_path / "out", _cfg(), language="fr")
+    out = tmp_path / "out"
+    index = json.loads((out / "course_index.json").read_text())
+    assert sorted(d["type"] for d in index["documents"]) == ["exercises", "lecture", "solutions"]
+    assert [p["used"] for p in index["problems"]] == [True, True, True]
+    deck = Deck.model_validate_json((out / "slides.json").read_text())
+    assert deck.language == "fr"
+    ex2 = [s for s in deck.slides if s.kind == "exercise"][1]
+    assert ex2.source_doc == "TD 3, Exercice 2"
+    assert ex2.source_section == "Exercice corrigé 2: Test de dépistage"
+    run_stage2(out, _cfg(), video=False)
+    plan = json.loads((out / "lecture_plan.json").read_text())
+    assert plan[0]["narration"].startswith("Bienvenue.")
+    practise = [f["narration"] for f in plan if f["kind"] == "section" and "Entraînons" in f["narration"]]
+    assert len(practise) == 3 and "TD 3, Exercice 2 : Test de dépistage" in practise[1]
+
+
+def test_voice_follows_the_course_language():
+    from course2video.config import TTSConfig
+    from course2video.tts import piper_voice_for
+
+    cfg = TTSConfig()
+    assert piper_voice_for(cfg, "fr").endswith("fr_FR-siwis-medium.onnx")
+    assert piper_voice_for(cfg, "en-GB").endswith("en_US-ljspeech-medium.onnx")
+    assert piper_voice_for(cfg, "de") == cfg.piper_model

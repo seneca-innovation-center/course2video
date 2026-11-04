@@ -23,7 +23,7 @@ TEMPLATES = {
         "exercise": "Exercise", "solution": "Solution",
         "closing": "That brings us to the end of this lecture. We covered {items}. "
                    "Thank you for watching.",
-        "and": "and", "intro": "Introduction",
+        "and": "and", "intro": "Introduction", "problem": "Problem", "worked": "Worked Problem",
     },
     "fr": {
         "part": "Partie", "of": "sur", "outline": "Plan", "summary": "Résumé",
@@ -38,7 +38,7 @@ TEMPLATES = {
         "exercise": "Exercice", "solution": "Correction",
         "closing": "Nous arrivons à la fin de ce cours. Nous avons vu {items}. "
                    "Merci de votre attention.",
-        "and": "et", "intro": "Introduction",
+        "and": "et", "intro": "Introduction", "problem": "Exercice", "worked": "Exercice corrigé",
     },
     "es": {
         "part": "Parte", "of": "de", "outline": "Índice", "summary": "Resumen",
@@ -53,7 +53,7 @@ TEMPLATES = {
         "exercise": "Ejercicio", "solution": "Solución",
         "closing": "Llegamos al final de esta clase. Hemos visto {items}. "
                    "Gracias por su atención.",
-        "and": "y", "intro": "Introducción",
+        "and": "y", "intro": "Introducción", "problem": "Ejercicio", "worked": "Ejercicio resuelto",
     },
 }
 

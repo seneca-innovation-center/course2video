@@ -9,6 +9,5 @@ parser:
   backend: docling
 tts:
   backend: piper
-  piper_model: models/piper/en_US-ljspeech-medium.onnx
 lecture:
   subtitle: "Generated with course2video (prototype)"

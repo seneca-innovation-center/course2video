@@ -88,7 +88,7 @@ B"* and scored 0.5.
 | Limitation | Notes |
 |---|---|
 | Equation reading | The script is asked to say formulas in words; TTS reads whatever it gets. No separate check yet |
-| One voice, English | `en_US-ljspeech-medium`. Other languages need other Piper voices |
+| Voices | English (`en_US-ljspeech-medium`) and French (`fr_FR-siwis-medium`), chosen from the deck's language (`tts.piper_voices`). Other languages fall back to the default voice with a warning |
 | Subtitle timing | Proportional to text length within each slide, not word-aligned |
 | Pillow renderer | Simple layout; equations use matplotlib mathtext (a LaTeX subset). Unsupported LaTeX falls back to raw text |
 

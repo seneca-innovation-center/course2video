@@ -118,11 +118,14 @@ def run_stage1(
     (out / "parsed.md").write_text(lecture_md, encoding="utf-8")
     t_parse = time.time() - t0
 
+    from .render.lecture import templates
+
+    words = templates(language)
     problems, link_warnings = [], []
     for ex in course.of_type("exercises"):
         sol = next((s for s in course.of_type("solutions") if s.solves == ex.path), None)
         ps, w = link_problems(parsed[ex.path].markdown, parsed[sol.path].markdown if sol else None,
-                              ex.label, ex.select)
+                              ex.label, ex.select, word=words["problem"])
         problems += ps
         link_warnings += w
     worked = [p for p in problems if p.selected and p.solution]
@@ -163,7 +166,7 @@ def run_stage1(
     for p in worked:
         batch, att = generate_problem_slides(
             llm, p, n_slides=budget.slides_per_problem if budget else 3,
-            language=language, max_retries=cfg.slides.max_retries)
+            language=language, max_retries=cfg.slides.max_retries, worked=words["worked"])
         deck.slides.extend(batch.slides)
         problem_attempts.append(att)
     deck = Deck(title=deck.title, language=deck.language,
@@ -296,7 +299,7 @@ def render_outputs(
         else:
             images = render_frames(frames, deck.title, deck.language, out / "images", cfg.render,
                                    progress_bar=cfg.lecture.progress_bar)
-        tts = tts or get_tts(cfg.tts)
+        tts = tts or get_tts(cfg.tts, deck.language)
         audio_dir = out / "audio"
         for old in audio_dir.glob("*.wav"):
             old.unlink()
