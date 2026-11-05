@@ -284,3 +284,31 @@ def test_cli_reports_an_invalid_course_yaml(tmp_path, capsys):
     (tmp_path / "course.yaml").write_text("documents:\n  - {path: a.md, type: notes}\n")
     assert main(["run", str(tmp_path), "--out", str(tmp_path / "out")]) == 2
     assert "is not a document type" in capsys.readouterr().err
+
+
+def test_parse_cache_is_refreshed_after_a_parser_upgrade(tmp_path, monkeypatch):
+    import json as _json
+
+    from course2video.parsing import cache
+
+    src = tmp_path / "notes.md"
+    src.write_text("# A\n\nfirst")
+    calls = []
+
+    class FakeParser:
+        def parse(self, path):
+            from course2video.parsing.base import ParsedDocument
+
+            calls.append(1)
+            return ParsedDocument(source=path, markdown=path.read_text(), parser="docling")
+
+    monkeypatch.setattr("course2video.parsing.get_parser", lambda *a, **k: FakeParser())
+    monkeypatch.setattr(cache, "parser_version", lambda p: "2.144.0")
+    cache.parse_cached(src, "docling", cache_dir=tmp_path / "c")
+    cache.parse_cached(src, "docling", cache_dir=tmp_path / "c")
+    assert len(calls) == 1
+    monkeypatch.setattr(cache, "parser_version", lambda p: "3.0.0")
+    cache.parse_cached(src, "docling", cache_dir=tmp_path / "c")
+    assert len(calls) == 2
+    meta = next((tmp_path / "c").glob("*.json"))
+    assert _json.loads(meta.read_text())["parser_version"] == "3.0.0"

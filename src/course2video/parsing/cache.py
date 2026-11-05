@@ -20,6 +20,15 @@ def cache_key(path: Path, parser: str, docling_formulas: bool) -> str:
     return f"{h[:24]}-{parser}-{'f' if docling_formulas else 'nf'}-v{CACHE_FORMAT}"
 
 
+def parser_version(parser: str) -> str | None:
+    import importlib.metadata
+
+    try:
+        return importlib.metadata.version(parser) if parser == "docling" else None
+    except importlib.metadata.PackageNotFoundError:
+        return None
+
+
 def parse_cached(path: Path, parser: str, *, docling_formulas: bool = True,
                  cache_dir: Path | None = None) -> ParsedDocument:
     from . import get_parser
@@ -27,8 +36,11 @@ def parse_cached(path: Path, parser: str, *, docling_formulas: bool = True,
     cache_dir = cache_dir or default_cache_dir()
     key = cache_key(path, parser, docling_formulas)
     md_file, meta_file = cache_dir / f"{key}.md", cache_dir / f"{key}.json"
-    if md_file.exists() and meta_file.exists():
-        meta = json.loads(meta_file.read_text(encoding="utf-8"))
+    version = parser_version(parser)
+    meta = json.loads(meta_file.read_text(encoding="utf-8")) if meta_file.exists() else None
+    if meta is not None and meta.get("parser_version") not in (None, version):
+        meta = None
+    if md_file.exists() and meta is not None:
         figures = [FigureRef(path=cache_dir / f["file"], caption=f["caption"], page=f["page"])
                    for f in meta.get("figures", [])]
         return ParsedDocument(source=path, markdown=md_file.read_text(encoding="utf-8"),
@@ -44,5 +56,6 @@ def parse_cached(path: Path, parser: str, *, docling_formulas: bool = True,
         fig.path = cache_dir / name
     md_file.write_text(doc.markdown, encoding="utf-8")
     meta_file.write_text(json.dumps({"parser": doc.parser, "warnings": doc.warnings,
-                                     "source": str(path), "figures": stored}), encoding="utf-8")
+                                     "source": str(path), "figures": stored,
+                                     "parser_version": version}), encoding="utf-8")
     return doc

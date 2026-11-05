@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import time
 from typing import Any
 
 import httpx
@@ -23,6 +24,8 @@ class OpenAICompatBackend(LLMBackend):
         structured_output: bool = True,
         timeout_s: float = 600.0,
         context_tokens: int | None = None,
+        retries: int = 3,
+        backoff_s: float = 2.0,
     ) -> None:
         if not model:
             raise LLMError("llm.model is required for the openai_compat backend")
@@ -34,6 +37,9 @@ class OpenAICompatBackend(LLMBackend):
         self.effort = effort
         self.structured_output = structured_output
         self.timeout_s = timeout_s
+        self.retries = retries
+        self.backoff_s = backoff_s
+        self._sleep = time.sleep
         self._context = context_tokens
         self._context_checked = context_tokens is not None
 
@@ -68,6 +74,30 @@ class OpenAICompatBackend(LLMBackend):
             )
         return min(self.max_tokens, room)
 
+    def _post_with_backoff(self, body: dict[str, Any], headers: dict[str, str]) -> httpx.Response:
+        for attempt in range(self.retries + 1):
+            last = attempt == self.retries
+            try:
+                r = httpx.post(f"{self.base_url}/chat/completions", json=body, headers=headers,
+                               timeout=self.timeout_s)
+            except httpx.HTTPError as e:
+                if last:
+                    raise LLMError(f"cannot reach {self.base_url}: {e}") from e
+                self._sleep(self.backoff_s * 2 ** attempt)
+                continue
+            if r.status_code == 429 or r.status_code >= 500:
+                if last:
+                    return r
+                wait = self.backoff_s * 2 ** attempt
+                try:
+                    wait = max(wait, min(60.0, float(r.headers.get("retry-after", 0))))
+                except ValueError:
+                    pass
+                self._sleep(wait)
+                continue
+            return r
+        raise LLMError(f"cannot reach {self.base_url}")
+
     def describe(self) -> dict[str, Any]:
         return {"backend": self.name, "model": self.model, "base_url": self.base_url}
 
@@ -91,12 +121,7 @@ class OpenAICompatBackend(LLMBackend):
             }
         body["max_tokens"] = self._max_tokens_for(body)
         headers = self._headers()
-        try:
-            r = httpx.post(
-                f"{self.base_url}/chat/completions", json=body, headers=headers, timeout=self.timeout_s
-            )
-        except httpx.HTTPError as e:
-            raise LLMError(f"cannot reach {self.base_url}: {e}") from e
+        r = self._post_with_backoff(body, headers)
         if r.status_code != 200:
             raise LLMError(f"HTTP {r.status_code} from {self.base_url}: {r.text[:500]}")
         data = r.json()

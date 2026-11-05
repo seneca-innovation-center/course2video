@@ -71,7 +71,7 @@ def test_structured_output_can_be_disabled(monkeypatch):
 def test_errors_become_llm_errors(monkeypatch, response, message):
     monkeypatch.setattr(httpx, "post", FakePost(response))
     with pytest.raises(LLMError, match=message):
-        OpenAICompatBackend(model="m").complete("s", "p")
+        OpenAICompatBackend(model="m", retries=0).complete("s", "p")
 
 
 def test_unreachable_server(monkeypatch):
@@ -142,3 +142,38 @@ def test_theory_slides_never_keep_a_model_written_source_doc():
                         "talking_points": ["one", "two"]}]}
     deck, _ = generate_deck(MockBackend(responses=[junk]), "# C\n\n## A\ntext", SlidesConfig(), title="C")
     assert deck.slides[0].source_doc == ""
+
+
+def test_retries_server_errors_and_429_with_backoff(monkeypatch):
+    fake = FakePost((503, {"error": "busy"}), (429, {"error": "slow down"}), _ok("{}"))
+    monkeypatch.setattr(httpx, "post", fake)
+    llm = OpenAICompatBackend(model="m", context_tokens=100000)
+    waits = []
+    llm._sleep = waits.append
+    assert llm.complete("s", "p") == "{}"
+    assert len(fake.requests) == 3 and waits == [2.0, 4.0]
+
+
+def test_retries_connection_errors_then_gives_up(monkeypatch):
+    calls = []
+
+    def refuse(*a, **k):
+        calls.append(1)
+        raise httpx.ConnectError("refused")
+
+    monkeypatch.setattr(httpx, "post", refuse)
+    llm = OpenAICompatBackend(model="m", context_tokens=100000, retries=2)
+    llm._sleep = lambda s: None
+    with pytest.raises(LLMError, match="cannot reach"):
+        llm.complete("s", "p")
+    assert len(calls) == 3
+
+
+def test_client_errors_are_not_retried(monkeypatch):
+    fake = FakePost((400, {"error": "bad request"}))
+    monkeypatch.setattr(httpx, "post", fake)
+    llm = OpenAICompatBackend(model="m", context_tokens=100000)
+    llm._sleep = lambda s: pytest.fail("must not wait on a 400")
+    with pytest.raises(LLMError, match="HTTP 400"):
+        llm.complete("s", "p")
+    assert len(fake.requests) == 1

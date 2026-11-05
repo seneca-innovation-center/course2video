@@ -9,10 +9,10 @@ services:
     depends_on: [ollama]
 
   ollama:
-    image: ollama/ollama
+    image: ollama/ollama:0.40.14
     volumes:
       - ollama:/root/.ollama
-    ports: ["11434:11434"]
+    ports: ["127.0.0.1:11434:11434"]
 
 volumes:
   ollama:
