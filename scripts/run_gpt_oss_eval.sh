@@ -10,6 +10,7 @@ PY="${PY:-.venv/bin/python}"
 BASE_CONFIG="${CONFIG:-configs/gpt-oss-120b-8k.yaml}"
 OUT="${OUT:-out/gptoss}"
 CANDIDATES="${GPTOSS_MODEL:-gpt-oss-120b openai/gpt-oss-120b gpt-oss:120b gpt-oss}"
+COURSES="${COURSES:-vector_spaces probability french_course mit_bayes}"
 mkdir -p "$OUT/logs"
 
 write_config() {
@@ -58,6 +59,7 @@ echo "== 4/5 courses (slides approved without edits)"
 ./scripts/fetch_mit1805_example.sh > "$OUT/logs/fetch_mit.log" 2>&1 || echo "   MIT files could not be downloaded; that course is skipped"
 run_course() {
   local name="$1" input="$2"; shift 2
+  case " $COURSES " in *" $name "*) ;; *) return ;; esac
   [ -e "$input" ] || { echo "   $name: input missing, skipped"; return; }
   echo "   $name ..."
   rm -rf "$OUT/$name"
