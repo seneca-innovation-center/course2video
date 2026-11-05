@@ -41,9 +41,9 @@ were decoded much better, but one came back with **invented text appended**:
 P ( A \, | \, B ) = \frac { P ( A \cap B ) } { P ( B ) } \\ \intertext { a g i v e , t h e m u l i n i o t i o n ...
 ```
 
-In an earlier run the LLM dropped the garbage when it made the slide, and the renderer now strips
-`\intertext` and fixes Docling's spacing (`\sum _ { i = 1 }`), which matplotlib otherwise
-draws wrongly. Nothing flags such noise automatically yet.
+The renderer strips `\intertext` and fixes Docling's spacing (`\sum _ { i = 1 }`), which
+matplotlib otherwise draws wrongly. Nothing flags such parser noise automatically yet; it is
+caught in the lecturer review.
 
 Formula enrichment is slow without a GPU. On an Apple Silicon laptop the formula model ran
 on CPU:
@@ -75,14 +75,11 @@ Lexical content-word overlap. Paraphrases with different words count as **misses
 mentioning the right words in a wrong statement counts as a **hit**. It is a cheap
 smoke detector, not a correctness measure. Embedding similarity is on the roadmap.
 
-Observed false negative (earlier run on the sample, slide 3): the bullet
-*"Non-example: y = 2x + 1 is not, since it lacks the zero vector"* scored 0.5, although
-the narration says *"the line y equals two x plus one is not a subspace, because it does
-not contain the zero vector"*. Formulas are spoken as words ("two x plus one"), and
-"lacks" is paraphrased, so the words do not match. Equation-to-speech normalisation would
-fix this case. The probability run shows the same pattern: *"P of the intersection is the
-product of the probabilities"* was narrated as *"P of A intersect B equals P of A times P of
-B"* and scored 0.5.
+Observed false negative (gpt-oss-120b run, vector spaces, slide 6): the bullet *"Check
+independence"* scored 0.5, although the narration says *"asked to check whether they are
+independent"*. "independence" and "independent" are different words for the metric, and
+formulas spoken as words ("two x plus one") do not match their symbols either. Stemming and
+equation-to-speech normalisation would fix these cases.
 
 ## Audio and video
 
