@@ -7,12 +7,11 @@
 **A self-hostable, open-source pipeline that turns course documents into lecturer-approved
 slides and narrated videos, without sending course material to a cloud service.**
 
-> **Status: early development.** Pipeline v0 runs end to end on the sample courses and on a
-> real 3-document course. The results in [`examples/demo.md`](examples/demo.md) are development runs made
-> with a hosted LLM API on openly licensed sample material. The pipeline is built to run on
-> premises: the deployment target is gpt-oss-120b served on our internal server through an
-> OpenAI-compatible API; recording the same runs there is the next step (#9).
-> Output quality has **not** been formally evaluated yet (see [`eval/rubric.md`](eval/rubric.md)).
+> **Status: early development.** The pipeline runs end to end with **gpt-oss-120b served on
+> our internal server** through an OpenAI-compatible API, on four example courses (English and
+> French, one of them a real 3-document MIT course): see [`examples/demo.md`](examples/demo.md).
+> Slides were approved without edits; output quality has **not** been formally evaluated yet
+> (see [`eval/rubric.md`](eval/rubric.md)).
 
 ## The problem
 
@@ -71,11 +70,11 @@ Details: [`docs/architecture.md`](docs/architecture.md).
 | Backend | Where the model runs | Use |
 |---|---|---|
 | `mock` | nowhere (fixed heuristics) | tests and CI, no GPU or network |
-| `openai_compat` | **your server** (vLLM, Ollama) | target deployment, e.g. **gpt-oss-120b** |
+| `openai_compat` | **your server** (vLLM, Ollama, any OpenAI-compatible API) | deployment; tested with **gpt-oss-120b** on our internal server |
 
 Switching models is a config change, not a code change: see [`docs/local-llm.md`](docs/local-llm.md).
-The gpt-oss backend is covered by tests against a simulated server; an end-to-end run with
-gpt-oss-120b has not been recorded yet.
+Tested end to end with gpt-oss-120b on an 8k-context server (`configs/gpt-oss-120b-8k.yaml`);
+`scripts/run_gpt_oss_eval.sh` reproduces the example runs.
 
 ## Quick start
 

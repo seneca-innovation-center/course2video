@@ -1,0 +1,409 @@
+{
+  "method": "lexical content-word overlap (v0)",
+  "spoken_to_slide_word_ratio": 7.3,
+  "item_threshold": 0.6,
+  "slide_warn_below": 0.8,
+  "overall_coverage": 0.842,
+  "flagged_slides": [
+    1,
+    6
+  ],
+  "slides": [
+    {
+      "slide_id": 1,
+      "title": "Vectors in Rⁿ",
+      "coverage": 0.636,
+      "flagged": true,
+      "novel_word_ratio": 0.62,
+      "items": [
+        {
+          "kind": "bullet",
+          "text": "Vector u = (u₁,…,u_n)",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Componentwise addition",
+          "score": 0.0,
+          "covered": false
+        },
+        {
+          "kind": "bullet",
+          "text": "Scalar multiplication of each component",
+          "score": 0.333,
+          "covered": false
+        },
+        {
+          "kind": "bullet",
+          "text": "Zero vector has all components 0",
+          "score": 0.667,
+          "covered": true
+        },
+        {
+          "kind": "equation",
+          "text": "Add two vectors by adding each corresponding component.",
+          "score": 0.8,
+          "covered": true
+        },
+        {
+          "kind": "equation",
+          "text": "Multiply a vector by a scalar a by scaling every component.",
+          "score": 0.4,
+          "covered": false
+        },
+        {
+          "kind": "talking_point",
+          "text": "These operations are the foundation for all later linear‑algebra concepts.",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Geometrically, in R² and R³ vectors can be visualized as arrows starting at the origin.",
+          "score": 0.833,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Example: (1,2,3) + (4,0,-1) = (5,2,2) and 2·(1,2,3) = (2,4,6).",
+          "score": 0.0,
+          "covered": false
+        },
+        {
+          "kind": "talking_point",
+          "text": "A common mistake is to try to add vectors of different dimensions; the dimensions must match.",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "We will now see how these simple operations fit into the abstract definition of a vector space.",
+          "score": 1.0,
+          "covered": true
+        }
+      ]
+    },
+    {
+      "slide_id": 2,
+      "title": "Definition of a Vector Space",
+      "coverage": 1.0,
+      "flagged": false,
+      "novel_word_ratio": 0.429,
+      "items": [
+        {
+          "kind": "bullet",
+          "text": "Set V with addition & scalar multiplication",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Axioms: commutative, associative, zero, inverses",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Distributive laws for scalar multiplication",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Examples: ℝⁿ, polynomials, matrices",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "equation",
+          "text": "Scalar multiplication distributes over vector addition.",
+          "score": 0.8,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "The axioms guarantee that any theorem proved from them applies to all listed examples.",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Intuitively, the axioms say that vectors behave like arrows that can be moved and stretched consistently.",
+          "score": 0.8,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Example: In the space of 2×2 matrices, adding matrices and multiplying by scalars follows the same rules as for ordinary vectors.",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "A subtle point: the zero vector must be the same for both operations; some students forget to check this when verifying a new vector space.",
+          "score": 0.769,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Next we will examine special subsets of a vector space that are themselves vector spaces.",
+          "score": 1.0,
+          "covered": true
+        }
+      ]
+    },
+    {
+      "slide_id": 3,
+      "title": "Subspaces",
+      "coverage": 0.889,
+      "flagged": false,
+      "novel_word_ratio": 0.493,
+      "items": [
+        {
+          "kind": "bullet",
+          "text": "Subset W⊆V that is a vector space with same operations",
+          "score": 0.8,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Three checks: contains zero, closed under addition, closed under scalar multiplication",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Line y=2x in ℝ² is a subspace",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Line y=2x+1 is not",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Subspaces let us focus on smaller, manageable parts of a vector space while preserving all structure.",
+          "score": 0.556,
+          "covered": false
+        },
+        {
+          "kind": "talking_point",
+          "text": "The three‑condition test is sufficient because the other axioms are inherited from V.",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Example: The set W={ (t,2t) | t∈ℝ } satisfies the three conditions, so it is a subspace of ℝ².",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Common mistake: forgetting to verify that the zero vector belongs to W; the line y=2x+1 fails this test.",
+          "score": 0.9,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Understanding subspaces prepares us for concepts like span and basis.",
+          "score": 0.714,
+          "covered": true
+        }
+      ]
+    },
+    {
+      "slide_id": 4,
+      "title": "Linear Combinations and Span",
+      "coverage": 0.9,
+      "flagged": false,
+      "novel_word_ratio": 0.639,
+      "items": [
+        {
+          "kind": "bullet",
+          "text": "Linear combination: Σ a_i v_i",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Span = all linear combinations of a set",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Span is always a subspace",
+          "score": 0.667,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Two non‑parallel vectors in ℝ³ span a plane",
+          "score": 0.8,
+          "covered": true
+        },
+        {
+          "kind": "equation",
+          "text": "A vector built by scaling each v_i with a scalar a_i and adding the results.",
+          "score": 0.667,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "The span captures everything we can reach using the given vectors and scalar multiples.",
+          "score": 0.778,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Intuition: think of the span as the “reach” of the vectors when you can stretch and add them.",
+          "score": 0.857,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Example: Vectors (1,0,0) and (0,1,0) in ℝ³ span the xy‑plane because any (x,y,0) can be written as x·(1,0,0)+y·(0,1,0).",
+          "score": 0.6,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "A subtle point: the span of a single non‑zero vector is a line, not the whole space.",
+          "score": 0.9,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Later we will see how choosing independent vectors from a span leads to a basis.",
+          "score": 0.5,
+          "covered": false
+        }
+      ]
+    },
+    {
+      "slide_id": 5,
+      "title": "Linear Independence and Basis",
+      "coverage": 0.889,
+      "flagged": false,
+      "novel_word_ratio": 0.597,
+      "items": [
+        {
+          "kind": "bullet",
+          "text": "Independent ⇔ only trivial coefficients give zero",
+          "score": 0.6,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Dependent ⇔ some vector is a combination of others",
+          "score": 0.75,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Basis = independent set that spans V",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "All bases have same size = dimension",
+          "score": 0.25,
+          "covered": false
+        },
+        {
+          "kind": "talking_point",
+          "text": "Independence tells us that no vector in the set is redundant.",
+          "score": 0.6,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Intuitively, a basis is a minimal set of directions that can build every vector in the space.",
+          "score": 0.875,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Example: In ℝ², {(1,0),(0,1)} is independent and spans ℝ², so it is a basis; its size 2 is the dimension.",
+          "score": 0.833,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "A common error is to assume any spanning set is a basis; independence must also be checked.",
+          "score": 0.75,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "The standard basis of ℝⁿ consists of the n vectors with a single 1 and the rest 0, confirming that dim ℝⁿ = n.",
+          "score": 0.875,
+          "covered": true
+        }
+      ]
+    },
+    {
+      "slide_id": 6,
+      "title": "Exercise: Linear Dependence in ℝ²",
+      "coverage": 0.75,
+      "flagged": true,
+      "novel_word_ratio": 0.469,
+      "items": [
+        {
+          "kind": "bullet",
+          "text": "Vectors (1,2) and (3,6)",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Check independence",
+          "score": 0.5,
+          "covered": false
+        },
+        {
+          "kind": "bullet",
+          "text": "Result: linearly dependent",
+          "score": 0.667,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "We test whether a non‑trivial combination gives the zero vector.",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Example: 3·(1,2) - (3,6) = (0,0); coefficients (3, -1) are not both zero, so the vectors are dependent.",
+          "score": 0.833,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Because they are multiples of each other, they span only a line, not the whole plane.",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "A subtle point: two vectors in ℝ² are independent precisely when they are not scalar multiples.",
+          "score": 0.857,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "This exercise illustrates the definitions of dependence and span from the previous slides.",
+          "score": 0.571,
+          "covered": false
+        }
+      ]
+    }
+  ]
+}

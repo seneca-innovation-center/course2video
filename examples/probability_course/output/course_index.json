@@ -1,0 +1,21 @@
+{
+  "title": "probability",
+  "root": "examples/probability_course",
+  "source": {},
+  "documents": [
+    {
+      "path": "probability.pdf",
+      "type": "lecture",
+      "label": "Probability",
+      "solves": null,
+      "words": 1120,
+      "parser": "docling",
+      "warnings": [
+        "(from cache)"
+      ]
+    }
+  ],
+  "problems": [],
+  "warnings": [],
+  "budget": null
+}

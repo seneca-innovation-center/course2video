@@ -11,6 +11,10 @@
   longer keep a model-written `source_doc` (#9)
 - `course2video score`: reviewer score sheets, agreement, review time (#10)
 - Citation file and changelog (#4)
+- Tested end to end with gpt-oss-120b on our internal server; example outputs regenerated
+  with it (`examples/*/output/`) and `scripts/run_gpt_oss_eval.sh` to repeat the runs (#9, #2, #3)
+- Fixes from the gpt-oss runs: no invented examples, every chapter gets a slide, plain-text
+  titles and bullets, brace-less `\mathbf`, `cases` equations, decimal commas in grounding
 
 ## 0.1.0 (2026-11-04)
 

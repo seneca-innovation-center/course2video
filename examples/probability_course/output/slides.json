@@ -1,0 +1,189 @@
+{
+  "title": "Introduction to Probability",
+  "language": "en",
+  "slides": [
+    {
+      "id": 1,
+      "title": "Sample Space",
+      "bullets": [
+        "Random experiment outcomes unknown",
+        "Sample space S = set of all possible outcomes",
+        "Example: die roll S = {1,2,3,4,5,6}"
+      ],
+      "equations": [],
+      "talking_points": [
+        "Why it matters: defining the universe of outcomes lets us assign probabilities rigorously.",
+        "Intuition: think of S as the list of every result you could possibly see when you run the experiment.",
+        "Example: for a single six-sided die, the sample space is S = {1,2,3,4,5,6}. This captures all six equally possible faces."
+      ],
+      "notes": "",
+      "source_section": "1. Sample spaces and events",
+      "kind": "theory",
+      "figure": "",
+      "source_doc": ""
+    },
+    {
+      "id": 2,
+      "title": "Events and Set Operations",
+      "bullets": [
+        "Event = subset of S",
+        "Union A∪B, Intersection A∩B, Complement Aᶜ",
+        "Disjoint events have empty intersection"
+      ],
+      "equations": [],
+      "talking_points": [
+        "Why it matters: events are the objects we assign probabilities to, and set operations let us combine them.",
+        "Intuition: an event is simply a collection of outcomes you care about, like \"even roll\".",
+        "Example: A = {2,4,6} (even), B = {4,5,6} (greater than 3). Union A∪B = {2,4,5,6}, Intersection A∩B = {4,6}. This matches the worked example in the notes.",
+        "Common mistake: forgetting that the union counts outcomes appearing in both sets unless you subtract the intersection."
+      ],
+      "notes": "",
+      "source_section": "1. Sample spaces and events",
+      "kind": "theory",
+      "figure": "",
+      "source_doc": ""
+    },
+    {
+      "id": 3,
+      "title": "Kolmogorov Axioms",
+      "bullets": [
+        "P(A) ≥ 0",
+        "P(S) = 1",
+        "If A∩B=∅ then P(A∪B)=P(A)+P(B)"
+      ],
+      "equations": [
+        {
+          "latex": "P ( A ) \\geq 0 , \\; P ( S ) = 1",
+          "explanation": "Probabilities are never negative and the whole sample space has probability one."
+        },
+        {
+          "latex": "P ( A \\cup B ) = P ( A ) + P ( B ) \\text{ if } A \\cap B = \\emptyset",
+          "explanation": "For disjoint events the probability of their union is the sum of their individual probabilities."
+        }
+      ],
+      "talking_points": [
+        "Why it matters: these axioms are the foundation from which all probability rules are derived.",
+        "Intuition: think of probability as a weight assigned to sets of outcomes; the whole space must weigh to one and weights cannot be negative.",
+        "Connection: from these axioms we can derive formulas for complements and general unions."
+      ],
+      "notes": "",
+      "source_section": "2. Axioms of probability",
+      "kind": "theory",
+      "figure": "",
+      "source_doc": ""
+    },
+    {
+      "id": 4,
+      "title": "Addition Rule and Uniform Example",
+      "bullets": [
+        "P(A∪B)=P(A)+P(B)-P(A∩B)",
+        "Uniform case: P(event)=#outcomes/total",
+        "Even roll probability = 3/6 = 1/2"
+      ],
+      "equations": [
+        {
+          "latex": "P ( A \\cup B ) = P ( A ) + P ( B ) - P ( A \\cap B )",
+          "explanation": "For any two events we subtract the overlap to avoid double‑counting."
+        }
+      ],
+      "talking_points": [
+        "Why it matters: most real problems involve events that are not disjoint, so we need the full addition rule.",
+        "Intuition: start with the sum of probabilities, then remove the part counted twice.",
+        "Example: for a fair die, event \"even\" has 3 favorable outcomes out of 6, giving P(even)=3/6=1/2. This uses the uniform probability formula.",
+        "Common mistake: forgetting to subtract P(A∩B) leads to probabilities larger than 1."
+      ],
+      "notes": "",
+      "source_section": "2. Axioms of probability",
+      "kind": "theory",
+      "figure": "",
+      "source_doc": ""
+    },
+    {
+      "id": 5,
+      "title": "Conditional probability and independence",
+      "bullets": [
+        "P(A|B)=P(A∩B)/P(B)",
+        "Multiplication rule: P(A∩B)=P(A|B)P(B)",
+        "Independence: P(A∩B)=P(A)P(B)"
+      ],
+      "equations": [
+        {
+          "latex": "P ( A \\mid B ) = \\frac { P ( A \\cap B ) } { P ( B ) }",
+          "explanation": "The probability of A given B is the joint probability divided by the probability of B."
+        },
+        {
+          "latex": "P ( A \\cap B ) = P ( A \\mid B ) P ( B )",
+          "explanation": "Rearranged form, showing how to compute a joint probability from a conditional."
+        }
+      ],
+      "talking_points": [
+        "Conditional probability tells us how our belief about A changes once we know B happened.",
+        "Independence means learning B does not affect the chance of A, so the joint factorises.",
+        "Example: drawing two cards without replacement. P(both aces)=4/52 × 3/51≈0.0045; the second factor is P(second ace|first ace).",
+        "A common mistake is to treat dependent events as independent and multiply marginal probabilities."
+      ],
+      "notes": "",
+      "source_section": "3. Conditional probability and independence",
+      "kind": "theory",
+      "figure": "",
+      "source_doc": ""
+    },
+    {
+      "id": 6,
+      "title": "Bayes' theorem",
+      "bullets": [
+        "P(B|A)=P(A|B)P(B)/P(A)",
+        "Prior = P(B), Posterior = P(B|A)",
+        "Denominator via total probability"
+      ],
+      "equations": [
+        {
+          "latex": "P ( B \\mid A ) = \\frac { P ( A \\mid B ) P ( B ) } { P ( A ) }",
+          "explanation": "Bayes' theorem expresses the reverse conditional probability in terms of the forward one."
+        }
+      ],
+      "talking_points": [
+        "Bayes' theorem lets us update our belief about B after observing A.",
+        "The prior P(B) reflects the initial chance of B, while the posterior P(B|A) is the updated chance.",
+        "Example: disease prevalence 1%, test sensitivity 99%, false positive 5%. Posterior ≈0.17, showing most positives are false.",
+        "Beware: forgetting to compute P(A) correctly; usually need the law of total probability."
+      ],
+      "notes": "",
+      "source_section": "4. Bayes' theorem",
+      "kind": "theory",
+      "figure": "",
+      "source_doc": ""
+    },
+    {
+      "id": 7,
+      "title": "Discrete random variables: expectation & variance",
+      "bullets": [
+        "E[X]=Σ x p(x)",
+        "Var(X)=E[X²]−(E[X])²",
+        "Linearity: E[aX+b]=aE[X]+b"
+      ],
+      "equations": [
+        {
+          "latex": "E [ X ] = \\sum _ { x } x \\, p ( x )",
+          "explanation": "The mean is the weighted average of all possible values."
+        },
+        {
+          "latex": "V a r ( X ) = E [ X ^ { 2 } ] - ( E [ X ] ) ^ { 2 }",
+          "explanation": "Variance measures the average squared deviation from the mean."
+        }
+      ],
+      "talking_points": [
+        "A discrete random variable maps outcomes to numbers; its pmf gives probabilities for each value.",
+        "Expectation is linear, making calculations with sums of variables easy.",
+        "Example: fair die. E[X]=3.5, E[X²]=91/6, variance≈2.92.",
+        "A subtle point: adding a constant shifts the mean but does not change variance."
+      ],
+      "notes": "",
+      "source_section": "5. Discrete random variables",
+      "kind": "theory",
+      "figure": "",
+      "source_doc": ""
+    }
+  ],
+  "approved": true
+}

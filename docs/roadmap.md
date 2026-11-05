@@ -15,7 +15,8 @@ implemented unless it says so.
 - [x] **Target length** (`--minutes`) driving slide count and words per slide
 
 ## Next
-- [ ] **Local LLM validation:** run the same sample and the smoke test with gpt-oss-120b (vLLM) and gpt-oss-20b (Ollama); compare against the development runs using `eval/rubric.md`
+- [x] **Local LLM run:** four example courses and the smoke test with gpt-oss-120b on our internal server (`examples/demo.md`)
+- [ ] gpt-oss-20b on modest hardware; score gpt-oss-120b output with `eval/rubric.md`
 - [ ] **Link exercises to theory sections** (which part of the lecture a problem uses), and
       several lectures/chapters per course folder with per-chapter exercises
 - [ ] Practical sessions (TP/labs): typed already, not yet turned into slides

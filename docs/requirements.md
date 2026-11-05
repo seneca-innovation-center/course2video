@@ -32,8 +32,8 @@ measured yet says so.
 |---|---|---|
 | Sample vector spaces notes | 2 | ~4-7 min |
 | Sample probability notes (equations as images) | 3 | 12 min |
-| MIT 18.05 Reading 3 | 12 | 44 min |
-| MIT 18.05 Problem Set 2 solutions | 6 | 24 min |
+| MIT 18.05 Reading 3 | 12 | 28-44 min |
+| MIT 18.05 Problem Set 2 solutions | 6 | 16-24 min |
 | MIT 18.05 Problem Set 2 (no display formulas) | 3 | 5 s |
 
 That is roughly **4 minutes per formula-heavy page on CPU**. On a GPU it is expected to be much
@@ -42,18 +42,17 @@ faster; **not measured yet**.
 ## One typical course, end to end
 
 **Measured** on the MIT 18.05 package (12-page reading + problem set + solutions, 20-minute
-target, development run with a hosted LLM API):
+target) with **gpt-oss-120b** on our internal server (8k context):
 
 | Stage | Time |
 |---|---|
-| Parsing (CPU, first run only) | 68 min |
-| Slides (LLM) | 1.6 min |
-| Script (LLM) | 1.8 min |
-| Slide images + Piper TTS + FFmpeg | 0.9 min |
+| Parsing (Docling on the laptop CPU, first run only) | 44 min |
+| Slides (gpt-oss-120b) | 4.4 min |
+| Script (gpt-oss-120b) | 2.3 min |
+| Slide images + Piper TTS + FFmpeg (laptop) | 1.2 min |
 | Lecturer review | not measured yet ([#10](https://github.com/seneca-innovation-center/course2video/issues/10)) |
 
-LLM times with gpt-oss-120b / gpt-oss-20b are **not measured yet**
-([#9](https://github.com/seneca-innovation-center/course2video/issues/9)).
+gpt-oss-20b timings are not measured yet.
 
 ## Disk space
 

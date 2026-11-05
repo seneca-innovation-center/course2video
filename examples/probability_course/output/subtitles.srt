@@ -1,0 +1,615 @@
+1
+00:00:00,000 --> 00:00:00,502
+Welcome.
+
+2
+00:00:00,502 --> 00:00:03,829
+In this lecture we study Introduction to Probability.
+
+3
+00:00:03,829 --> 00:00:06,339
+Generated with course2video (prototype).
+
+4
+00:00:06,939 --> 00:00:08,139
+Here is the plan.
+
+5
+00:00:08,139 --> 00:00:14,348
+We will go through 5 parts: Sample spaces and events, Axioms of probability, Conditional
+
+6
+00:00:14,348 --> 00:00:19,640
+probability and independence, Bayes' theorem and Discrete random variables.
+
+7
+00:00:20,240 --> 00:00:24,246
+Let's start with part 1: Sample spaces and events.
+
+8
+00:00:24,846 --> 00:00:27,537
+So why do we even talk about a sample space?
+
+9
+00:00:27,537 --> 00:00:32,246
+Imagine you’re about to conduct an experiment but you have no idea what could
+
+10
+00:00:32,246 --> 00:00:33,224
+possibly happen.
+
+11
+00:00:33,224 --> 00:00:37,444
+Without a clear list of outcomes you can’t talk about chances at all.
+
+12
+00:00:37,444 --> 00:00:41,908
+The sample space, which we denote by the letter S, is precisely that list
+
+13
+00:00:41,908 --> 00:00:45,883
+– the universe of all outcomes that the experiment could produce.
+
+14
+00:00:45,883 --> 00:00:50,042
+Think of it like a catalogue of every result you could ever see when
+
+15
+00:00:50,042 --> 00:00:51,449
+you run the experiment.
+
+16
+00:00:51,449 --> 00:00:55,240
+For a simple example, consider rolling a single six‑sided die.
+
+17
+00:00:55,240 --> 00:00:59,582
+The outcomes are the six faces, so we write S equals the set containing
+
+18
+00:00:59,582 --> 00:01:01,600
+one, two, three, four, five, six.
+
+19
+00:01:01,600 --> 00:01:06,676
+That set captures every possible result, and because we have enumerated all of them
+
+20
+00:01:06,676 --> 00:01:10,284
+we can now start assigning probabilities in a rigorous way.
+
+21
+00:01:10,284 --> 00:01:15,055
+The key takeaway is that defining the sample space gives us a solid foundation
+
+22
+00:01:15,055 --> 00:01:18,112
+for everything that follows in probability theory.
+
+23
+00:01:18,712 --> 00:01:23,355
+Now that we have a sample space, the next question is what we actually
+
+24
+00:01:23,355 --> 00:01:24,947
+assign probabilities to.
+
+25
+00:01:24,947 --> 00:01:29,391
+The answer is events, which are simply subsets of the sample space.
+
+26
+00:01:29,391 --> 00:01:34,299
+In other words, an event is any collection of outcomes that you care about
+
+27
+00:01:34,299 --> 00:01:39,407
+– for instance, the event "even roll" consists of the outcomes two, four, and
+
+28
+00:01:39,407 --> 00:01:39,672
+six.
+
+29
+00:01:39,672 --> 00:01:44,713
+Because events are sets, we can combine them using the usual set operations.
+
+30
+00:01:44,713 --> 00:01:50,019
+The union of two events, A union B, represents everything that belongs to either
+
+31
+00:01:50,019 --> 00:01:50,483
+A or B.
+
+32
+00:01:50,483 --> 00:01:55,458
+The intersection, A intersect B, captures outcomes that are common to both.
+
+33
+00:01:55,458 --> 00:02:00,632
+The complement, A complement, is everything in the sample space that is not in
+
+34
+00:02:00,632 --> 00:02:00,764
+A.
+
+35
+00:02:00,764 --> 00:02:05,938
+If two events have no outcomes in common, we call them disjoint, meaning their
+
+36
+00:02:05,938 --> 00:02:07,397
+intersection is empty.
+
+37
+00:02:07,397 --> 00:02:12,106
+A concrete illustration: let A be the even numbers {2,4,6} and B be the
+
+38
+00:02:12,106 --> 00:02:14,428
+numbers greater than three {4,5,6}.
+
+39
+00:02:14,428 --> 00:02:20,464
+Their union is {2,4,5,6}, their intersection is {4,6}, and because they share outcomes they
+
+40
+00:02:20,464 --> 00:02:21,591
+are not disjoint.
+
+41
+00:02:21,591 --> 00:02:26,964
+A common slip is to forget that the union initially counts shared outcomes twice,
+
+42
+00:02:26,964 --> 00:02:32,668
+so you must be careful to account for the intersection when calculating probabilities.
+
+43
+00:02:33,268 --> 00:02:37,134
+Now we move on to part 2: Axioms of probability.
+
+44
+00:02:37,734 --> 00:02:42,435
+All of the set language we just introduced rests on three simple but powerful
+
+45
+00:02:42,435 --> 00:02:44,572
+rules called the Kolmogorov axioms.
+
+46
+00:02:44,572 --> 00:02:48,846
+First, the probability of any event A must be greater than or equal to
+
+47
+00:02:48,846 --> 00:02:51,471
+zero – probabilities can never be negative.
+
+48
+00:02:51,471 --> 00:02:55,989
+Second, the probability of the whole sample space S is equal to one, which
+
+49
+00:02:55,989 --> 00:03:00,385
+reflects the fact that something in S must happen every time you run the
+
+50
+00:03:00,385 --> 00:03:01,057
+experiment.
+
+51
+00:03:01,057 --> 00:03:05,392
+Third, if you have two events that are disjoint – meaning they share no
+
+52
+00:03:05,392 --> 00:03:09,727
+outcomes – then the probability of their union is just the sum of their
+
+53
+00:03:09,727 --> 00:03:11,253
+individual probabilities.
+
+54
+00:03:11,253 --> 00:03:15,832
+In plain language, think of probability as a weight assigned to each set of
+
+55
+00:03:15,832 --> 00:03:20,350
+outcomes; the total weight of everything must add up to one, and you can’t
+
+56
+00:03:20,350 --> 00:03:21,633
+have negative weight.
+
+57
+00:03:21,633 --> 00:03:26,883
+These axioms are the bedrock from which we derive all other probability formulas, such
+
+58
+00:03:26,883 --> 00:03:31,890
+as the rule for complements and the general addition rule for non‑disjoint events.
+
+59
+00:03:31,890 --> 00:03:36,469
+Remember, everything we do in probability builds on these three statements.
+
+60
+00:03:37,069 --> 00:03:41,346
+So far we have seen how probabilities must add up to one, but most
+
+61
+00:03:41,346 --> 00:03:44,262
+of the time the events we care about overlap.
+
+62
+00:03:44,262 --> 00:03:45,623
+Why does that matter?
+
+63
+00:03:45,623 --> 00:03:50,743
+If we just summed the probabilities of two events that share outcomes, we would
+
+64
+00:03:50,743 --> 00:03:55,020
+double‑count the overlap and end up with a number larger than one.
+
+65
+00:03:55,020 --> 00:04:00,010
+The intuition is simple: start with the sum of the two probabilities and then
+
+66
+00:04:00,010 --> 00:04:02,667
+subtract the part that was counted twice.
+
+67
+00:04:02,667 --> 00:04:07,463
+Formally, for any two events A and B the probability of their union equals
+
+68
+00:04:07,463 --> 00:04:12,194
+the probability of A plus the probability of B minus the probability of A
+
+69
+00:04:12,194 --> 00:04:12,971
+intersect B.
+
+70
+00:04:12,971 --> 00:04:16,277
+This subtraction removes the double‑counted region.
+
+71
+00:04:16,277 --> 00:04:19,841
+Let’s see how this works in a concrete uniform setting.
+
+72
+00:04:19,841 --> 00:04:21,720
+Imagine a fair six‑sided die.
+
+73
+00:04:21,720 --> 00:04:26,257
+The event "even" consists of the outcomes 2, 4, and 6 – three outcomes
+
+74
+00:04:26,257 --> 00:04:28,266
+out of six equally likely ones.
+
+75
+00:04:28,266 --> 00:04:33,904
+Using the uniform formula, the probability is three divided by six, which simplifies to
+
+76
+00:04:33,904 --> 00:04:34,487
+one‑half.
+
+77
+00:04:34,487 --> 00:04:39,866
+Notice how we didn’t need to worry about an intersection here because we’re dealing
+
+78
+00:04:39,866 --> 00:04:44,856
+with a single event, but the same principle will apply when we combine events
+
+79
+00:04:44,856 --> 00:04:45,245
+later.
+
+80
+00:04:45,245 --> 00:04:50,429
+A common mistake students make is to forget the subtraction term, which can push
+
+81
+00:04:50,429 --> 00:04:52,503
+the total probability above one.
+
+82
+00:04:52,503 --> 00:04:56,715
+Keep the full addition rule in mind as we move on to more complex
+
+83
+00:04:56,715 --> 00:04:57,364
+scenarios.
+
+84
+00:04:57,964 --> 00:05:03,130
+Now we move on to part 3: Conditional probability and independence.
+
+85
+00:05:03,730 --> 00:05:08,604
+Now that we understand how to combine overlapping events, we need a way to
+
+86
+00:05:08,604 --> 00:05:13,610
+talk about how the probability of one event changes when we know another has
+
+87
+00:05:13,610 --> 00:05:14,203
+occurred.
+
+88
+00:05:14,203 --> 00:05:19,538
+That is what conditional probability captures: it tells us how our belief about A
+
+89
+00:05:19,538 --> 00:05:22,436
+is updated once B is known to have happened.
+
+90
+00:05:22,436 --> 00:05:28,101
+The formula says the conditional probability of A given B equals the joint probability
+
+91
+00:05:28,101 --> 00:05:30,933
+of A and B divided by the probability of B.
+
+92
+00:05:30,933 --> 00:05:37,125
+Rearranging this gives the multiplication rule, which lets us compute the joint probability as
+
+93
+00:05:37,125 --> 00:05:42,263
+the product of the conditional probability of A given B and the probability of
+
+94
+00:05:42,263 --> 00:05:42,394
+B.
+
+95
+00:05:42,394 --> 00:05:47,269
+If the events are independent, learning B tells us nothing about A, so the
+
+96
+00:05:47,269 --> 00:05:52,472
+conditional probability of A given B is just the original probability of A, and
+
+97
+00:05:52,472 --> 00:05:58,005
+the joint probability factorises into the product of the two marginal probabilities.
+
+98
+00:05:58,005 --> 00:06:02,418
+As an illustration, consider drawing two cards without replacement.
+
+99
+00:06:02,418 --> 00:06:07,556
+The probability that both are aces equals the probability the first card is an
+
+100
+00:06:07,556 --> 00:06:12,364
+ace – four out of fifty‑two – multiplied by the probability the second is
+
+101
+00:06:12,364 --> 00:06:16,316
+an ace given the first was an ace – three out of fifty‑one –
+
+102
+00:06:16,316 --> 00:06:18,424
+which works out to about 0.0045.
+
+103
+00:06:18,424 --> 00:06:23,825
+A frequent slip is to treat dependent draws as independent and simply multiply the
+
+104
+00:06:23,825 --> 00:06:28,634
+marginal probabilities, which would give a much larger, incorrect answer.
+
+105
+00:06:29,234 --> 00:06:32,717
+Now we move on to part 4: Bayes' theorem.
+
+106
+00:06:33,317 --> 00:06:38,935
+Having seen how to update probabilities when we learn new information, we arrive at
+
+107
+00:06:38,935 --> 00:06:42,793
+Bayes’ theorem, the cornerstone of statistical inference.
+
+108
+00:06:42,793 --> 00:06:48,750
+The theorem lets us reverse a conditional probability: it expresses the probability of B
+
+109
+00:06:48,750 --> 00:06:53,555
+given A in terms of the probability of A given B, the prior probability
+
+110
+00:06:53,555 --> 00:06:56,195
+of B, and the overall probability of A.
+
+111
+00:06:56,195 --> 00:07:01,407
+In words, Bayes’ theorem tells us how to update our belief about hypothesis B
+
+112
+00:07:01,407 --> 00:07:03,235
+after observing evidence A.
+
+113
+00:07:03,235 --> 00:07:08,650
+The prior, P of B, reflects our initial assessment before seeing any data, while
+
+114
+00:07:08,650 --> 00:07:13,794
+the posterior, P of B given A, is the revised belief after incorporating the
+
+115
+00:07:13,794 --> 00:07:14,403
+evidence.
+
+116
+00:07:14,403 --> 00:07:19,141
+To compute the denominator, P of A, we usually invoke the law of total
+
+117
+00:07:19,141 --> 00:07:22,323
+probability, summing over all ways A can occur.
+
+118
+00:07:22,323 --> 00:07:27,805
+As a concrete example, suppose a disease affects one percent of a population, the
+
+119
+00:07:27,805 --> 00:07:33,559
+test correctly identifies an infected person 99 percent of the time, and it registers
+
+120
+00:07:33,559 --> 00:07:37,011
+a false positive in five percent of healthy people.
+
+121
+00:07:37,011 --> 00:07:43,644
+Plugging these numbers into Bayes’ formula yields a posterior probability of roughly 0.17, meaning
+
+122
+00:07:43,644 --> 00:07:49,330
+that only about 17 percent of positive test results actually indicate disease – most
+
+123
+00:07:49,330 --> 00:07:50,684
+are false positives.
+
+124
+00:07:50,684 --> 00:07:56,302
+The key pitfall is forgetting to calculate P of A correctly, which can dramatically
+
+125
+00:07:56,302 --> 00:07:57,791
+distort the posterior.
+
+126
+00:07:58,391 --> 00:08:02,780
+Now we move on to part 5: Discrete random variables.
+
+127
+00:08:03,380 --> 00:08:08,773
+So far we've seen how Bayes' theorem lets us update probabilities; now we turn
+
+128
+00:08:08,773 --> 00:08:12,093
+to describing a single discrete random variable.
+
+129
+00:08:12,093 --> 00:08:16,933
+Think of the variable as a rule that assigns a number to each outcome,
+
+130
+00:08:16,933 --> 00:08:21,705
+and the probability mass function tells us how likely each number is.
+
+131
+00:08:21,705 --> 00:08:27,306
+Because the outcomes are discrete we can actually write down the expectation as a
+
+132
+00:08:27,306 --> 00:08:27,583
+sum.
+
+133
+00:08:27,583 --> 00:08:31,593
+The formula on the screen, the sum of x times p of x, says
+
+134
+00:08:31,593 --> 00:08:36,987
+we weight each possible value by its probability and add them up – essentially
+
+135
+00:08:36,987 --> 00:08:38,301
+a weighted average.
+
+136
+00:08:38,301 --> 00:08:43,764
+This linearity is powerful: if you have aX plus b, the expectation just becomes
+
+137
+00:08:43,764 --> 00:08:46,530
+a times the original expectation plus b.
+
+138
+00:08:46,530 --> 00:08:49,504
+No need to recompute anything from scratch.
+
+139
+00:08:49,504 --> 00:08:54,068
+Let me illustrate with a familiar example: the roll of a fair die.
+
+140
+00:08:54,068 --> 00:08:58,839
+The possible values are 1 through 6, each with probability one sixth.
+
+141
+00:08:58,839 --> 00:09:04,233
+Multiplying each value by one sixth and adding gives 3.5, so the expected roll
+
+142
+00:09:04,233 --> 00:09:05,616
+is three and a half.
+
+143
+00:09:05,616 --> 00:09:11,287
+Squaring each value first, weighting and summing gives 91 over 6, about 15.17, for
+
+144
+00:09:11,287 --> 00:09:12,186
+E[X squared].
+
+145
+00:09:12,186 --> 00:09:17,649
+Subtracting the square of the mean, 3.5 squared, yields a variance around 2.92.
+
+146
+00:09:17,649 --> 00:09:23,181
+Notice how adding a constant, say adding three to every roll, would increase the
+
+147
+00:09:23,181 --> 00:09:28,367
+mean by three but leave that variance unchanged – a subtle point that often
+
+148
+00:09:28,367 --> 00:09:29,473
+trips people up.
+
+149
+00:09:29,473 --> 00:09:36,181
+In short, expectation gives the weighted center, variance measures spread, and both behave nicely
+
+150
+00:09:36,181 --> 00:09:38,187
+under linear transformations.
+
+151
+00:09:38,787 --> 00:09:41,375
+That brings us to the end of this lecture.
+
+152
+00:09:41,375 --> 00:09:48,031
+We covered Sample spaces and events, Axioms of probability, Conditional probability and independence, Bayes'
+
+153
+00:09:48,031 --> 00:09:50,372
+theorem and Discrete random variables.
+
+154
+00:09:50,372 --> 00:09:51,790
+Thank you for watching.

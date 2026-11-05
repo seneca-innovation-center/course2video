@@ -9,6 +9,7 @@ import yaml
 
 DocType = Literal["lecture", "exercises", "solutions", "practical"]
 SUPPORTED = {".pdf", ".md", ".markdown", ".txt"}
+SKIP_DIRS = {"output", "out", "parsed", "figures", "images", "audio", "parts"}
 
 ROLE_PATTERNS: list[tuple[DocType, str]] = [
     ("solutions", r"sol(ution)?s?\b|_sol|corrig|answer|\bkey\b"),
@@ -83,7 +84,8 @@ def _from_manifest(root: Path, data: dict) -> Course:
 
 def _from_filenames(root: Path) -> Course:
     course = Course(root=root, title=root.name.replace("_", " ").replace("-", " "))
-    files = sorted(p for p in root.rglob("*") if p.suffix.lower() in SUPPORTED and p.is_file())
+    files = sorted(p for p in root.rglob("*") if p.suffix.lower() in SUPPORTED and p.is_file()
+                   and not set(p.relative_to(root).parts[:-1]) & SKIP_DIRS)
     for p in files:
         role = guess_role(p.relative_to(root))
         if role is None:

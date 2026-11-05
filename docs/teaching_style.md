@@ -65,31 +65,23 @@ points are approved with the slides, and the script step sees nothing else.
 - Yue, Bjork & Bjork (2013), *Reducing verbal redundancy in multimedia learning*, J. Educational Psychology 105(2)
 - Guo, Kim & Rubin (2014), *How video production affects student engagement: an empirical study of MOOC videos*, ACM Learning at Scale
 
-## Initial result on the MIT 18.05 course (20-minute target)
+## Result with gpt-oss-120b on the MIT 18.05 course (20-minute target)
 
-Development runs with a hosted LLM API, made before the local gpt-oss setup and only on openly
-licensed course material; to be reproduced with gpt-oss-120b.
+gpt-oss-120b on our internal server, three documents (reading, problem set, official
+solutions), slides approved without edits ([`examples/demo.md`](../examples/demo.md)):
 
-Same three documents, same LLM, before and after this change:
+| | Result |
+|---|---|
+| Content slides | 17 (11 theory, 3 exercise, 3 solution) |
+| Words per bullet on screen | 5.7 (max 11) |
+| Words spoken per slide | 212 |
+| Spoken words per word shown | 9.1 (MIT lecture: ≈ 16; reading the slides out loud: ≈ 1-2) |
+| Talking points | 79, of which 8 flagged by `grounding.json` (phrasing and correct derived numbers) |
+| Video length | 23.9 min |
 
-| | Reading the slides (v1) | Lecture style (now) |
-|---|---|---|
-| Content slides | 24 | 14 (8 theory, 3 exercise, 3 solution) |
-| Words per bullet on screen | 13.2 (max 25) | 7.6 (max 14) |
-| Words spoken per slide | 140 | 246 |
-| Spoken words per word shown | ≈ 1-2 | 7.2 (MIT lecture: ≈ 16) |
-| Video length | 22.9 min | 23.4 min |
-| Talking points flagged by `grounding.json` | n/a | 8 of ~70 |
+Excerpt of the narration (slide "Bayes' Theorem and Independence Paradox"):
 
-The 8 flags: 4 framing sentences of the "lecturer voice" kind ("before computing, ask
-yourself whether the answers should match"), and 4 solution steps of Problem 3 whose numbers
-the model re-derived because the official probability tree is a **figure that the parser
-dropped**. The numbers are correct, but they are not in the source, which is exactly the
-case a lecturer must check.
-
-Excerpt of the narration (Bayes' theorem slide, 4 bullets + 2 formulas on screen):
-
-> We've computed P of A given B many times. But what if we know P of A given B and need P of B
-> given A? Bayes' theorem inverts conditional probabilities … Why bother? Because the two
-> conditionals can be very different, and confusing them is the classic mistake. Toss a coin
-> five times …
+> Having settled what independence means, let's explore a subtle edge case and then see how
+> Bayes' theorem lets us flip conditional statements. First, consider an event that never
+> happens, so its probability is zero. Plugging that into the independence condition … gives
+> zero equals zero, which technically satisfies independence, although it is a vacuous case …

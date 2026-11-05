@@ -41,7 +41,7 @@ were decoded much better, but one came back with **invented text appended**:
 P ( A \, | \, B ) = \frac { P ( A \cap B ) } { P ( B ) } \\ \intertext { a g i v e , t h e m u l i n i o t i o n ...
 ```
 
-In the development run the LLM dropped the garbage when it made the slide, and the renderer now strips
+In an earlier run the LLM dropped the garbage when it made the slide, and the renderer now strips
 `\intertext` and fixes Docling's spacing (`\sum _ { i = 1 }`), which matplotlib otherwise
 draws wrongly. Nothing flags such noise automatically yet.
 
@@ -64,6 +64,7 @@ once per file, but a real archive needs a GPU server for the parsing step.
 |---|---|---|
 | LLM output is not deterministic | Two runs give different slides | By design: review approves one version, and assembly is deterministic from there |
 | Schema-valid but wrong content | Wrong fact, changed notation, invented example | Lecturer review; `eval/rubric.md` for measurement |
+| Invented examples | gpt-oss-120b sometimes added examples of its own (a card example, an urn with 70 % red balls) in the first run | The prompt forbids it and an `Example:` talking point with numbers not in the source is sent back once; none in the second run. `grounding.json` flags any that remain |
 | Talking points go beyond the source | The lecturer-style explanation adds framing, and the model may re-derive steps whose source is a figure the parser dropped | Yes: `grounding.json` flags numbers not found in the source and low word overlap (8 of ~70 points on the MIT run) |
 | Narration adds or omits material | Script mentions things not on the slide | Partly: `alignment.json` (coverage, `novel_word_ratio`) |
 | Long sections | One section longer than `slides.chunk_chars` is sent whole, never cut | Large prompts may hit a local model's context limit; reduce chunk size |
@@ -74,7 +75,7 @@ Lexical content-word overlap. Paraphrases with different words count as **misses
 mentioning the right words in a wrong statement counts as a **hit**. It is a cheap
 smoke detector, not a correctness measure. Embedding similarity is on the roadmap.
 
-Observed false negative (development run on the sample, slide 3): the bullet
+Observed false negative (earlier run on the sample, slide 3): the bullet
 *"Non-example: y = 2x + 1 is not, since it lacks the zero vector"* scored 0.5, although
 the narration says *"the line y equals two x plus one is not a subspace, because it does
 not contain the zero vector"*. Formulas are spoken as words ("two x plus one"), and
