@@ -192,3 +192,163 @@ def test_course_yaml_language_wins_over_cli(tmp_path):
                                      "  - {path: notes.md, type: lecture}\n")
     run_stage1(src, tmp_path / "out", _cfg(), language="fr")
     assert Deck.model_validate_json((tmp_path / "out/slides.json").read_text()).language == "es"
+
+
+FRENCH = Path(__file__).parent.parent / "examples" / "cours_probabilites"
+
+
+def test_french_course_folder_end_to_end_with_mock(tmp_path):
+    import shutil
+
+    src = tmp_path / "cours"
+    shutil.copytree(FRENCH, src)
+    (src / "course.yaml").unlink()
+    run_stage1(src, tmp_path / "out", _cfg(), language="fr")
+    out = tmp_path / "out"
+    index = json.loads((out / "course_index.json").read_text())
+    assert sorted(d["type"] for d in index["documents"]) == ["exercises", "lecture", "solutions"]
+    assert [p["used"] for p in index["problems"]] == [True, True, True]
+    deck = Deck.model_validate_json((out / "slides.json").read_text())
+    assert deck.language == "fr"
+    ex2 = [s for s in deck.slides if s.kind == "exercise"][1]
+    assert ex2.source_doc == "TD 3, Exercice 2"
+    assert ex2.source_section == "Exercice corrigé 2: Test de dépistage"
+    run_stage2(out, _cfg(), video=False)
+    plan = json.loads((out / "lecture_plan.json").read_text())
+    assert plan[0]["narration"].startswith("Bienvenue.")
+    practise = [f["narration"] for f in plan if f["kind"] == "section" and "Entraînons" in f["narration"]]
+    assert len(practise) == 3 and "TD 3, Exercice 2 : Test de dépistage" in practise[1]
+
+
+def test_voice_follows_the_course_language():
+    from course2video.config import TTSConfig
+    from course2video.tts import piper_voice_for
+
+    cfg = TTSConfig()
+    assert piper_voice_for(cfg, "fr").endswith("fr_FR-siwis-medium.onnx")
+    assert piper_voice_for(cfg, "en-GB").endswith("en_US-ljspeech-medium.onnx")
+    assert piper_voice_for(cfg, "de") == cfg.piper_model
+
+
+def test_every_chapter_gets_a_slide_in_the_budget():
+    from course2video.slides.generate import count_chapters
+
+    md = (FRENCH / "cours" / "chapitre3_probabilites_conditionnelles.md").read_text()
+    assert count_chapters(md) == 4
+    b = plan_budget(10, source_words=1500, n_problems=3, min_theory_slides=4)
+    assert b.theory_slides >= 4 and any("4 chapters" in w for w in b.warnings)
+
+
+def test_french_decimal_commas_are_read_as_decimals():
+    from fractions import Fraction
+
+    from course2video.slides.grounding import numbers
+
+    assert Fraction("0.16") in numbers("environ 0,16", decimal_comma=True)
+    assert Fraction("0.16") not in numbers("environ 0,16")
+    assert Fraction(1) in numbers("(1, 2)", decimal_comma=True)
+    assert Fraction("2.4") not in numbers("les issues {2,4,6}", decimal_comma=True)
+
+
+@pytest.mark.parametrize("doc, message", [
+    ("{path: a.md, type: exercise}", "'exercise' is not a document type; use one of: lecture, exercises"),
+    ("{path: a.md, type: solution}", "'solution' is not a document type"),
+    ("{type: lecture}", "documents.0.path"),
+    ("{path: a.md, type: lecture, select: [one]}", "documents.0.select.0"),
+    ("{path: a.md, type: lecture, chapter: 2}", "documents.0.chapter"),
+])
+def test_course_yaml_is_validated(tmp_path, doc, message):
+    from course2video.course.manifest import ManifestError
+
+    (tmp_path / "a.md").write_text("# A\n\ntext")
+    (tmp_path / "course.yaml").write_text(f"title: T\ndocuments:\n  - {doc}\n")
+    with pytest.raises(ManifestError) as e:
+        load_course(tmp_path)
+    assert message in str(e.value) and "course.yaml" in str(e.value)
+
+
+def test_course_yaml_target_minutes_must_be_positive(tmp_path):
+    from course2video.course.manifest import ManifestError
+
+    (tmp_path / "a.md").write_text("# A\n\ntext")
+    (tmp_path / "course.yaml").write_text(
+        "target_minutes: -5\ndocuments:\n  - {path: a.md, type: lecture}\n")
+    with pytest.raises(ManifestError, match="target_minutes"):
+        load_course(tmp_path)
+
+
+def test_cli_reports_an_invalid_course_yaml(tmp_path, capsys):
+    from course2video.cli import main
+
+    (tmp_path / "a.md").write_text("# A\n\ntext")
+    (tmp_path / "course.yaml").write_text("documents:\n  - {path: a.md, type: notes}\n")
+    assert main(["run", str(tmp_path), "--out", str(tmp_path / "out")]) == 2
+    assert "is not a document type" in capsys.readouterr().err
+
+
+def test_parse_cache_is_refreshed_after_a_parser_upgrade(tmp_path, monkeypatch):
+    import json as _json
+
+    from course2video.parsing import cache
+
+    src = tmp_path / "notes.md"
+    src.write_text("# A\n\nfirst")
+    calls = []
+
+    class FakeParser:
+        def parse(self, path):
+            from course2video.parsing.base import ParsedDocument
+
+            calls.append(1)
+            return ParsedDocument(source=path, markdown=path.read_text(), parser="docling")
+
+    monkeypatch.setattr("course2video.parsing.get_parser", lambda *a, **k: FakeParser())
+    monkeypatch.setattr(cache, "parser_version", lambda p: "2.144.0")
+    cache.parse_cached(src, "docling", cache_dir=tmp_path / "c")
+    cache.parse_cached(src, "docling", cache_dir=tmp_path / "c")
+    assert len(calls) == 1
+    monkeypatch.setattr(cache, "parser_version", lambda p: "3.0.0")
+    cache.parse_cached(src, "docling", cache_dir=tmp_path / "c")
+    assert len(calls) == 2
+    meta = next((tmp_path / "c").glob("*.json"))
+    assert _json.loads(meta.read_text())["parser_version"] == "3.0.0"
+
+
+def test_custom_piper_model_is_used_for_english():
+    from course2video.config import TTSConfig
+    from course2video.tts import piper_voice_for
+
+    cfg = TTSConfig(piper_model="models/piper/en_GB-custom.onnx")
+    assert piper_voice_for(cfg, "en") == "models/piper/en_GB-custom.onnx"
+    assert piper_voice_for(cfg, "fr").endswith("fr_FR-siwis-medium.onnx")
+
+
+def test_unnumbered_lectures_set_no_minimum_slide_count():
+    from course2video.slides.generate import count_chapters
+
+    md = "# Course\n\n" + "".join(f"## Topic {c}\n\ntext\n\n" for c in "ABCDEFGHIJKLMNOPQRST")
+    assert count_chapters(md) == 0
+
+
+def test_cache_removes_the_parser_temp_folder(tmp_path, monkeypatch):
+    import tempfile as _tempfile
+
+    from PIL import Image
+
+    from course2video.parsing import cache
+    from course2video.parsing.base import FigureRef, ParsedDocument
+
+    temp = Path(_tempfile.mkdtemp(prefix="c2v_fig_"))
+    Image.new("RGB", (10, 10)).save(temp / "fig_0.png")
+    src = tmp_path / "notes.md"
+    src.write_text("# A\n\n[[FIG:0]]")
+
+    class FakeParser:
+        def parse(self, path):
+            return ParsedDocument(source=path, markdown=path.read_text(), parser="docling",
+                                  figures=[FigureRef(path=temp / "fig_0.png")])
+
+    monkeypatch.setattr("course2video.parsing.get_parser", lambda *a, **k: FakeParser())
+    doc = cache.parse_cached(src, "docling", cache_dir=tmp_path / "c")
+    assert doc.figures[0].path.exists() and doc.figures[0].path.parent == tmp_path / "c"
+    assert not temp.exists()

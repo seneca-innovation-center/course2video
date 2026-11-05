@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import re
 from pathlib import Path
 
@@ -13,6 +14,7 @@ Format: '## Slide N: Title', then '- ' bullets, '$$ latex $$' followed by a
 '> explanation' line for each equation, optional 'Notes:' and 'Source:' lines.
 'Say:' lines are talking points: what the lecturer explains out loud (not shown on the slide).
 'Kind:' is theory, exercise or solution; 'From:' names the source document and problem.
+'Figure:' shows a source figure on the slide (ids in figures/figures.json); delete the line to remove it.
 Delete a whole '## Slide' block to drop a slide. Slides are renumbered in order.
 -->
 """
@@ -32,6 +34,8 @@ def deck_to_markdown(deck: Deck) -> str:
             out += ["", f"Notes: {s.notes}"]
         if s.source_section:
             out.append(f"Source: {s.source_section}")
+        if s.figure:
+            out.append(f"Figure: {s.figure}")
         if s.kind != "theory":
             out.append(f"Kind: {s.kind}")
         if s.source_doc:
@@ -70,7 +74,7 @@ def markdown_to_deck(md: str) -> Deck:
         if h:
             slides.append({"title": h.group(1).strip(), "bullets": [], "equations": [],
                            "notes": "", "source_section": "", "kind": "theory", "source_doc": "",
-                           "talking_points": []})
+                           "talking_points": [], "figure": ""})
             last = None
             continue
         if not line:
@@ -109,6 +113,9 @@ def markdown_to_deck(md: str) -> Deck:
         elif line.startswith("Source:"):
             cur["source_section"] = line[7:].strip()
             last = None
+        elif line.startswith("Figure:"):
+            cur["figure"] = (line[7:].split() or [""])[0]
+            last = None
         elif line.startswith("Kind:"):
             cur["kind"] = line[5:].strip().lower()
             last = None
@@ -137,7 +144,7 @@ def markdown_to_deck(md: str) -> Deck:
                   equations=[Equation(**e) for e in s["equations"]],
                   notes=s["notes"], source_section=s["source_section"],
                   kind=s["kind"], source_doc=s["source_doc"],
-                  talking_points=s["talking_points"])
+                  talking_points=s["talking_points"], figure=s["figure"])
         )
     return Deck(
         title=title_m.group(1).strip() if title_m else "Untitled",
@@ -171,6 +178,12 @@ def import_reviewed(out_dir: Path, source: str = "json") -> Deck:
         deck, errors = validate_deck_file((out_dir / "slides.json").read_text(encoding="utf-8"))
         if deck is None:
             raise ReviewError("slides.json is invalid:\n" + "\n".join(errors))
+    figures_file = out_dir / "figures" / "figures.json"
+    known = set(json.loads(figures_file.read_text()).keys()) if figures_file.exists() else set()
+    unknown = [f"slide {sl.id}: figure {sl.figure!r} does not exist (known: {sorted(known) or 'none'})"
+               for sl in deck.slides if sl.figure and sl.figure not in known]
+    if unknown:
+        raise ReviewError("slides refer to unknown figures:\n" + "\n".join(unknown))
     deck.approved = True
     (out_dir / "slides.json").write_text(deck.model_dump_json(indent=2), encoding="utf-8")
     (out_dir / "slides.md").write_text(deck_to_markdown(deck), encoding="utf-8")

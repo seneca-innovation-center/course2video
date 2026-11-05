@@ -1,5 +1,6 @@
 llm:
   backend: openai_compat
+  api_key_env: GPTOSS_API_KEY
   base_url: http://localhost:11434/v1
   model: gpt-oss:120b
   effort: medium
@@ -9,6 +10,5 @@ parser:
   backend: docling
 tts:
   backend: piper
-  piper_model: models/piper/en_US-ljspeech-medium.onnx
 lecture:
   subtitle: "Generated with course2video (prototype)"

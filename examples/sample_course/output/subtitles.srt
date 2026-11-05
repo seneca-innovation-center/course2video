@@ -1,0 +1,499 @@
+1
+00:00:00,000 --> 00:00:00,531
+Welcome.
+
+2
+00:00:00,531 --> 00:00:04,579
+In this lecture we study Vector Spaces: A Short Introduction.
+
+3
+00:00:04,579 --> 00:00:07,233
+Generated with course2video (prototype).
+
+4
+00:00:07,833 --> 00:00:09,136
+Here is the plan.
+
+5
+00:00:09,136 --> 00:00:14,197
+We will go through 6 parts: Vectors in R n, Definition of a vector
+
+6
+00:00:14,197 --> 00:00:22,171
+space, Subspaces, Linear combinations and span, Linear independence and basis and Exercise and solution.
+
+7
+00:00:22,771 --> 00:00:26,034
+Let's start with part 1: Vectors in R n.
+
+8
+00:00:26,634 --> 00:00:31,104
+We begin by asking what we actually mean when we write a vector in
+
+9
+00:00:31,104 --> 00:00:31,849
+R to the n.
+
+10
+00:00:31,849 --> 00:00:36,387
+A vector u is just an ordered list of n numbers, written (u1,…,un).
+
+11
+00:00:36,387 --> 00:00:41,873
+The power of linear algebra comes from two very simple operations on these lists.
+
+12
+00:00:41,873 --> 00:00:46,546
+First, we can add two vectors component by component, so the sum of u
+
+13
+00:00:46,546 --> 00:00:48,240
+and v is (u1+v1,…,un+vn).
+
+14
+00:00:48,240 --> 00:00:52,778
+Think of sliding the tip of one arrow onto the tail of another; the
+
+15
+00:00:52,778 --> 00:00:56,164
+result points from the origin to the combined tip.
+
+16
+00:00:56,164 --> 00:01:01,108
+Second, we can scale a vector by a real number a, which simply multiplies
+
+17
+00:01:01,108 --> 00:01:03,614
+each entry: a·u equals (a u1,…,a un).
+
+18
+00:01:03,614 --> 00:01:09,304
+This stretches or shrinks the arrow without changing its direction if a is positive.
+
+19
+00:01:09,304 --> 00:01:14,316
+These operations are the foundation for all later linear‑algebra concepts.
+
+20
+00:01:14,316 --> 00:01:20,141
+Geometrically, in two or three dimensions you can picture these arrows starting at the
+
+21
+00:01:20,141 --> 00:01:20,615
+origin.
+
+22
+00:01:20,615 --> 00:01:26,710
+For instance, adding (1,2,3) to (4,0,-1) gives (5,2,2) and multiplying (1,2,3) by 2 yields
+
+23
+00:01:26,710 --> 00:01:27,252
+(2,4,6).
+
+24
+00:01:27,252 --> 00:01:32,535
+A common mistake is to try to add vectors of different lengths; the dimensions
+
+25
+00:01:32,535 --> 00:01:33,822
+must match exactly.
+
+26
+00:01:33,822 --> 00:01:38,225
+With these basics in place, we will now see how they fit into the
+
+27
+00:01:38,225 --> 00:01:40,798
+abstract definition of a vector space.
+
+28
+00:01:41,398 --> 00:01:45,357
+Now we move on to part 2: Definition of a vector space.
+
+29
+00:01:45,957 --> 00:01:51,022
+Having understood addition and scaling in R to the n, the next question is:
+
+30
+00:01:51,022 --> 00:01:54,060
+what abstract structure captures these ideas?
+
+31
+00:01:54,060 --> 00:02:00,408
+A vector space is a set V equipped with two operations—addition and scalar multiplication—that
+
+32
+00:02:00,408 --> 00:02:02,096
+satisfy a list of axioms.
+
+33
+00:02:02,096 --> 00:02:07,768
+The axioms say addition is commutative and associative, there is a zero element that
+
+34
+00:02:07,768 --> 00:02:12,494
+leaves any vector unchanged, and every vector has an additive inverse.
+
+35
+00:02:12,494 --> 00:02:18,167
+For scalar multiplication we require that multiplying by 1 leaves a vector alone and
+
+36
+00:02:18,167 --> 00:02:21,273
+that the zero scalar produces the zero vector.
+
+37
+00:02:21,273 --> 00:02:27,012
+Crucially, the distributive laws link the two operations; for example a times (u plus
+
+38
+00:02:27,012 --> 00:02:28,565
+v) equals a u plus a v.
+
+39
+00:02:28,565 --> 00:02:34,372
+The axioms guarantee that any theorem proved from them applies to all listed examples,
+
+40
+00:02:34,372 --> 00:02:38,491
+such as Euclidean space, polynomial spaces, or matrix spaces.
+
+41
+00:02:38,491 --> 00:02:43,961
+Intuitively, they tell us that vectors behave like arrows that we can move around
+
+42
+00:02:43,961 --> 00:02:45,649
+and stretch consistently.
+
+43
+00:02:45,649 --> 00:02:51,389
+In the space of 2‑by‑2 matrices, adding matrices and scaling them follows exactly the
+
+44
+00:02:51,389 --> 00:02:53,752
+same rules as for ordinary vectors.
+
+45
+00:02:53,752 --> 00:02:58,546
+A subtle point: the zero vector must be the same for both operations, a
+
+46
+00:02:58,546 --> 00:03:02,260
+detail some forget when checking a new candidate space.
+
+47
+00:03:02,260 --> 00:03:07,730
+Next we will examine special subsets of a vector space that are themselves vector
+
+48
+00:03:07,730 --> 00:03:08,202
+spaces.
+
+49
+00:03:08,802 --> 00:03:12,227
+Now we move on to part 3: Subspaces.
+
+50
+00:03:12,827 --> 00:03:17,358
+Now that we know what a vector space is, we ask whether a smaller
+
+51
+00:03:17,358 --> 00:03:21,052
+collection of vectors can inherit the same structure.
+
+52
+00:03:21,052 --> 00:03:25,374
+A subspace is simply a subset W of a vector space V that, with
+
+53
+00:03:25,374 --> 00:03:31,160
+the same addition and scalar multiplication, forms a vector space in its own right.
+
+54
+00:03:31,160 --> 00:03:36,248
+To verify this, we only need three checks: first, W must contain the zero
+
+55
+00:03:36,248 --> 00:03:41,337
+vector of V; second, it must be closed under addition, meaning the sum of
+
+56
+00:03:41,337 --> 00:03:45,728
+any two vectors in W stays in W; third, it must be closed under
+
+57
+00:03:45,728 --> 00:03:51,235
+scalar multiplication, so multiplying any vector in W by any scalar stays in W.
+
+58
+00:03:51,235 --> 00:03:58,066
+These three conditions are sufficient because all other axioms are automatically inherited from V.
+
+59
+00:03:58,066 --> 00:04:03,015
+For example, the set W consisting of all points (t,2t) as t ranges over
+
+60
+00:04:03,015 --> 00:04:08,103
+the real numbers satisfies the three conditions, so it is a subspace of R
+
+61
+00:04:08,103 --> 00:04:08,661
+squared.
+
+62
+00:04:08,661 --> 00:04:13,610
+A common mistake is to forget to verify that the zero vector belongs to
+
+63
+00:04:13,610 --> 00:04:18,141
+W; the line y equals 2x plus 1 fails this test because its points
+
+64
+00:04:18,141 --> 00:04:19,883
+never include the origin.
+
+65
+00:04:19,883 --> 00:04:25,111
+Understanding subspaces prepares us for later ideas such as span and basis.
+
+66
+00:04:25,711 --> 00:04:30,390
+Now we move on to part 4: Linear combinations and span.
+
+67
+00:04:30,990 --> 00:04:35,670
+Now that we’ve seen what a subspace looks like, let’s ask: given a collection
+
+68
+00:04:35,670 --> 00:04:39,743
+of vectors, what is the full set of vectors we can build from them?
+
+69
+00:04:39,743 --> 00:04:41,141
+The answer is the span.
+
+70
+00:04:41,141 --> 00:04:45,396
+Think of each vector as a direction you can travel, and the scalars as
+
+71
+00:04:45,396 --> 00:04:48,374
+how far you can stretch or shrink that direction.
+
+72
+00:04:48,374 --> 00:04:54,270
+By adding together these stretched directions you reach everything the original set can generate.
+
+73
+00:04:54,270 --> 00:04:59,619
+For instance, take the two unit vectors along the x‑axis and y‑axis in three‑dimensional
+
+74
+00:04:59,619 --> 00:04:59,984
+space.
+
+75
+00:04:59,984 --> 00:05:03,692
+If you scale the first by any real number x and the second by
+
+76
+00:05:03,692 --> 00:05:07,764
+any real number y, then add the results, you obtain a vector (x, y,
+
+77
+00:05:07,764 --> 00:05:07,947
+0).
+
+78
+00:05:07,947 --> 00:05:12,749
+That shows every point in the xy‑plane can be expressed as a linear combination
+
+79
+00:05:12,749 --> 00:05:16,213
+of those two vectors, so the plane is exactly their span.
+
+80
+00:05:16,213 --> 00:05:20,772
+Notice a subtle point: if you start with just one non‑zero vector, the span
+
+81
+00:05:20,772 --> 00:05:24,176
+is only a line through the origin, not the entire space.
+
+82
+00:05:24,176 --> 00:05:28,188
+This idea of reach will be key later when we look for the smallest
+
+83
+00:05:28,188 --> 00:05:32,686
+set of vectors that still spans the whole space, leading us to the concept
+
+84
+00:05:32,686 --> 00:05:33,354
+of a basis.
+
+85
+00:05:33,354 --> 00:05:38,278
+In short, the span captures everything you can reach by stretching and adding the
+
+86
+00:05:38,278 --> 00:05:39,129
+given vectors.
+
+87
+00:05:39,729 --> 00:05:44,477
+Now we move on to part 5: Linear independence and basis.
+
+88
+00:05:45,077 --> 00:05:50,366
+Having understood how vectors can generate a whole subspace, we now ask: when is
+
+89
+00:05:50,366 --> 00:05:52,878
+a set of vectors free from redundancy?
+
+90
+00:05:52,878 --> 00:05:55,457
+The answer lies in linear independence.
+
+91
+00:05:55,457 --> 00:06:00,151
+A set is independent precisely when the only way to combine them to get
+
+92
+00:06:00,151 --> 00:06:03,324
+the zero vector is to use all zero coefficients.
+
+93
+00:06:03,324 --> 00:06:08,084
+In other words, no vector can be written as a combination of the others.
+
+94
+00:06:08,084 --> 00:06:13,241
+This means each vector contributes a new direction that isn’t already covered.
+
+95
+00:06:13,241 --> 00:06:18,001
+A basis is then defined as an independent set that also spans the entire
+
+96
+00:06:18,001 --> 00:06:18,397
+space.
+
+97
+00:06:18,397 --> 00:06:22,827
+It is the minimal recipe of directions that can build every vector.
+
+98
+00:06:22,827 --> 00:06:28,182
+For example, in the plane the two standard unit vectors are independent and their
+
+99
+00:06:28,182 --> 00:06:33,471
+linear combinations fill the whole plane, so they form a basis and the dimension
+
+100
+00:06:33,471 --> 00:06:33,934
+is two.
+
+101
+00:06:33,934 --> 00:06:39,024
+A common mistake is to assume that any spanning set is automatically a basis;
+
+102
+00:06:39,024 --> 00:06:41,272
+you must also verify independence.
+
+103
+00:06:41,272 --> 00:06:46,958
+Remember that the standard basis in n‑dimensional space consists of the n vectors with
+
+104
+00:06:46,958 --> 00:06:51,784
+a single 1 and the rest zeros, confirming that the dimension of ℝⁿ equals
+
+105
+00:06:51,784 --> 00:06:51,916
+n.
+
+106
+00:06:52,516 --> 00:06:56,696
+Now we move on to part 6: Exercise and solution.
+
+107
+00:06:57,296 --> 00:07:01,374
+Let’s put those definitions to work with a quick exercise.
+
+108
+00:07:01,374 --> 00:07:06,086
+We are given the two vectors (1,2) and (3,6) in the plane and asked
+
+109
+00:07:06,086 --> 00:07:08,758
+to check whether they are independent.
+
+110
+00:07:08,758 --> 00:07:13,048
+To test this we look for scalars a and b, not both zero, such
+
+111
+00:07:13,048 --> 00:07:17,900
+that a times the first vector plus b times the second equals the zero
+
+112
+00:07:17,900 --> 00:07:18,393
+vector.
+
+113
+00:07:18,393 --> 00:07:22,472
+If we try a equals 3 and b equals -1, we compute 3·(1,2) -
+
+114
+00:07:22,472 --> 00:07:25,214
+1·(3,6) which gives (3‑3, 6‑6) = (0,0).
+
+115
+00:07:25,214 --> 00:07:30,629
+Since the coefficients (3, -1) are not both zero, we have found a non‑trivial
+
+116
+00:07:30,629 --> 00:07:36,185
+combination that yields the zero vector, so the vectors are linearly dependent.
+
+117
+00:07:36,185 --> 00:07:41,107
+Because one is simply a scalar multiple of the other, they only span a
+
+118
+00:07:41,107 --> 00:07:44,061
+line through the origin, not the whole ℝ².
+
+119
+00:07:44,061 --> 00:07:49,335
+The key subtle point here is that in ℝ² two vectors are independent exactly
+
+120
+00:07:49,335 --> 00:07:52,781
+when they are not scalar multiples of each other.
+
+121
+00:07:52,781 --> 00:07:58,759
+This exercise reinforces the definitions of dependence and span that we just covered.
+
+122
+00:07:59,359 --> 00:08:02,233
+That brings us to the end of this lecture.
+
+123
+00:08:02,233 --> 00:08:08,187
+We covered Vectors in R n, Definition of a vector space, Subspaces, Linear combinations
+
+124
+00:08:08,187 --> 00:08:12,704
+and span, Linear independence and basis and Exercise and solution.
+
+125
+00:08:12,704 --> 00:08:14,278
+Thank you for watching.

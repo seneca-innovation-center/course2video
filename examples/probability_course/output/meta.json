@@ -1,0 +1,133 @@
+{
+  "input": "examples/probability_course/probability.pdf",
+  "documents": 1,
+  "parser": "docling",
+  "parser_warnings": [],
+  "llm": {
+    "backend": "openai_compat",
+    "model": "gpt-oss-120b",
+    "base_url": "internal gpt-oss-120b server (address not published)"
+  },
+  "context": {
+    "tokens": 8192,
+    "adjusted": []
+  },
+  "figures": 0,
+  "budget": null,
+  "slides": {
+    "count": 7,
+    "by_kind": {
+      "theory": 7,
+      "exercise": 0,
+      "solution": 0
+    },
+    "attempts_per_chunk": [
+      [
+        {
+          "number": 1,
+          "ok": true,
+          "errors": [],
+          "warnings": []
+        }
+      ],
+      [
+        {
+          "number": 1,
+          "ok": true,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    ],
+    "attempts_per_problem": []
+  },
+  "timings_s": {
+    "parse": 0.0,
+    "slides": 65.21,
+    "script": 67.51,
+    "render_tts_video": 27.84
+  },
+  "grounding": {
+    "mean_overlap": 0.547,
+    "flagged_slides": [
+      1
+    ],
+    "flagged_talking_points": 1
+  },
+  "script": {
+    "llm": {
+      "backend": "openai_compat",
+      "model": "gpt-oss-120b",
+      "base_url": "internal gpt-oss-120b server (address not published)"
+    },
+    "attempts_per_batch": [
+      [
+        {
+          "number": 1,
+          "ok": true,
+          "errors": [],
+          "warnings": []
+        }
+      ],
+      [
+        {
+          "number": 1,
+          "ok": true,
+          "errors": [],
+          "warnings": []
+        }
+      ],
+      [
+        {
+          "number": 1,
+          "ok": false,
+          "errors": [
+            "narration averages 273 words per slide; the budget is about 220. Shorten every slide by about 19% while keeping its example, its question to the viewer and its numbers"
+          ],
+          "warnings": []
+        },
+        {
+          "number": 2,
+          "ok": true,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    ]
+  },
+  "alignment": {
+    "spoken_to_slide_word_ratio": 13.7,
+    "overall_coverage": 0.818,
+    "flagged_slides": [
+      1,
+      2,
+      5,
+      7
+    ]
+  },
+  "lecture": {
+    "frames": 15,
+    "kinds": [
+      "title",
+      "agenda",
+      "section",
+      "content",
+      "content",
+      "section",
+      "content",
+      "content",
+      "section",
+      "content",
+      "section",
+      "content",
+      "section",
+      "content",
+      "closing"
+    ]
+  },
+  "video": {
+    "tts": "piper",
+    "renderer": "pillow",
+    "duration_s": 592.39
+  }
+}

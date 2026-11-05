@@ -1,0 +1,210 @@
+[
+  {
+    "kind": "title",
+    "narration": "Welcome. In this lecture we study Vector Spaces: A Short Introduction. Generated with course2video (prototype).",
+    "heading": "Vector Spaces: A Short Introduction",
+    "items": [
+      "Generated with course2video (prototype)"
+    ],
+    "section_index": null,
+    "index": 0,
+    "total": 15,
+    "slide_id": null
+  },
+  {
+    "kind": "agenda",
+    "narration": "Here is the plan. We will go through 6 parts: Vectors in R n, Definition of a vector space, Subspaces, Linear combinations and span, Linear independence and basis and Exercise and solution.",
+    "heading": "Outline",
+    "items": [
+      "Vectors in R^n",
+      "Definition of a vector space",
+      "Subspaces",
+      "Linear combinations and span",
+      "Linear independence and basis",
+      "Exercise and solution"
+    ],
+    "section_index": null,
+    "index": 1,
+    "total": 15,
+    "slide_id": null
+  },
+  {
+    "kind": "section",
+    "narration": "Let's start with part 1: Vectors in R n.",
+    "heading": "Vectors in R^n",
+    "items": [
+      "Vectors in R^n",
+      "Definition of a vector space",
+      "Subspaces",
+      "Linear combinations and span",
+      "Linear independence and basis",
+      "Exercise and solution"
+    ],
+    "section_index": 0,
+    "index": 2,
+    "total": 15,
+    "slide_id": null
+  },
+  {
+    "kind": "content",
+    "narration": "We begin by asking what we actually mean when we write a vector in R to the n. A vector u is just an ordered list of n numbers, written (u1,…,un). The power of linear algebra comes from two very simple operations on these lists. First, we can add two vectors component by component, so the sum of u and v is (u1+v1,…,un+vn). Think of sliding the tip of one arrow onto the tail of another; the result points from the origin to the combined tip. Second, we can scale a vector by a real number a, which simply multiplies each entry: a·u equals (a u1,…,a un). This stretches or shrinks the arrow without changing its direction if a is positive. These operations are the foundation for all later linear‑algebra concepts. Geometrically, in two or three dimensions you can picture these arrows starting at the origin. For instance, adding (1,2,3) to (4,0,-1) gives (5,2,2) and multiplying (1,2,3) by 2 yields (2,4,6). A common mistake is to try to add vectors of different lengths; the dimensions must match exactly. With these basics in place, we will now see how they fit into the abstract definition of a vector space.",
+    "heading": "Vectors in Rⁿ",
+    "items": [],
+    "section_index": 0,
+    "index": 3,
+    "total": 15,
+    "slide_id": 1
+  },
+  {
+    "kind": "section",
+    "narration": "Now we move on to part 2: Definition of a vector space.",
+    "heading": "Definition of a vector space",
+    "items": [
+      "Vectors in R^n",
+      "Definition of a vector space",
+      "Subspaces",
+      "Linear combinations and span",
+      "Linear independence and basis",
+      "Exercise and solution"
+    ],
+    "section_index": 1,
+    "index": 4,
+    "total": 15,
+    "slide_id": null
+  },
+  {
+    "kind": "content",
+    "narration": "Having understood addition and scaling in R to the n, the next question is: what abstract structure captures these ideas? A vector space is a set V equipped with two operations—addition and scalar multiplication—that satisfy a list of axioms. The axioms say addition is commutative and associative, there is a zero element that leaves any vector unchanged, and every vector has an additive inverse. For scalar multiplication we require that multiplying by 1 leaves a vector alone and that the zero scalar produces the zero vector. Crucially, the distributive laws link the two operations; for example a times (u plus v) equals a u plus a v. The axioms guarantee that any theorem proved from them applies to all listed examples, such as Euclidean space, polynomial spaces, or matrix spaces. Intuitively, they tell us that vectors behave like arrows that we can move around and stretch consistently. In the space of 2‑by‑2 matrices, adding matrices and scaling them follows exactly the same rules as for ordinary vectors. A subtle point: the zero vector must be the same for both operations, a detail some forget when checking a new candidate space. Next we will examine special subsets of a vector space that are themselves vector spaces.",
+    "heading": "Definition of a Vector Space",
+    "items": [],
+    "section_index": 1,
+    "index": 5,
+    "total": 15,
+    "slide_id": 2
+  },
+  {
+    "kind": "section",
+    "narration": "Now we move on to part 3: Subspaces.",
+    "heading": "Subspaces",
+    "items": [
+      "Vectors in R^n",
+      "Definition of a vector space",
+      "Subspaces",
+      "Linear combinations and span",
+      "Linear independence and basis",
+      "Exercise and solution"
+    ],
+    "section_index": 2,
+    "index": 6,
+    "total": 15,
+    "slide_id": null
+  },
+  {
+    "kind": "content",
+    "narration": "Now that we know what a vector space is, we ask whether a smaller collection of vectors can inherit the same structure. A subspace is simply a subset W of a vector space V that, with the same addition and scalar multiplication, forms a vector space in its own right. To verify this, we only need three checks: first, W must contain the zero vector of V; second, it must be closed under addition, meaning the sum of any two vectors in W stays in W; third, it must be closed under scalar multiplication, so multiplying any vector in W by any scalar stays in W. These three conditions are sufficient because all other axioms are automatically inherited from V. For example, the set W consisting of all points (t,2t) as t ranges over the real numbers satisfies the three conditions, so it is a subspace of R squared. A common mistake is to forget to verify that the zero vector belongs to W; the line y equals 2x plus 1 fails this test because its points never include the origin. Understanding subspaces prepares us for later ideas such as span and basis.",
+    "heading": "Subspaces",
+    "items": [],
+    "section_index": 2,
+    "index": 7,
+    "total": 15,
+    "slide_id": 3
+  },
+  {
+    "kind": "section",
+    "narration": "Now we move on to part 4: Linear combinations and span.",
+    "heading": "Linear combinations and span",
+    "items": [
+      "Vectors in R^n",
+      "Definition of a vector space",
+      "Subspaces",
+      "Linear combinations and span",
+      "Linear independence and basis",
+      "Exercise and solution"
+    ],
+    "section_index": 3,
+    "index": 8,
+    "total": 15,
+    "slide_id": null
+  },
+  {
+    "kind": "content",
+    "narration": "Now that we’ve seen what a subspace looks like, let’s ask: given a collection of vectors, what is the full set of vectors we can build from them? The answer is the span. Think of each vector as a direction you can travel, and the scalars as how far you can stretch or shrink that direction. By adding together these stretched directions you reach everything the original set can generate. For instance, take the two unit vectors along the x‑axis and y‑axis in three‑dimensional space. If you scale the first by any real number x and the second by any real number y, then add the results, you obtain a vector (x, y, 0). That shows every point in the xy‑plane can be expressed as a linear combination of those two vectors, so the plane is exactly their span. Notice a subtle point: if you start with just one non‑zero vector, the span is only a line through the origin, not the entire space. This idea of reach will be key later when we look for the smallest set of vectors that still spans the whole space, leading us to the concept of a basis. In short, the span captures everything you can reach by stretching and adding the given vectors.",
+    "heading": "Linear Combinations and Span",
+    "items": [],
+    "section_index": 3,
+    "index": 9,
+    "total": 15,
+    "slide_id": 4
+  },
+  {
+    "kind": "section",
+    "narration": "Now we move on to part 5: Linear independence and basis.",
+    "heading": "Linear independence and basis",
+    "items": [
+      "Vectors in R^n",
+      "Definition of a vector space",
+      "Subspaces",
+      "Linear combinations and span",
+      "Linear independence and basis",
+      "Exercise and solution"
+    ],
+    "section_index": 4,
+    "index": 10,
+    "total": 15,
+    "slide_id": null
+  },
+  {
+    "kind": "content",
+    "narration": "Having understood how vectors can generate a whole subspace, we now ask: when is a set of vectors free from redundancy? The answer lies in linear independence. A set is independent precisely when the only way to combine them to get the zero vector is to use all zero coefficients. In other words, no vector can be written as a combination of the others. This means each vector contributes a new direction that isn’t already covered. A basis is then defined as an independent set that also spans the entire space. It is the minimal recipe of directions that can build every vector. For example, in the plane the two standard unit vectors are independent and their linear combinations fill the whole plane, so they form a basis and the dimension is two. A common mistake is to assume that any spanning set is automatically a basis; you must also verify independence. Remember that the standard basis in n‑dimensional space consists of the n vectors with a single 1 and the rest zeros, confirming that the dimension of ℝⁿ equals n.",
+    "heading": "Linear Independence and Basis",
+    "items": [],
+    "section_index": 4,
+    "index": 11,
+    "total": 15,
+    "slide_id": 5
+  },
+  {
+    "kind": "section",
+    "narration": "Now we move on to part 6: Exercise and solution.",
+    "heading": "Exercise and solution",
+    "items": [
+      "Vectors in R^n",
+      "Definition of a vector space",
+      "Subspaces",
+      "Linear combinations and span",
+      "Linear independence and basis",
+      "Exercise and solution"
+    ],
+    "section_index": 5,
+    "index": 12,
+    "total": 15,
+    "slide_id": null
+  },
+  {
+    "kind": "content",
+    "narration": "Let’s put those definitions to work with a quick exercise. We are given the two vectors (1,2) and (3,6) in the plane and asked to check whether they are independent. To test this we look for scalars a and b, not both zero, such that a times the first vector plus b times the second equals the zero vector. If we try a equals 3 and b equals -1, we compute 3·(1,2) - 1·(3,6) which gives (3‑3, 6‑6) = (0,0). Since the coefficients (3, -1) are not both zero, we have found a non‑trivial combination that yields the zero vector, so the vectors are linearly dependent. Because one is simply a scalar multiple of the other, they only span a line through the origin, not the whole ℝ². The key subtle point here is that in ℝ² two vectors are independent exactly when they are not scalar multiples of each other. This exercise reinforces the definitions of dependence and span that we just covered.",
+    "heading": "Exercise: Linear Dependence in ℝ²",
+    "items": [],
+    "section_index": 5,
+    "index": 13,
+    "total": 15,
+    "slide_id": 6
+  },
+  {
+    "kind": "closing",
+    "narration": "That brings us to the end of this lecture. We covered Vectors in R n, Definition of a vector space, Subspaces, Linear combinations and span, Linear independence and basis and Exercise and solution. Thank you for watching.",
+    "heading": "Summary",
+    "items": [
+      "Vectors in R^n",
+      "Definition of a vector space",
+      "Subspaces",
+      "Linear combinations and span",
+      "Linear independence and basis",
+      "Exercise and solution"
+    ],
+    "section_index": null,
+    "index": 14,
+    "total": 15,
+    "slide_id": null
+  }
+]

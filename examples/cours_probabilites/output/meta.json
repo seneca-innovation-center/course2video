@@ -1,0 +1,176 @@
+{
+  "input": "examples/cours_probabilites",
+  "documents": 3,
+  "parser": "docling",
+  "parser_warnings": [],
+  "llm": {
+    "backend": "openai_compat",
+    "model": "gpt-oss-120b",
+    "base_url": "internal gpt-oss-120b server (address not published)"
+  },
+  "context": {
+    "tokens": 8192,
+    "adjusted": []
+  },
+  "figures": 0,
+  "budget": {
+    "target_minutes": 10,
+    "words_per_minute": 163,
+    "content_words": 1422,
+    "words_per_slide": 220,
+    "theory_slides": 4,
+    "slides_per_problem": 2,
+    "problems": 3,
+    "warnings": [
+      "the lecture has 4 chapters; giving each one a slide makes the video longer than the 10-minute target",
+      "sources have 560 words but a 10-minute video needs about 1422 words of narration; the video will likely be shorter than the target"
+    ]
+  },
+  "slides": {
+    "count": 10,
+    "by_kind": {
+      "theory": 4,
+      "exercise": 3,
+      "solution": 3
+    },
+    "attempts_per_chunk": [
+      [
+        {
+          "number": 1,
+          "ok": true,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    ],
+    "attempts_per_problem": [
+      [
+        {
+          "number": 1,
+          "ok": true,
+          "errors": [],
+          "warnings": []
+        }
+      ],
+      [
+        {
+          "number": 1,
+          "ok": true,
+          "errors": [],
+          "warnings": []
+        }
+      ],
+      [
+        {
+          "number": 1,
+          "ok": true,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    ]
+  },
+  "timings_s": {
+    "parse": 0.0,
+    "slides": 98.72,
+    "script": 82.66,
+    "render_tts_video": 33.71
+  },
+  "grounding": {
+    "mean_overlap": 0.386,
+    "flagged_slides": [
+      1,
+      2,
+      4,
+      5,
+      6,
+      8,
+      10
+    ],
+    "flagged_talking_points": 12
+  },
+  "script": {
+    "llm": {
+      "backend": "openai_compat",
+      "model": "gpt-oss-120b",
+      "base_url": "internal gpt-oss-120b server (address not published)"
+    },
+    "attempts_per_batch": [
+      [
+        {
+          "number": 1,
+          "ok": true,
+          "errors": [],
+          "warnings": []
+        }
+      ],
+      [
+        {
+          "number": 1,
+          "ok": true,
+          "errors": [],
+          "warnings": []
+        }
+      ],
+      [
+        {
+          "number": 1,
+          "ok": true,
+          "errors": [],
+          "warnings": []
+        }
+      ],
+      [
+        {
+          "number": 1,
+          "ok": true,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    ]
+  },
+  "alignment": {
+    "spoken_to_slide_word_ratio": 8.0,
+    "overall_coverage": 0.835,
+    "flagged_slides": [
+      1,
+      2,
+      4,
+      7,
+      10
+    ]
+  },
+  "lecture": {
+    "frames": 20,
+    "kinds": [
+      "title",
+      "agenda",
+      "section",
+      "content",
+      "section",
+      "content",
+      "section",
+      "content",
+      "section",
+      "content",
+      "section",
+      "content",
+      "content",
+      "section",
+      "content",
+      "content",
+      "section",
+      "content",
+      "content",
+      "closing"
+    ]
+  },
+  "video": {
+    "tts": "piper",
+    "renderer": "pillow",
+    "duration_s": 670.15,
+    "target_minutes": 10,
+    "actual_minutes": 11.2
+  }
+}

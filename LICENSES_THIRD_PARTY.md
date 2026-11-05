@@ -42,6 +42,7 @@ primary source yet.
 |---|---|---|---|
 | **gpt-oss-120b / gpt-oss-20b** (OpenAI) | **on-premises** via vLLM or Ollama | Apache-2.0 (weights) plus the gpt-oss usage policy | Target LLM for the self-hosted deployment. *verify* the current usage policy |
 | Piper voice `en_US-ljspeech-medium` | local | Dataset: LJ Speech, **public domain** (from the voice's MODEL_CARD). Licence of the trained voice weights is not stated in the model card: *verify* | Downloaded by `scripts/download_models.sh`, never committed |
+| Piper voice `fr_FR-siwis-medium` | local | Dataset: SIWIS French speech synthesis database, **CC BY 4.0** (from the voice's MODEL_CARD). The voice is **fine-tuned from the English `lessac` voice**, whose dataset has its own terms: *verify both* before redistribution | Downloaded by `scripts/download_models.sh`, used for decks with `language: fr` |
 
 ## Development only
 
@@ -58,6 +59,7 @@ primary source yet.
 |---|---|
 | `examples/sample_course/vector_spaces.md` and the PDFs built from it | CC-BY-4.0, written for this project |
 | `examples/probability_course/probability.md` and the PDF built from it | CC-BY-4.0, written for this project |
+| `examples/cours_probabilites/` (French course, TD and corrigé) | CC-BY-4.0, written for this project |
 | MIT 18.05 Spring 2022 reading 3, problem set 2 and solutions (`examples/mit1805_bayes/`) | **CC BY-NC-SA 4.0**, © MIT / J. Orloff, J. Bloom. **Not committed**: downloaded by `scripts/fetch_mit1805_example.sh`. Outputs made from them must keep CC BY-NC-SA and attribution |
 
 ## Before claiming "fully open source / permissive"

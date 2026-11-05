@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use course2video, please cite it as below."
+title: "course2video: self-hostable pipeline from course documents to lecturer-approved slides and narrated videos"
+type: software
+authors:
+  - name: "Seneca Innovation Center"
+repository-code: "https://github.com/seneca-innovation-center/course2video"
+license: Apache-2.0
+version: 0.2.0
+date-released: 2026-11-04
+keywords:
+  - open educational resources
+  - higher education
+  - lecture video
+  - self-hosted LLM
+  - document understanding
+  - text-to-speech
+abstract: >-
+  A self-hostable, open-source pipeline that turns a course package (lecture notes,
+  exercises and solutions) into validated slides, a lecturer review step, lecture-style
+  narration and a narrated video with subtitles, designed to run with an open-weight model
+  served on premises.

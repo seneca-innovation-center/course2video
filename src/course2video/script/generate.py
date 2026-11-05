@@ -21,6 +21,8 @@ explain them, mainly by developing the slide's `talking_points`. Teach like this
 - Ask the viewer a question now and then, and answer it ("Can we get P(B) from this? Yes ...").
 - Point out the common mistake or subtle point when there is one.
 - Read formulas aloud the way you would say them; never output raw LaTeX.
+- If a slide has `figure_on_screen`, that figure is shown next to the bullets: point the viewer
+  to it and explain what it shows, using only the slide and its talking points.
 - End with one sentence that sums up the idea or leads to the next slide.
 
 Rules:
@@ -45,7 +47,8 @@ Return one entry per slide, using the same slide ids: {ids}.
 
 
 def generate_script(
-    llm: LLMBackend, deck: Deck, cfg: ScriptConfig, words_per_slide: int | None = None
+    llm: LLMBackend, deck: Deck, cfg: ScriptConfig, words_per_slide: int | None = None,
+    figures: dict[str, str] | None = None,
 ) -> tuple[Script, list[list[Attempt]]]:
     if not deck.approved:
         raise PermissionError("deck is not approved; run the review step first")
@@ -55,8 +58,14 @@ def generate_script(
     for i in range(0, len(deck.slides), n):
         batch = deck.slides[i : i + n]
         ids = [s.id for s in batch]
+        dumped = []
+        for s in batch:
+            d = s.model_dump(exclude={"notes", "figure"})
+            if s.figure:
+                d["figure_on_screen"] = (figures or {}).get(s.figure) or "a figure from the source"
+            dumped.append(d)
         slides_json = json.dumps(
-            [s.model_dump(exclude={"notes"}) for s in batch],
+            dumped,
             ensure_ascii=False,
             indent=1,
         )

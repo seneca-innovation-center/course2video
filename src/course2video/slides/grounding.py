@@ -19,8 +19,13 @@ def _normalise(text: str) -> str:
     return text
 
 
-def numbers(text: str) -> set[Fraction]:
+DECIMAL_COMMA = {"fr", "es", "de", "it", "pt", "nl"}
+
+
+def numbers(text: str, decimal_comma: bool = False) -> set[Fraction]:
     out = set()
+    if decimal_comma:
+        text = re.sub(r"(?<![\d,])(\d+),(\d+)(?![\d,])", r"\1.\2", text)
     for m in _NUM.finditer(_normalise(text)):
         try:
             a = Fraction(m.group(1))
@@ -38,8 +43,9 @@ def numbers(text: str) -> set[Fraction]:
 
 
 def check_grounding(deck: Deck, lecture_md: str, problem_texts: dict[str, str]) -> dict:
-    lecture = (content_words(lecture_md), numbers(lecture_md))
-    problems = {ref: (content_words(t), numbers(t)) for ref, t in problem_texts.items()}
+    dc = (deck.language or "en").split("-")[0].lower() in DECIMAL_COMMA
+    lecture = (content_words(lecture_md), numbers(lecture_md, dc))
+    problems = {ref: (content_words(t), numbers(t, dc)) for ref, t in problem_texts.items()}
     slides, flagged, scores = [], [], []
     for s in deck.slides:
         if s.kind != "theory" and s.source_doc not in problems:
@@ -51,7 +57,7 @@ def check_grounding(deck: Deck, lecture_md: str, problem_texts: dict[str, str]) 
         for tp in s.talking_points:
             words = content_words(tp)
             overlap = len(words & src_words) / len(words) if words else 1.0
-            unsupported = sorted(str(n) for n in numbers(tp) - src_nums - SMALL)
+            unsupported = sorted(str(n) for n in numbers(tp, dc) - src_nums - SMALL)
             items.append({
                 "text": tp,
                 "overlap": round(overlap, 3),

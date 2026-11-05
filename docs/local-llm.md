@@ -7,6 +7,19 @@ testing on modest hardware. Switching between them is a config change.
 
 Hardware, run times and disk space: [`requirements.md`](requirements.md).
 
+Tested end to end with **gpt-oss-120b on our internal server** (OpenAI-compatible API, 8k
+context): see [`examples/demo.md`](../examples/demo.md). To repeat those runs:
+
+```bash
+export GPTOSS_BASE_URL=http://<server>:<port>/v1
+read -s "GPTOSS_API_KEY?API key: "; export GPTOSS_API_KEY
+./scripts/run_gpt_oss_eval.sh
+```
+
+The script finds the model name, falls back to `structured_output: false` if the server rejects
+JSON schemas, and writes `out/gptoss/summary.md`. The key is read from the environment and never
+written to a file.
+
 ## 1. Serve the model
 
 **vLLM** (recommended for a GPU server; one 80 GB GPU such as H100 or A100-80GB for 120b):
@@ -53,9 +66,8 @@ make test-llm CONFIG=configs/gpt-oss-20b-ollama.yaml
 ```
 
 Then compare the runs' `meta.json` (retry attempts, timings), `alignment.json` (coverage,
-spoken-to-slide word ratio) and `grounding.json` (flagged talking points) with the development
-results in `examples/demo.md` and `docs/teaching_style.md`, and score 20-30 slides from
-each with `eval/rubric.md`.
+spoken-to-slide word ratio) and `grounding.json` (flagged talking points) with the gpt-oss-120b
+results in `examples/demo.md`, and score 20-30 slides from each with `eval/rubric.md`.
 
 ## Things to watch
 

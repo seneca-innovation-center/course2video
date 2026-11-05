@@ -6,9 +6,11 @@ from pathlib import Path
 from typing import Literal
 
 import yaml
+from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 DocType = Literal["lecture", "exercises", "solutions", "practical"]
 SUPPORTED = {".pdf", ".md", ".markdown", ".txt"}
+SKIP_DIRS = {"output", "out", "parsed", "figures", "images", "audio", "parts"}
 
 ROLE_PATTERNS: list[tuple[DocType, str]] = [
     ("solutions", r"sol(ution)?s?\b|_sol|corrig|answer|\bkey\b"),
@@ -60,30 +62,71 @@ def pretty_label(path: Path) -> str:
     return stem[:1].upper() + stem[1:]
 
 
+class ManifestError(ValueError):
+    pass
+
+
+class ManifestDocument(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    path: str = Field(min_length=1)
+    type: DocType
+    label: str | None = None
+    solves: str | None = None
+    select: list[int] | None = None
+
+
+class Manifest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    title: str | None = None
+    language: str | None = None
+    target_minutes: float | None = Field(default=None, gt=0)
+    documents: list[ManifestDocument] = Field(min_length=1)
+    source: dict = Field(default_factory=dict)
+
+
+def parse_manifest(data: object, where: str) -> Manifest:
+    try:
+        return Manifest.model_validate(data)
+    except ValidationError as e:
+        lines = []
+        for err in e.errors():
+            loc = ".".join(str(x) for x in err["loc"])
+            if err["type"] == "literal_error":
+                allowed = ", ".join(DocType.__args__)
+                lines.append(f"{loc}: {err['input']!r} is not a document type; use one of: {allowed}")
+            else:
+                lines.append(f"{loc}: {err['msg']}")
+        raise ManifestError(f"{where} is invalid:\n" + "\n".join(lines)) from None
+
+
 def _from_manifest(root: Path, data: dict) -> Course:
+    m = parse_manifest(data, str(root / "course.yaml"))
     course = Course(
         root=root,
-        title=data.get("title") or root.name.replace("_", " "),
-        language=data.get("language"),
-        target_minutes=data.get("target_minutes"),
-        source=data.get("source", {}),
+        title=m.title or root.name.replace("_", " "),
+        language=m.language,
+        target_minutes=m.target_minutes,
+        source=m.source,
     )
-    for d in data.get("documents", []):
-        path = (root / d["path"]).resolve()
+    for d in m.documents:
+        path = (root / d.path).resolve()
         if not path.exists():
-            course.warnings.append(f"missing file listed in course.yaml: {d['path']}")
+            course.warnings.append(f"missing file listed in course.yaml: {d.path}")
             continue
         course.documents.append(CourseDocument(
-            path=path, type=d["type"], label=d.get("label") or pretty_label(path),
-            solves=(root / d["solves"]).resolve() if d.get("solves") else None,
-            select=d.get("select"),
+            path=path, type=d.type, label=d.label or pretty_label(path),
+            solves=(root / d.solves).resolve() if d.solves else None,
+            select=d.select,
         ))
     return course
 
 
 def _from_filenames(root: Path) -> Course:
     course = Course(root=root, title=root.name.replace("_", " ").replace("-", " "))
-    files = sorted(p for p in root.rglob("*") if p.suffix.lower() in SUPPORTED and p.is_file())
+    files = sorted(p for p in root.rglob("*") if p.suffix.lower() in SUPPORTED and p.is_file()
+                   and not set(p.relative_to(root).parts[:-1]) & SKIP_DIRS)
     for p in files:
         role = guess_role(p.relative_to(root))
         if role is None:

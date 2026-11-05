@@ -1,0 +1,21 @@
+{
+  "title": "vector spaces",
+  "root": "examples/sample_course",
+  "source": {},
+  "documents": [
+    {
+      "path": "vector_spaces.pdf",
+      "type": "lecture",
+      "label": "Vector spaces",
+      "solves": null,
+      "words": 647,
+      "parser": "docling",
+      "warnings": [
+        "(from cache)"
+      ]
+    }
+  ],
+  "problems": [],
+  "warnings": [],
+  "budget": null
+}

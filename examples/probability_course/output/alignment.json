@@ -1,0 +1,408 @@
+{
+  "method": "lexical content-word overlap (v0)",
+  "spoken_to_slide_word_ratio": 13.7,
+  "item_threshold": 0.6,
+  "slide_warn_below": 0.8,
+  "overall_coverage": 0.818,
+  "flagged_slides": [
+    1,
+    2,
+    5,
+    7
+  ],
+  "slides": [
+    {
+      "slide_id": 1,
+      "title": "Sample Space",
+      "coverage": 0.667,
+      "flagged": true,
+      "novel_word_ratio": 0.635,
+      "items": [
+        {
+          "kind": "bullet",
+          "text": "Random experiment outcomes unknown",
+          "score": 0.5,
+          "covered": false
+        },
+        {
+          "kind": "bullet",
+          "text": "Sample space S = set of all possible outcomes",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Example: die roll S = {1,2,3,4,5,6}",
+          "score": 0.667,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Why it matters: defining the universe of outcomes lets us assign probabilities rigorously.",
+          "score": 0.571,
+          "covered": false
+        },
+        {
+          "kind": "talking_point",
+          "text": "Intuition: think of S as the list of every result you could possibly see when you run the experiment.",
+          "score": 0.889,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Example: for a single six-sided die, the sample space is S = {1,2,3,4,5,6}. This captures all six equally possible faces.",
+          "score": 0.909,
+          "covered": true
+        }
+      ]
+    },
+    {
+      "slide_id": 2,
+      "title": "Events and Set Operations",
+      "coverage": 0.714,
+      "flagged": true,
+      "novel_word_ratio": 0.61,
+      "items": [
+        {
+          "kind": "bullet",
+          "text": "Event = subset of S",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Union A∪B, Intersection A∩B, Complement Aᶜ",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Disjoint events have empty intersection",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Why it matters: events are the objects we assign probabilities to, and set operations let us combine them.",
+          "score": 0.75,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Intuition: an event is simply a collection of outcomes you care about, like \"even roll\".",
+          "score": 0.778,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Example: A = {2,4,6} (even), B = {4,5,6} (greater than 3). Union A∪B = {2,4,5,6}, Intersection A∩B = {4,6}. This matches the worked example in the notes.",
+          "score": 0.5,
+          "covered": false
+        },
+        {
+          "kind": "talking_point",
+          "text": "Common mistake: forgetting that the union counts outcomes appearing in both sets unless you subtract the intersection.",
+          "score": 0.583,
+          "covered": false
+        }
+      ]
+    },
+    {
+      "slide_id": 3,
+      "title": "Kolmogorov Axioms",
+      "coverage": 0.875,
+      "flagged": false,
+      "novel_word_ratio": 0.596,
+      "items": [
+        {
+          "kind": "bullet",
+          "text": "P(A) ≥ 0",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "P(S) = 1",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "If A∩B=∅ then P(A∪B)=P(A)+P(B)",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "equation",
+          "text": "Probabilities are never negative and the whole sample space has probability one.",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "equation",
+          "text": "For disjoint events the probability of their union is the sum of their individual probabilities.",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Why it matters: these axioms are the foundation from which all probability rules are derived.",
+          "score": 0.5,
+          "covered": false
+        },
+        {
+          "kind": "talking_point",
+          "text": "Intuition: think of probability as a weight assigned to sets of outcomes; the whole space must weigh to one and weights cannot be negative.",
+          "score": 0.667,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Connection: from these axioms we can derive formulas for complements and general unions.",
+          "score": 0.857,
+          "covered": true
+        }
+      ]
+    },
+    {
+      "slide_id": 4,
+      "title": "Addition Rule and Uniform Example",
+      "coverage": 1.0,
+      "flagged": false,
+      "novel_word_ratio": 0.663,
+      "items": [
+        {
+          "kind": "bullet",
+          "text": "P(A∪B)=P(A)+P(B)-P(A∩B)",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Uniform case: P(event)=#outcomes/total",
+          "score": 0.8,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Even roll probability = 3/6 = 1/2",
+          "score": 0.667,
+          "covered": true
+        },
+        {
+          "kind": "equation",
+          "text": "For any two events we subtract the overlap to avoid double‑counting.",
+          "score": 0.667,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Why it matters: most real problems involve events that are not disjoint, so we need the full addition rule.",
+          "score": 0.6,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Intuition: start with the sum of probabilities, then remove the part counted twice.",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Example: for a fair die, event \"even\" has 3 favorable outcomes out of 6, giving P(even)=3/6=1/2. This uses the uniform probability formula.",
+          "score": 0.692,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Common mistake: forgetting to subtract P(A∩B) leads to probabilities larger than 1.",
+          "score": 0.714,
+          "covered": true
+        }
+      ]
+    },
+    {
+      "slide_id": 5,
+      "title": "Conditional probability and independence",
+      "coverage": 0.667,
+      "flagged": true,
+      "novel_word_ratio": 0.522,
+      "items": [
+        {
+          "kind": "bullet",
+          "text": "P(A|B)=P(A∩B)/P(B)",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Multiplication rule: P(A∩B)=P(A|B)P(B)",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Independence: P(A∩B)=P(A)P(B)",
+          "score": 0.0,
+          "covered": false
+        },
+        {
+          "kind": "equation",
+          "text": "The probability of A given B is the joint probability divided by the probability of B.",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "equation",
+          "text": "Rearranged form, showing how to compute a joint probability from a conditional.",
+          "score": 0.571,
+          "covered": false
+        },
+        {
+          "kind": "talking_point",
+          "text": "Conditional probability tells us how our belief about A changes once we know B happened.",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Independence means learning B does not affect the chance of A, so the joint factorises.",
+          "score": 0.429,
+          "covered": false
+        },
+        {
+          "kind": "talking_point",
+          "text": "Example: drawing two cards without replacement. P(both aces)=4/52 × 3/51≈0.0045; the second factor is P(second ace|first ace).",
+          "score": 0.833,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "A common mistake is to treat dependent events as independent and multiply marginal probabilities.",
+          "score": 0.778,
+          "covered": true
+        }
+      ]
+    },
+    {
+      "slide_id": 6,
+      "title": "Bayes' theorem",
+      "coverage": 1.0,
+      "flagged": false,
+      "novel_word_ratio": 0.667,
+      "items": [
+        {
+          "kind": "bullet",
+          "text": "P(B|A)=P(A|B)P(B)/P(A)",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Prior = P(B), Posterior = P(B|A)",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Denominator via total probability",
+          "score": 0.75,
+          "covered": true
+        },
+        {
+          "kind": "equation",
+          "text": "Bayes' theorem expresses the reverse conditional probability in terms of the forward one.",
+          "score": 0.875,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Bayes' theorem lets us update our belief about B after observing A.",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "The prior P(B) reflects the initial chance of B, while the posterior P(B|A) is the updated chance.",
+          "score": 0.667,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Example: disease prevalence 1%, test sensitivity 99%, false positive 5%. Posterior ≈0.17, showing most positives are false.",
+          "score": 0.667,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Beware: forgetting to compute P(A) correctly; usually need the law of total probability.",
+          "score": 0.778,
+          "covered": true
+        }
+      ]
+    },
+    {
+      "slide_id": 7,
+      "title": "Discrete random variables: expectation & variance",
+      "coverage": 0.778,
+      "flagged": true,
+      "novel_word_ratio": 0.731,
+      "items": [
+        {
+          "kind": "bullet",
+          "text": "E[X]=Σ x p(x)",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Var(X)=E[X²]−(E[X])²",
+          "score": 0.0,
+          "covered": false
+        },
+        {
+          "kind": "bullet",
+          "text": "Linearity: E[aX+b]=aE[X]+b",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "equation",
+          "text": "The mean is the weighted average of all possible values.",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "equation",
+          "text": "Variance measures the average squared deviation from the mean.",
+          "score": 0.833,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "A discrete random variable maps outcomes to numbers; its pmf gives probabilities for each value.",
+          "score": 0.8,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Expectation is linear, making calculations with sums of variables easy.",
+          "score": 0.429,
+          "covered": false
+        },
+        {
+          "kind": "talking_point",
+          "text": "Example: fair die. E[X]=3.5, E[X²]=91/6, variance≈2.92.",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "A subtle point: adding a constant shifts the mean but does not change variance.",
+          "score": 0.75,
+          "covered": true
+        }
+      ]
+    }
+  ]
+}

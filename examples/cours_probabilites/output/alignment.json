@@ -1,0 +1,580 @@
+{
+  "method": "lexical content-word overlap (v0)",
+  "spoken_to_slide_word_ratio": 8.0,
+  "item_threshold": 0.6,
+  "slide_warn_below": 0.8,
+  "overall_coverage": 0.835,
+  "flagged_slides": [
+    1,
+    2,
+    4,
+    7,
+    10
+  ],
+  "slides": [
+    {
+      "slide_id": 1,
+      "title": "Probabilité conditionnelle",
+      "coverage": 0.625,
+      "flagged": true,
+      "novel_word_ratio": 0.662,
+      "items": [
+        {
+          "kind": "bullet",
+          "text": "Définition avec P(B) > 0",
+          "score": 0.0,
+          "covered": false
+        },
+        {
+          "kind": "bullet",
+          "text": "Formule : P(A|B) = P(A∩B)/P(B)",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Exemple du dé pair",
+          "score": 0.5,
+          "covered": false
+        },
+        {
+          "kind": "equation",
+          "text": "La probabilité de A sachant B est le rapport de l'intersection sur la probabilité de B.",
+          "score": 0.75,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Cette notion montre comment l'information sur B modifie notre évaluation de A.",
+          "score": 0.625,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Intuition : on ne considère que les cas où B est vrai, alors on renormalise.",
+          "score": 0.333,
+          "covered": false
+        },
+        {
+          "kind": "talking_point",
+          "text": "Example: lancer un dé équilibré, sachant que le résultat est pair, les issues possibles sont {2,4,6}; la probabilité d'obtenir 6 est donc 1/3.",
+          "score": 0.75,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Il faut toujours vérifier que P(B) soit strictement positif avant d’appliquer la formule.",
+          "score": 0.889,
+          "covered": true
+        }
+      ]
+    },
+    {
+      "slide_id": 2,
+      "title": "Formule des probabilités totales",
+      "coverage": 0.75,
+      "flagged": true,
+      "novel_word_ratio": 0.695,
+      "items": [
+        {
+          "kind": "bullet",
+          "text": "B1…Bn forment une partition",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "P(A) = Σ P(A|Bi) P(Bi)",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Arbre de probabilités",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "equation",
+          "text": "La probabilité de A est la somme des probabilités conditionnelles sur chaque cas Bi pondérées par P(Bi).",
+          "score": 0.667,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Cette formule permet de décomposer une probabilité complexe en cas simples.",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Intuition : on regarde chaque scénario possible Bi et on combine les contributions.",
+          "score": 0.571,
+          "covered": false
+        },
+        {
+          "kind": "talking_point",
+          "text": "Un arbre de probabilités aide à visualiser le calcul : on multiplie le long d'une branche puis on additionne les branches menant à A.",
+          "score": 0.727,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Attention à bien choisir des événements B_i qui forment une partition de l'univers.",
+          "score": 0.571,
+          "covered": false
+        }
+      ]
+    },
+    {
+      "slide_id": 3,
+      "title": "Indépendance",
+      "coverage": 1.0,
+      "flagged": false,
+      "novel_word_ratio": 0.638,
+      "items": [
+        {
+          "kind": "bullet",
+          "text": "A et B indépendants ⇔ P(A∩B)=P(A)P(B)",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Pas d'effet de l'un sur l'autre",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Incompatibles ≠ indépendants",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "equation",
+          "text": "Si A et B sont indépendants, la probabilité de les voir se réaliser ensemble est le produit de leurs probabilités séparées.",
+          "score": 0.667,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "L'indépendance signifie que connaître B n'influence pas la probabilité de A.",
+          "score": 0.833,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Souvent confondu avec incompatibilité : deux événements incompatibles (mutuellement exclusifs) ont P(A∩B)=0 mais ne sont pas indépendants si leurs probabilités sont non nulles.",
+          "score": 0.889,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Un moyen de vérifier l'indépendance est de comparer P(A|B) avec P(A).",
+          "score": 0.8,
+          "covered": true
+        }
+      ]
+    },
+    {
+      "slide_id": 4,
+      "title": "Formule de Bayes",
+      "coverage": 0.75,
+      "flagged": true,
+      "novel_word_ratio": 0.8,
+      "items": [
+        {
+          "kind": "bullet",
+          "text": "Inversion de probabilité conditionnelle",
+          "score": 0.333,
+          "covered": false
+        },
+        {
+          "kind": "bullet",
+          "text": "P(B|A)=P(A|B)P(B)/P(A)",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Utilise souvent les probabilités totales",
+          "score": 0.75,
+          "covered": true
+        },
+        {
+          "kind": "equation",
+          "text": "La probabilité a posteriori de B sachant A s'obtient en combinant la vraisemblance P(A|B) et la probabilité a priori P(B), normalisée par P(A).",
+          "score": 0.625,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Bayes permet de mettre à jour nos croyances sur B après l'observation de A.",
+          "score": 0.75,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Le terme P(B) est la probabilité a priori, P(B|A) la probabilité a posteriori.",
+          "score": 0.75,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "P(A) se calcule généralement avec la formule des probabilités totales, en sommant sur tous les B_i possibles.",
+          "score": 0.667,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Erreur fréquente : oublier de normaliser correctement, ce qui conduit à une probabilité >1.",
+          "score": 0.286,
+          "covered": false
+        }
+      ]
+    },
+    {
+      "slide_id": 5,
+      "title": "Exercice 1 – Le dé",
+      "coverage": 0.857,
+      "flagged": false,
+      "novel_word_ratio": 0.696,
+      "items": [
+        {
+          "kind": "bullet",
+          "text": "Lancer un dé équilibré à six faces",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Condition : résultat ≥ 4",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Question : probabilité d’obtenir un nombre pair",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "On veut la probabilité d'un événement sous condition d'un autre événement.",
+          "score": 0.667,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Le problème porte sur la probabilité conditionnelle, pas sur une probabilité simple.",
+          "score": 0.5,
+          "covered": false
+        },
+        {
+          "kind": "talking_point",
+          "text": "Il faut identifier clairement les issues compatibles avec la condition « ≥ 4 ».",
+          "score": 0.857,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Le défi est de ne pas confondre le nombre total d'issues du dé avec celles admises par la condition.",
+          "score": 0.8,
+          "covered": true
+        }
+      ]
+    },
+    {
+      "slide_id": 6,
+      "title": "Solution – Probabilité conditionnelle",
+      "coverage": 0.889,
+      "flagged": false,
+      "novel_word_ratio": 0.632,
+      "items": [
+        {
+          "kind": "bullet",
+          "text": "A : résultat ≥ 4 = {4,5,6}",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "B : nombre pair = {2,4,6}",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "A∩B = {4,6}",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "P(B|A)= (2/6)/(3/6)=2/3",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "equation",
+          "text": "La probabilité conditionnelle de B sachant A est le rapport de l'intersection sur la probabilité de A.",
+          "score": 0.8,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "On calcule d'abord P(A) = 3/6 = 1/2 car trois faces satisfont ≥ 4.",
+          "score": 0.333,
+          "covered": false
+        },
+        {
+          "kind": "talking_point",
+          "text": "L'intersection A∩B contient les nombres pairs 4 et 6, donc P(A∩B)=2/6.",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "En appliquant la formule, on obtient (2/6)/(3/6) = 2/3.",
+          "score": 0.667,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Vérifier : parmi les trois issues possibles sous la condition, deux sont paires, donc 2/3.",
+          "score": 0.909,
+          "covered": true
+        }
+      ]
+    },
+    {
+      "slide_id": 7,
+      "title": "Test de dépistage",
+      "coverage": 0.714,
+      "flagged": true,
+      "novel_word_ratio": 0.783,
+      "items": [
+        {
+          "kind": "bullet",
+          "text": "Prévalence de la maladie : 2 %",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Sensibilité du test : 95 % des malades détectés",
+          "score": 0.75,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Faux positif : 10 % des sains testés positifs",
+          "score": 0.5,
+          "covered": false
+        },
+        {
+          "kind": "bullet",
+          "text": "Une personne est testée positive, quel est P(M|T) ?",
+          "score": 0.25,
+          "covered": false
+        },
+        {
+          "kind": "talking_point",
+          "text": "L'énoncé veut la probabilité d'être malade sachant qu'on a un test positif.",
+          "score": 0.75,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Il faut combiner la rareté de la maladie avec les performances du test.",
+          "score": 0.857,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "C'est un problème classique de probabilité conditionnelle.",
+          "score": 0.75,
+          "covered": true
+        }
+      ]
+    },
+    {
+      "slide_id": 8,
+      "title": "Solution – Bayes",
+      "coverage": 1.0,
+      "flagged": false,
+      "novel_word_ratio": 0.575,
+      "items": [
+        {
+          "kind": "bullet",
+          "text": "Calcul de P(T) par la formule des probabilités totales",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Application de la formule de Bayes",
+          "score": 0.667,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Résultat : environ 0,16",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "equation",
+          "text": "Probabilité d'obtenir un test positif, qu'on soit malade ou sain.",
+          "score": 0.857,
+          "covered": true
+        },
+        {
+          "kind": "equation",
+          "text": "Formule de Bayes pour la probabilité d'être malade sachant le test positif.",
+          "score": 0.75,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "On multiplie la sensibilité par la prévalence, puis le taux de faux positif par la proportion saine.",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "P(T) vaut 0,019 + 0,098 = 0,117, soit la probabilité totale d'un test positif.",
+          "score": 0.889,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Ensuite on divise la partie « malade et test positif » par P(T) pour obtenir P(M|T).",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Le quotient donne environ 0,16, c'est‑à‑dire 16 % des positifs sont réellement malades.",
+          "score": 1.0,
+          "covered": true
+        }
+      ]
+    },
+    {
+      "slide_id": 9,
+      "title": "Exercice 3 – Deux urnes",
+      "coverage": 1.0,
+      "flagged": false,
+      "novel_word_ratio": 0.747,
+      "items": [
+        {
+          "kind": "bullet",
+          "text": "U1 : 3 rouges, 2 vertes",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "U2 : 1 rouge, 4 vertes",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Choix d'une urne au hasard",
+          "score": 0.667,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "Quel est P(boule rouge) ?",
+          "score": 0.667,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "On doit calculer la probabilité totale d'obtenir une boule rouge.",
+          "score": 0.714,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Le problème combine deux étapes aléatoires : choisir l'urne, puis la boule.",
+          "score": 0.667,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Il faut faire attention à ne pas confondre les proportions de chaque urne.",
+          "score": 0.875,
+          "covered": true
+        }
+      ]
+    },
+    {
+      "slide_id": 10,
+      "title": "Solution – Probabilité totale",
+      "coverage": 0.778,
+      "flagged": true,
+      "novel_word_ratio": 0.753,
+      "items": [
+        {
+          "kind": "bullet",
+          "text": "P(urne choisie) = 1/2 pour chaque urne",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "P(R|U1) = 3/5, P(R|U2) = 1/5",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "bullet",
+          "text": "P(R) = 1/2·3/5 + 1/2·1/5 = 2/5",
+          "score": 1.0,
+          "covered": true
+        },
+        {
+          "kind": "equation",
+          "text": "Probabilité totale : somme des produits probabilité d'urne et probabilité rouge conditionnée.",
+          "score": 0.714,
+          "covered": true
+        },
+        {
+          "kind": "equation",
+          "text": "Résultat final de la probabilité d'obtenir une boule rouge.",
+          "score": 0.667,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "Chaque urne étant équi‑probable, on multiplie la probabilité de choisir l'urne par la probabilité d'une rouge dans celle‑ci.",
+          "score": 0.6,
+          "covered": true
+        },
+        {
+          "kind": "talking_point",
+          "text": "On calcule d'abord les proportions : 3/5 dans U1, 1/5 dans U2.",
+          "score": 0.333,
+          "covered": false
+        },
+        {
+          "kind": "talking_point",
+          "text": "On applique la formule des probabilités totales et on simplifie les fractions.",
+          "score": 0.5,
+          "covered": false
+        },
+        {
+          "kind": "talking_point",
+          "text": "Vérifier : la somme des contributions donne bien 2/5, soit 0,4.",
+          "score": 1.0,
+          "covered": true
+        }
+      ]
+    }
+  ]
+}

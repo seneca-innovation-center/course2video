@@ -3,7 +3,13 @@ from __future__ import annotations
 from ..course.linking import Problem
 from ..llm.base import LLMBackend
 from .models import SlideBatch
-from .validate import Attempt, check_latex, check_lecture_style, generate_validated
+from .validate import (
+    Attempt,
+    check_figures,
+    check_latex,
+    check_lecture_style,
+    generate_validated,
+)
 
 SYSTEM = """You turn one exercise and its OFFICIAL solution into slides for a worked example
 in a recorded lecture.
@@ -20,6 +26,11 @@ Rules:
   slide, what the problem is really asking and what makes it tricky (without the answer);
   on solution slides, WHY each step of the official solution is done, the numbers worked
   through, and how to check the result. Only use what the official solution supports.
+- If the exercise or the solution contains a figure ([Figure F3: caption]), put its id in
+  `figure` on the slide it belongs to and explain it in the talking points. Never use an id
+  that is not in the text.
+- Titles, bullets and talking points are plain text: write symbols directly (ℝⁿ, ∩, ≤,
+  P(A|B)), never LaTeX commands or $...$. LaTeX belongs only in `equations`.
 - Answer with a single JSON object and nothing else."""
 
 PROMPT = """Make exactly {n_slides} slides for this problem from {ref}: 1 "exercise" slide, then
@@ -35,7 +46,7 @@ If the problem has several parts, cover at most the parts that fit; say which pa
 </official_solution>"""
 
 
-def _check_kinds(batch: SlideBatch) -> list[str]:
+def _check_kinds(batch: SlideBatch, source: str = "") -> list[str]:
     kinds = [s.kind for s in batch.slides]
     errors = []
     if not kinds or kinds[0] != "exercise":
@@ -44,11 +55,12 @@ def _check_kinds(batch: SlideBatch) -> list[str]:
         errors.append('at least one slide must have kind "solution"')
     if "theory" in kinds:
         errors.append('use only kinds "exercise" and "solution" here')
-    return errors + check_latex(batch) + check_lecture_style(batch, 12)
+    return errors + check_latex(batch) + check_lecture_style(batch, 12) + check_figures(batch, source)
 
 
 def generate_problem_slides(
-    llm: LLMBackend, problem: Problem, *, n_slides: int, language: str, max_retries: int
+    llm: LLMBackend, problem: Problem, *, n_slides: int, language: str, max_retries: int,
+    worked: str = "Worked Problem",
 ) -> tuple[SlideBatch, list[Attempt]]:
     if not problem.solution:
         raise ValueError(f"{problem.ref} has no linked solution")
@@ -61,9 +73,10 @@ def generate_problem_slides(
         model_cls=SlideBatch,
         task="problem",
         max_retries=max_retries,
-        extra_checks=_check_kinds,
+        extra_checks=lambda b: _check_kinds(b, problem.statement + "\n" + problem.solution),
     )
     for s in batch.slides:
-        s.source_section = f"Worked {problem.display_title}"
+        s.source_section = (f"{worked} {problem.number}: {problem.title}" if problem.title
+                            else f"{worked} {problem.number}")
         s.source_doc = problem.ref
     return batch, attempts

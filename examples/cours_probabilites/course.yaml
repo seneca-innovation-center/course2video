@@ -1,0 +1,13 @@
+title: "Probabilités conditionnelles et formule de Bayes"
+language: fr
+target_minutes: 10
+documents:
+  - path: cours/chapitre3_probabilites_conditionnelles.md
+    type: lecture
+    label: "Chapitre 3"
+  - path: td/td3.md
+    type: exercises
+    label: "TD 3"
+  - path: corrige/td3_corrige.md
+    type: solutions
+    solves: td/td3.md

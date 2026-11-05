@@ -7,12 +7,11 @@
 **A self-hostable, open-source pipeline that turns course documents into lecturer-approved
 slides and narrated videos, without sending course material to a cloud service.**
 
-> **Status: early development.** Pipeline v0 runs end to end on the sample courses and on a
-> real 3-document course. The results in [`examples/demo.md`](examples/demo.md) are development runs made
-> with a hosted LLM API on openly licensed sample material. The pipeline is built to run on
-> premises: the deployment target is gpt-oss-120b served on our internal server through an
-> OpenAI-compatible API; recording the same runs there is the next step (#9).
-> Output quality has **not** been formally evaluated yet (see [`eval/rubric.md`](eval/rubric.md)).
+> **Status: early development.** The pipeline runs end to end with **gpt-oss-120b served on
+> our internal server** through an OpenAI-compatible API, on four example courses (English and
+> French, one of them a real 3-document MIT course): see [`examples/demo.md`](examples/demo.md).
+> Slides were approved without edits; output quality has **not** been formally evaluated yet
+> (see [`eval/rubric.md`](eval/rubric.md)).
 
 ## The problem
 
@@ -40,6 +39,12 @@ PDF ─► Markdown ─► slide JSON ─► LECTURER REVIEW ─► script ─�
 * **Target length.** `--minutes 20` (or `target_minutes` in `course.yaml`) sets the number of
   slides and words per slide; `meta.json` reports target versus actual. Short sources give a
   shorter video and a warning, never padding.
+* **Figures from the sources.** Diagrams found by the parser (e.g. a probability tree in the
+  official solutions) can be shown on the slide, chosen per slide and approved in review.
+* **Bullets revealed with the narration** (`render.reveal_bullets`), and optionally one short
+  video per part (`render.per_part_videos`).
+* **English and French** structure, wording and voice, picked from the course language.
+* **Scoring tools** for a review session: `course2video score` (see `eval/rubric.md`).
 * **Validated structure.** Slides follow a Pydantic schema ([`schemas/`](schemas/)). Invalid
   LLM output is sent back with the validator's errors and retried a bounded number of times.
 * **Lecturer in the loop.** The run **stops** after slide generation. Nothing is narrated
@@ -65,11 +70,11 @@ Details: [`docs/architecture.md`](docs/architecture.md).
 | Backend | Where the model runs | Use |
 |---|---|---|
 | `mock` | nowhere (fixed heuristics) | tests and CI, no GPU or network |
-| `openai_compat` | **your server** (vLLM, Ollama) | target deployment, e.g. **gpt-oss-120b** |
+| `openai_compat` | **your server** (vLLM, Ollama, any OpenAI-compatible API) | deployment; tested with **gpt-oss-120b** on our internal server |
 
 Switching models is a config change, not a code change: see [`docs/local-llm.md`](docs/local-llm.md).
-The gpt-oss backend is covered by tests against a simulated server; an end-to-end run with
-gpt-oss-120b has not been recorded yet.
+Tested end to end with gpt-oss-120b on an 8k-context server (`configs/gpt-oss-120b-8k.yaml`);
+`scripts/run_gpt_oss_eval.sh` reproduces the example runs.
 
 ## Quick start
 
@@ -127,7 +132,7 @@ Details, measured times and disk space: [`docs/requirements.md`](docs/requiremen
 
 Short version: born-digital PDFs only (no OCR), exercises linked by number only (no
 cross-course retrieval yet), equations decoded by
-Docling can be wrong, figures are dropped, and the coverage metric is lexical. Full list
+Docling can be wrong, figure captions are often missing, and the coverage metric is lexical. Full list
 with examples: [`docs/limitations.md`](docs/limitations.md).
 
 ## Roadmap

@@ -1,0 +1,77 @@
+{
+  "title": "Probabilités conditionnelles et formule de Bayes",
+  "root": "examples/cours_probabilites",
+  "source": {},
+  "documents": [
+    {
+      "path": "cours/chapitre3_probabilites_conditionnelles.md",
+      "type": "lecture",
+      "label": "Chapitre 3",
+      "solves": null,
+      "words": 284,
+      "parser": "markdown",
+      "warnings": []
+    },
+    {
+      "path": "td/td3.md",
+      "type": "exercises",
+      "label": "TD 3",
+      "solves": null,
+      "words": 129,
+      "parser": "markdown",
+      "warnings": []
+    },
+    {
+      "path": "corrige/td3_corrige.md",
+      "type": "solutions",
+      "label": "TD 3 corrige",
+      "solves": "td3.md",
+      "words": 147,
+      "parser": "markdown",
+      "warnings": []
+    }
+  ],
+  "problems": [
+    {
+      "ref": "TD 3, Exercice 1",
+      "title": "Le dé",
+      "has_solution": true,
+      "selected": true,
+      "used": true,
+      "statement_words": 31,
+      "solution_words": 40
+    },
+    {
+      "ref": "TD 3, Exercice 2",
+      "title": "Test de dépistage",
+      "has_solution": true,
+      "selected": true,
+      "used": true,
+      "statement_words": 47,
+      "solution_words": 70
+    },
+    {
+      "ref": "TD 3, Exercice 3",
+      "title": "Deux urnes",
+      "has_solution": true,
+      "selected": true,
+      "used": true,
+      "statement_words": 45,
+      "solution_words": 32
+    }
+  ],
+  "warnings": [],
+  "budget": {
+    "target_minutes": 10,
+    "words_per_minute": 163,
+    "content_words": 1422,
+    "words_per_slide": 220,
+    "theory_slides": 4,
+    "slides_per_problem": 2,
+    "problems": 3,
+    "warnings": [
+      "the lecture has 4 chapters; giving each one a slide makes the video longer than the 10-minute target",
+      "sources have 560 words but a 10-minute video needs about 1422 words of narration; the video will likely be shorter than the target"
+    ]
+  }
+}

@@ -138,3 +138,26 @@ def test_lecture_style_sends_long_bullets_back():
     assert any("move the explanation to talking_points" in e for e in errors)
     assert any("at least 2 points" in e for e in errors)
     assert check_lecture_style(SlideBatch.model_validate(VALID), max_bullet_words=12) == []
+
+
+def test_invented_example_is_sent_back_once():
+    from course2video.slides.validate import check_examples
+
+    invented = {"slides": [{"id": 1, "title": "T", "bullets": ["b"], "talking_points": [
+        "Why it matters.", "Example: draw a red card then a king, P = 2/26 = 1/13."]}]}
+    source_example = {"slides": [{"id": 1, "title": "T", "bullets": ["b"], "talking_points": [
+        "Why it matters.", "Example: a fair die, even result, P(6 | even) = 1/3."]}]}
+    source = "Example. A fair die: knowing the result is even, the probability of 6 is 1/3."
+    assert check_examples(SlideBatch.model_validate(invented), source)
+    assert check_examples(SlideBatch.model_validate(source_example), source) == []
+
+
+def test_generate_deck_retries_invented_example_then_accepts():
+    from course2video.config import SlidesConfig
+
+    invented = {"slides": [{"id": 1, "title": "T", "bullets": ["b"], "talking_points": [
+        "Why.", "Example: 70% red balls and 30% blue."]}]}
+    llm = MockBackend(responses=[invented, invented])
+    deck, attempts = generate_deck(llm, "# C\n\n## A\nSome text.", SlidesConfig(), title="C")
+    assert len(llm.calls) == 2 and "not in the source" in llm.calls[1]["prompt"]
+    assert attempts[0][-1].ok and attempts[0][-1].warnings

@@ -66,6 +66,43 @@ def check_latex(deck_or_slides) -> list[str]:
     return problems
 
 
+FIGURE_REF = re.compile(r"\[Figure (F\d+):")
+
+
+def check_figures(batch, source_text: str) -> list[str]:
+    allowed = set(FIGURE_REF.findall(source_text))
+    errors = [f"slides[id={s.id}].figure: {s.figure!r} is not a figure of this source; "
+              f"use one of {sorted(allowed) or 'none'} or leave it empty"
+              for s in batch.slides if s.figure and s.figure not in allowed]
+    for s in batch.slides:
+        if any("[Figure " in t for t in s.bullets + s.talking_points):
+            errors.append(f"slides[id={s.id}]: do not copy '[Figure ...]' markers into bullets or "
+                          "talking points; put the figure id in `figure`")
+    return errors
+
+
+EXAMPLE_START = re.compile(r"^\s*(example|exemple|ejemplo)\b", re.I)
+
+
+def check_examples(batch, source_text: str) -> list[str]:
+    from .grounding import SMALL, numbers
+
+    source = numbers(source_text)
+    errors = []
+    for s in batch.slides:
+        for tp in s.talking_points:
+            if not EXAMPLE_START.match(tp):
+                continue
+            extra = sorted({str(n) for n in numbers(tp) - source - SMALL})
+            if extra:
+                errors.append(
+                    f"slides[id={s.id}]: the example '{tp[:60]}...' uses numbers that are not in the "
+                    f"source ({', '.join(extra[:6])}). Use an example from the source; results computed "
+                    "from a source example are fine. If the source has no example, drop it."
+                )
+    return errors
+
+
 def check_lecture_style(batch, max_bullet_words: int, min_talking_points: int = 2) -> list[str]:
     problems = []
     for s in batch.slides:

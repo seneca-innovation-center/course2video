@@ -19,7 +19,8 @@ def split_parts(frames: list[Frame]) -> list[list[int]]:
 
 
 def write_part_videos(frames: list[Frame], images: list[Path], audios: list[Path], out_dir: Path,
-                      *, pause_s: float, fps: int) -> list[dict]:
+                      *, pause_s: float, fps: int,
+                      states: dict[int, list[tuple[Path, float]]] | None = None) -> list[dict]:
     out_dir.mkdir(parents=True, exist_ok=True)
     for old in list(out_dir.glob("part_*.mp4")) + list(out_dir.glob("part_*.srt")):
         old.unlink()
@@ -30,8 +31,9 @@ def write_part_videos(frames: list[Frame], images: list[Path], audios: list[Path
                     "only the full video was written")
     for n, idx in enumerate(groups, start=1):
         video = out_dir / f"part_{n:02d}.mp4"
+        local = {k: (states or {})[i] for k, i in enumerate(idx) if i in (states or {})}
         durations = assemble_video([images[i] for i in idx], [audios[i] for i in idx], video,
-                                   pause_s=pause_s, fps=fps)
+                                   pause_s=pause_s, fps=fps, states=local)
         speech = [d - pause_s for d in durations]
         write_srt([frames[i].narration for i in idx], durations, speech, video.with_suffix(".srt"))
         heading = next((frames[i].heading for i in idx if frames[i].kind == "section"), "")

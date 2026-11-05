@@ -17,14 +17,15 @@ class Problem:
     solution: str | None
     doc_label: str
     selected: bool = True
+    word: str = "Problem"
 
     @property
     def ref(self) -> str:
-        return f"{self.doc_label}, Problem {self.number}"
+        return f"{self.doc_label}, {self.word} {self.number}"
 
     @property
     def display_title(self) -> str:
-        return f"Problem {self.number}: {self.title}" if self.title else f"Problem {self.number}"
+        return f"{self.word} {self.number}: {self.title}" if self.title else f"{self.word} {self.number}"
 
 
 def _title(rest: str) -> str:
@@ -48,7 +49,8 @@ def split_numbered(md: str) -> dict[int, tuple[str, str]]:
 
 
 def link_problems(
-    exercises_md: str, solutions_md: str | None, doc_label: str, select: list[int] | None = None
+    exercises_md: str, solutions_md: str | None, doc_label: str, select: list[int] | None = None,
+    word: str = "Problem",
 ) -> tuple[list[Problem], list[str]]:
     warnings = []
     ex = split_numbered(exercises_md)
@@ -63,7 +65,7 @@ def link_problems(
         problems.append(Problem(
             number=n, title=title or (s[0] if s else ""), statement=text,
             solution=s[1] if s else None, doc_label=doc_label,
-            selected=(select is None or n in select),
+            selected=(select is None or n in select), word=word,
         ))
     for n in sorted(set(sol) - set(ex)):
         warnings.append(f"{doc_label}: solution {n} has no matching problem")

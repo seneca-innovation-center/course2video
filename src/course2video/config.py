@@ -18,6 +18,7 @@ class LLMConfig(BaseModel):
     effort: str | None = None
     structured_output: bool = True
     timeout_s: float = 600.0
+    context_tokens: int | None = None
 
 
 class ParserConfig(BaseModel):
@@ -46,6 +47,9 @@ class AlignmentConfig(BaseModel):
 class TTSConfig(BaseModel):
     backend: Literal["piper", "say", "stub"] = "stub"
     piper_model: str = "models/piper/en_US-ljspeech-medium.onnx"
+    piper_voices: dict[str, str] = Field(default_factory=lambda: {
+        "fr": "models/piper/fr_FR-siwis-medium.onnx",
+    })
     say_voice: str = ""
     sample_rate: int = 22050
 
@@ -57,6 +61,7 @@ class RenderConfig(BaseModel):
     pause_after_slide_s: float = 0.6
     fps: int = 5
     per_part_videos: bool = False
+    reveal_bullets: bool = False
 
 
 class LectureConfig(BaseModel):
@@ -80,6 +85,22 @@ class Config(BaseModel):
     alignment: AlignmentConfig = Field(default_factory=AlignmentConfig)
     tts: TTSConfig = Field(default_factory=TTSConfig)
     render: RenderConfig = Field(default_factory=RenderConfig)
+
+
+def fit_to_context(cfg: Config, context_tokens: int) -> list[str]:
+    changes = []
+    out_budget = context_tokens // 2
+    slides = max(1, (out_budget - 1000) // 350)
+    script = max(1, (out_budget - 1000) // int(cfg.script.words_per_slide * 1.4 + 1))
+    chunk = max(1500, int((context_tokens - out_budget - 1500) * 3.0))
+    for section, field, value in (("slides", "max_slides_per_chunk", slides),
+                                  ("script", "slides_per_call", script),
+                                  ("slides", "chunk_chars", chunk)):
+        current = getattr(getattr(cfg, section), field)
+        if value < current:
+            setattr(getattr(cfg, section), field, value)
+            changes.append(f"{section}.{field}: {current} -> {value}")
+    return changes
 
 
 def load_config(path: str | Path | None = None) -> Config:

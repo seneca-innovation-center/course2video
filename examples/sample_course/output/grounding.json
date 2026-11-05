@@ -1,0 +1,223 @@
+{
+  "method": "numbers must occur in the source (by value); word overlap with the source must be at least 0.25",
+  "mean_overlap": 0.548,
+  "flagged_slides": [],
+  "slides": [
+    {
+      "slide_id": 1,
+      "kind": "theory",
+      "talking_points": [
+        {
+          "text": "These operations are the foundation for all later linear‑algebra concepts.",
+          "overlap": 0.5,
+          "numbers_not_in_source": [],
+          "flagged": false
+        },
+        {
+          "text": "Geometrically, in R² and R³ vectors can be visualized as arrows starting at the origin.",
+          "overlap": 0.667,
+          "numbers_not_in_source": [],
+          "flagged": false
+        },
+        {
+          "text": "Example: (1,2,3) + (4,0,-1) = (5,2,2) and 2·(1,2,3) = (2,4,6).",
+          "overlap": 1.0,
+          "numbers_not_in_source": [],
+          "flagged": false
+        },
+        {
+          "text": "A common mistake is to try to add vectors of different dimensions; the dimensions must match.",
+          "overlap": 0.25,
+          "numbers_not_in_source": [],
+          "flagged": false
+        },
+        {
+          "text": "We will now see how these simple operations fit into the abstract definition of a vector space.",
+          "overlap": 0.444,
+          "numbers_not_in_source": [],
+          "flagged": false
+        }
+      ]
+    },
+    {
+      "slide_id": 2,
+      "kind": "theory",
+      "talking_points": [
+        {
+          "text": "The axioms guarantee that any theorem proved from them applies to all listed examples.",
+          "overlap": 0.571,
+          "numbers_not_in_source": [],
+          "flagged": false
+        },
+        {
+          "text": "Intuitively, the axioms say that vectors behave like arrows that can be moved and stretched consistently.",
+          "overlap": 0.3,
+          "numbers_not_in_source": [],
+          "flagged": false
+        },
+        {
+          "text": "Example: In the space of 2×2 matrices, adding matrices and multiplying by scalars follows the same rules as for ordinary vectors.",
+          "overlap": 0.636,
+          "numbers_not_in_source": [],
+          "flagged": false
+        },
+        {
+          "text": "A subtle point: the zero vector must be the same for both operations; some students forget to check this when verifying a new vector space.",
+          "overlap": 0.462,
+          "numbers_not_in_source": [],
+          "flagged": false
+        },
+        {
+          "text": "Next we will examine special subsets of a vector space that are themselves vector spaces.",
+          "overlap": 0.429,
+          "numbers_not_in_source": [],
+          "flagged": false
+        }
+      ]
+    },
+    {
+      "slide_id": 3,
+      "kind": "theory",
+      "talking_points": [
+        {
+          "text": "Subspaces let us focus on smaller, manageable parts of a vector space while preserving all structure.",
+          "overlap": 0.333,
+          "numbers_not_in_source": [],
+          "flagged": false
+        },
+        {
+          "text": "The three‑condition test is sufficient because the other axioms are inherited from V.",
+          "overlap": 0.571,
+          "numbers_not_in_source": [],
+          "flagged": false
+        },
+        {
+          "text": "Example: The set W={ (t,2t) | t∈ℝ } satisfies the three conditions, so it is a subspace of ℝ².",
+          "overlap": 0.833,
+          "numbers_not_in_source": [],
+          "flagged": false
+        },
+        {
+          "text": "Common mistake: forgetting to verify that the zero vector belongs to W; the line y=2x+1 fails this test.",
+          "overlap": 0.3,
+          "numbers_not_in_source": [],
+          "flagged": false
+        },
+        {
+          "text": "Understanding subspaces prepares us for concepts like span and basis.",
+          "overlap": 0.429,
+          "numbers_not_in_source": [],
+          "flagged": false
+        }
+      ]
+    },
+    {
+      "slide_id": 4,
+      "kind": "theory",
+      "talking_points": [
+        {
+          "text": "The span captures everything we can reach using the given vectors and scalar multiples.",
+          "overlap": 0.444,
+          "numbers_not_in_source": [],
+          "flagged": false
+        },
+        {
+          "text": "Intuition: think of the span as the “reach” of the vectors when you can stretch and add them.",
+          "overlap": 0.286,
+          "numbers_not_in_source": [],
+          "flagged": false
+        },
+        {
+          "text": "Example: Vectors (1,0,0) and (0,1,0) in ℝ³ span the xy‑plane because any (x,y,0) can be written as x·(1,0,0)+y·(0,1,0).",
+          "overlap": 1.0,
+          "numbers_not_in_source": [],
+          "flagged": false
+        },
+        {
+          "text": "A subtle point: the span of a single non‑zero vector is a line, not the whole space.",
+          "overlap": 0.6,
+          "numbers_not_in_source": [],
+          "flagged": false
+        },
+        {
+          "text": "Later we will see how choosing independent vectors from a span leads to a basis.",
+          "overlap": 0.5,
+          "numbers_not_in_source": [],
+          "flagged": false
+        }
+      ]
+    },
+    {
+      "slide_id": 5,
+      "kind": "theory",
+      "talking_points": [
+        {
+          "text": "Independence tells us that no vector in the set is redundant.",
+          "overlap": 0.6,
+          "numbers_not_in_source": [],
+          "flagged": false
+        },
+        {
+          "text": "Intuitively, a basis is a minimal set of directions that can build every vector in the space.",
+          "overlap": 0.5,
+          "numbers_not_in_source": [],
+          "flagged": false
+        },
+        {
+          "text": "Example: In ℝ², {(1,0),(0,1)} is independent and spans ℝ², so it is a basis; its size 2 is the dimension.",
+          "overlap": 0.833,
+          "numbers_not_in_source": [],
+          "flagged": false
+        },
+        {
+          "text": "A common error is to assume any spanning set is a basis; independence must also be checked.",
+          "overlap": 0.375,
+          "numbers_not_in_source": [],
+          "flagged": false
+        },
+        {
+          "text": "The standard basis of ℝⁿ consists of the n vectors with a single 1 and the rest 0, confirming that dim ℝⁿ = n.",
+          "overlap": 0.375,
+          "numbers_not_in_source": [],
+          "flagged": false
+        }
+      ]
+    },
+    {
+      "slide_id": 6,
+      "kind": "theory",
+      "talking_points": [
+        {
+          "text": "We test whether a non‑trivial combination gives the zero vector.",
+          "overlap": 0.375,
+          "numbers_not_in_source": [],
+          "flagged": false
+        },
+        {
+          "text": "Example: 3·(1,2) - (3,6) = (0,0); coefficients (3, -1) are not both zero, so the vectors are dependent.",
+          "overlap": 0.833,
+          "numbers_not_in_source": [],
+          "flagged": false
+        },
+        {
+          "text": "Because they are multiples of each other, they span only a line, not the whole plane.",
+          "overlap": 1.0,
+          "numbers_not_in_source": [],
+          "flagged": false
+        },
+        {
+          "text": "A subtle point: two vectors in ℝ² are independent precisely when they are not scalar multiples.",
+          "overlap": 0.571,
+          "numbers_not_in_source": [],
+          "flagged": false
+        },
+        {
+          "text": "This exercise illustrates the definitions of dependence and span from the previous slides.",
+          "overlap": 0.429,
+          "numbers_not_in_source": [],
+          "flagged": false
+        }
+      ]
+    }
+  ]
+}

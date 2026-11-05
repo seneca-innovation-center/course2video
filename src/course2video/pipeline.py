@@ -38,6 +38,43 @@ def _set_state(out: Path, **kw) -> dict:
     return st
 
 
+def number_figures(course, parsed: dict, figures_dir: Path) -> dict[str, dict]:
+    import re
+    import shutil
+
+    from .parsing.base import FIGURE_TOKEN
+
+    shutil.rmtree(figures_dir, ignore_errors=True)
+    index: dict[str, dict] = {}
+    for doc in course.documents:
+        pd = parsed[doc.path]
+        for k, fig in enumerate(pd.figures):
+            gid = f"F{len(index) + 1}"
+            figures_dir.mkdir(parents=True, exist_ok=True)
+            dest = figures_dir / f"{gid}{fig.path.suffix or '.png'}"
+            shutil.copyfile(fig.path, dest)
+            caption = " ".join(fig.caption.split()) or "no caption"
+            index[gid] = {"file": dest.name, "caption": caption, "page": fig.page,
+                          "source": doc.label}
+            pd.markdown = pd.markdown.replace(FIGURE_TOKEN.format(k), f"[Figure {gid}: {caption}]")
+        pd.markdown = re.sub(r"\[\[FIG:\d+\]\]", "", pd.markdown)
+    if index:
+        _write_json(figures_dir / "figures.json", index)
+    return index
+
+
+def _fit_context(llm: LLMBackend, cfg: Config) -> dict | None:
+    from .config import fit_to_context
+
+    ctx = llm.context_length() if hasattr(llm, "context_length") else None
+    if not ctx:
+        return None
+    changes = fit_to_context(cfg, ctx)
+    if changes:
+        log.warning("model context is %d tokens; adjusted %s", ctx, ", ".join(changes))
+    return {"tokens": ctx, "adjusted": changes}
+
+
 def _attempts(log_: list) -> list[list[dict]]:
     return [[asdict(a) for a in chunk] for chunk in log_]
 
@@ -64,8 +101,9 @@ def run_stage1(
     target = cfg.lecture.target_minutes or course.target_minutes
     if target:
         cfg.lecture.target_minutes = target
-    (out / "config.used.yaml").write_text(yaml.safe_dump(cfg.model_dump()), encoding="utf-8")
     llm = llm or get_backend(cfg.llm)
+    context = _fit_context(llm, cfg)
+    (out / "config.used.yaml").write_text(yaml.safe_dump(cfg.model_dump()), encoding="utf-8")
 
     t0 = time.time()
     parsed_dir = out / "parsed"
@@ -73,16 +111,21 @@ def run_stage1(
     parsed = {}
     for doc in course.documents:
         parsed[doc.path] = _parse(doc.path, cfg)
+    figures = number_figures(course, parsed, out / "figures")
+    for doc in course.documents:
         (parsed_dir / f"{doc.path.stem}.md").write_text(parsed[doc.path].markdown, encoding="utf-8")
     lecture_md = "\n\n".join(parsed[d.path].markdown for d in course.of_type("lecture"))
     (out / "parsed.md").write_text(lecture_md, encoding="utf-8")
     t_parse = time.time() - t0
 
+    from .render.lecture import templates
+
+    words = templates(language)
     problems, link_warnings = [], []
     for ex in course.of_type("exercises"):
         sol = next((s for s in course.of_type("solutions") if s.solves == ex.path), None)
         ps, w = link_problems(parsed[ex.path].markdown, parsed[sol.path].markdown if sol else None,
-                              ex.label, ex.select)
+                              ex.label, ex.select, word=words["problem"])
         problems += ps
         link_warnings += w
     worked = [p for p in problems if p.selected and p.solution]
@@ -91,8 +134,11 @@ def run_stage1(
     if target:
         source_words = sum(len(p.markdown.split()) for p in parsed.values())
         n_sections = max(1, lecture_md.count("\n## ") + lecture_md.count("\n# "))
+        from .slides.generate import count_chapters
+
         budget = plan_budget(target, source_words=source_words, n_problems=len(worked),
                              n_sections_hint=min(n_sections, 8),
+                             min_theory_slides=count_chapters(lecture_md),
                              words_per_slide=cfg.script.words_per_slide)
 
     _write_json(out / "course_index.json", {
@@ -123,7 +169,7 @@ def run_stage1(
     for p in worked:
         batch, att = generate_problem_slides(
             llm, p, n_slides=budget.slides_per_problem if budget else 3,
-            language=language, max_retries=cfg.slides.max_retries)
+            language=language, max_retries=cfg.slides.max_retries, worked=words["worked"])
         deck.slides.extend(batch.slides)
         problem_attempts.append(att)
     deck = Deck(title=deck.title, language=deck.language,
@@ -147,6 +193,8 @@ def run_stage1(
             "parser_warnings": [w for p in parsed.values() for w in p.warnings
                                 if w != "(from cache)"],
             "llm": llm.describe(),
+            "context": context,
+            "figures": len(figures),
             "budget": budget.as_dict() if budget else None,
             "slides": {"count": len(deck.slides),
                        "by_kind": {k: sum(s.kind == k for s in deck.slides)
@@ -195,10 +243,17 @@ def run_stage2(
                                  for t in sl["talking_points"])}
 
     llm = llm or get_backend(cfg.llm)
+    stage2_context = _fit_context(llm, cfg)
+    if stage2_context:
+        meta["context"] = stage2_context
     t0 = time.time()
     budget = meta.get("budget")
+    figures_file = out / "figures" / "figures.json"
+    captions = ({k: v["caption"] for k, v in json.loads(figures_file.read_text()).items()}
+                if figures_file.exists() else {})
     script, attempts = generate_script(llm, deck, cfg.script,
-                                       words_per_slide=budget["words_per_slide"] if budget else None)
+                                       words_per_slide=budget["words_per_slide"] if budget else None,
+                                       figures=captions)
     meta.setdefault("timings_s", {})["script"] = round(time.time() - t0, 2)
     meta["script"] = {"llm": llm.describe(), "attempts_per_batch": _attempts(attempts)}
     (out / "script.json").write_text(script.model_dump_json(indent=2), encoding="utf-8")
@@ -231,7 +286,8 @@ def render_outputs(
     write_plan(frames, out / "lecture_plan.json")
     meta["lecture"] = {"frames": len(frames),
                        "kinds": [f.kind for f in frames]}
-    pptx = build_pptx(frames, out / "deck.pptx", templates(deck.language)["part"])
+    pptx = build_pptx(frames, out / "deck.pptx", templates(deck.language)["part"],
+                      figures_dir=out / "figures")
     summary: dict[str, Any] = {"pptx": str(pptx), "frames": len(frames),
                                "alignment": meta.get("alignment")}
 
@@ -246,16 +302,29 @@ def render_outputs(
         else:
             images = render_frames(frames, deck.title, deck.language, out / "images", cfg.render,
                                    progress_bar=cfg.lecture.progress_bar)
-        tts = tts or get_tts(cfg.tts)
+        tts = tts or get_tts(cfg.tts, deck.language)
         audio_dir = out / "audio"
         for old in audio_dir.glob("*.wav"):
             old.unlink()
         audios = [tts.synthesize(f.narration, audio_dir / f"frame_{f.index + 1:03d}.wav")
                   for f in frames]
         speech = [wav_duration(a) for a in audios]
+        states = {}
+        if cfg.render.reveal_bullets and cfg.render.renderer == "pillow":
+            from .render.reveal import reveal_times
+            from .render.slide_images import render_reveal_states
+
+            state_images = render_reveal_states(frames, deck.title, deck.language, out / "images",
+                                                cfg.render, progress_bar=cfg.lecture.progress_bar)
+            for i, paths in state_images.items():
+                times = reveal_times(frames[i].narration, frames[i].slide.bullets, speech[i])
+                states[i] = list(zip(paths, times, strict=True))
+            meta["reveal"] = {str(i + 1): [t for _, t in v] for i, v in states.items()}
+        elif cfg.render.reveal_bullets:
+            log.warning("reveal_bullets needs render.renderer: pillow; showing full slides")
         durations = assemble_video(
             images, audios, out / "video.mp4",
-            pause_s=cfg.render.pause_after_slide_s, fps=cfg.render.fps,
+            pause_s=cfg.render.pause_after_slide_s, fps=cfg.render.fps, states=states,
         )
         write_srt([f.narration for f in frames], durations, speech, out / "subtitles.srt")
         import shutil
@@ -265,7 +334,8 @@ def render_outputs(
             from .render.parts import write_part_videos
 
             parts = write_part_videos(frames, images, audios, out / "parts",
-                                      pause_s=cfg.render.pause_after_slide_s, fps=cfg.render.fps)
+                                      pause_s=cfg.render.pause_after_slide_s, fps=cfg.render.fps,
+                                      states=states)
             meta["parts"] = parts
             if not parts:
                 meta["parts_note"] = "fewer than 2 parts: only the full video was written"

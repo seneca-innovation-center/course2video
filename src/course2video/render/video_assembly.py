@@ -39,8 +39,23 @@ def build_audio_track(audios: list[Path], out_wav: Path, pause_s: float) -> list
     return durations
 
 
+def _listing(images: list[Path], durations: list[float],
+             states: dict[int, list[tuple[Path, float]]]) -> str:
+    lines = []
+    for i, (img, d) in enumerate(zip(images, durations, strict=True)):
+        steps = sorted(states.get(i) or [(img, 0.0)], key=lambda x: x[1])
+        for k, (path, start) in enumerate(steps):
+            end = steps[k + 1][1] if k + 1 < len(steps) else d
+            if end - start > 0:
+                lines.append(concat_line(path) + f"duration {end - start:.6f}\n")
+    last = (states.get(len(images) - 1) or [(images[-1], 0.0)])[-1][0]
+    lines.append(concat_line(last))
+    return "".join(lines)
+
+
 def assemble_video(
-    images: list[Path], audios: list[Path], out_path: Path, *, pause_s: float = 0.6, fps: int = 5
+    images: list[Path], audios: list[Path], out_path: Path, *, pause_s: float = 0.6, fps: int = 5,
+    states: dict[int, list[tuple[Path, float]]] | None = None,
 ) -> list[float]:
     if len(images) != len(audios):
         raise ValueError(f"{len(images)} images but {len(audios)} audio files")
@@ -52,10 +67,7 @@ def assemble_video(
     listing = out_path.with_suffix(".frames.txt")
     try:
         durations = build_audio_track(audios, track, pause_s)
-        lines = [concat_line(img) + f"duration {d:.6f}\n"
-                 for img, d in zip(images, durations, strict=True)]
-        lines.append(concat_line(images[-1]))
-        listing.write_text("".join(lines), encoding="utf-8")
+        listing.write_text(_listing(images, durations, states or {}), encoding="utf-8")
         subprocess.run(
             [ff, "-y", "-loglevel", "error",
              "-f", "concat", "-safe", "0", "-i", str(listing),
