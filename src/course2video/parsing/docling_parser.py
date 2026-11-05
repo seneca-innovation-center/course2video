@@ -30,11 +30,12 @@ class DoclingParser(Parser):
         doc = result.document
         md = doc.export_to_markdown(image_placeholder="[[FIG]]")
         figures: list[FigureRef] = []
-        tmp = Path(tempfile.mkdtemp(prefix="c2v_fig_"))
+        tmp: Path | None = None
         for pic in doc.pictures:
             image = pic.get_image(doc)
             if image is None:
                 continue
+            tmp = tmp or Path(tempfile.mkdtemp(prefix="c2v_fig_"))
             out = tmp / f"fig_{len(figures)}.png"
             image.save(out)
             page = pic.prov[0].page_no if pic.prov else None

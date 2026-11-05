@@ -80,11 +80,18 @@ class OpenAICompatBackend(LLMBackend):
             try:
                 r = httpx.post(f"{self.base_url}/chat/completions", json=body, headers=headers,
                                timeout=self.timeout_s)
-            except httpx.HTTPError as e:
+            except (httpx.ConnectError, httpx.ConnectTimeout) as e:
                 if last:
                     raise LLMError(f"cannot reach {self.base_url}: {e}") from e
                 self._sleep(self.backoff_s * 2 ** attempt)
                 continue
+            except httpx.TimeoutException as e:
+                raise LLMError(
+                    f"no answer from {self.base_url} within {self.timeout_s:.0f} s; not retried, "
+                    "since the server may still be working on it (raise llm.timeout_s)"
+                ) from e
+            except httpx.HTTPError as e:
+                raise LLMError(f"cannot reach {self.base_url}: {e}") from e
             if r.status_code == 429 or r.status_code >= 500:
                 if last:
                     return r

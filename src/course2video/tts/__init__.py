@@ -15,7 +15,8 @@ def piper_voice_for(cfg: TTSConfig, language: str) -> str:
     voice = cfg.piper_voices.get(lang)
     if voice:
         return voice
-    log.warning("no Piper voice configured for language %r; using %s", lang, cfg.piper_model)
+    if lang != "en":
+        log.warning("no Piper voice configured for language %r; using %s", lang, cfg.piper_model)
     return cfg.piper_model
 
 

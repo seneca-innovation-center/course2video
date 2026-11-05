@@ -312,3 +312,43 @@ def test_parse_cache_is_refreshed_after_a_parser_upgrade(tmp_path, monkeypatch):
     assert len(calls) == 2
     meta = next((tmp_path / "c").glob("*.json"))
     assert _json.loads(meta.read_text())["parser_version"] == "3.0.0"
+
+
+def test_custom_piper_model_is_used_for_english():
+    from course2video.config import TTSConfig
+    from course2video.tts import piper_voice_for
+
+    cfg = TTSConfig(piper_model="models/piper/en_GB-custom.onnx")
+    assert piper_voice_for(cfg, "en") == "models/piper/en_GB-custom.onnx"
+    assert piper_voice_for(cfg, "fr").endswith("fr_FR-siwis-medium.onnx")
+
+
+def test_unnumbered_lectures_set_no_minimum_slide_count():
+    from course2video.slides.generate import count_chapters
+
+    md = "# Course\n\n" + "".join(f"## Topic {c}\n\ntext\n\n" for c in "ABCDEFGHIJKLMNOPQRST")
+    assert count_chapters(md) == 0
+
+
+def test_cache_removes_the_parser_temp_folder(tmp_path, monkeypatch):
+    import tempfile as _tempfile
+
+    from PIL import Image
+
+    from course2video.parsing import cache
+    from course2video.parsing.base import FigureRef, ParsedDocument
+
+    temp = Path(_tempfile.mkdtemp(prefix="c2v_fig_"))
+    Image.new("RGB", (10, 10)).save(temp / "fig_0.png")
+    src = tmp_path / "notes.md"
+    src.write_text("# A\n\n[[FIG:0]]")
+
+    class FakeParser:
+        def parse(self, path):
+            return ParsedDocument(source=path, markdown=path.read_text(), parser="docling",
+                                  figures=[FigureRef(path=temp / "fig_0.png")])
+
+    monkeypatch.setattr("course2video.parsing.get_parser", lambda *a, **k: FakeParser())
+    doc = cache.parse_cached(src, "docling", cache_dir=tmp_path / "c")
+    assert doc.figures[0].path.exists() and doc.figures[0].path.parent == tmp_path / "c"
+    assert not temp.exists()

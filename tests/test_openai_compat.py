@@ -177,3 +177,18 @@ def test_client_errors_are_not_retried(monkeypatch):
     with pytest.raises(LLMError, match="HTTP 400"):
         llm.complete("s", "p")
     assert len(fake.requests) == 1
+
+
+def test_read_timeouts_are_not_retried(monkeypatch):
+    calls = []
+
+    def slow(*a, **k):
+        calls.append(1)
+        raise httpx.ReadTimeout("too slow")
+
+    monkeypatch.setattr(httpx, "post", slow)
+    llm = OpenAICompatBackend(model="m", context_tokens=100000)
+    llm._sleep = lambda s: pytest.fail("must not wait before retrying a read timeout")
+    with pytest.raises(LLMError, match="not retried"):
+        llm.complete("s", "p")
+    assert len(calls) == 1

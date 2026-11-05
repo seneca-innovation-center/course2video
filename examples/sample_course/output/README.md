@@ -4,5 +4,7 @@ Produced on 2026-11-05 by `scripts/run_gpt_oss_eval.sh` with **gpt-oss-120b** se
 server through an OpenAI-compatible API (8k context, `configs/gpt-oss-120b-8k.yaml`), Docling
 parsing and Piper TTS. Slides were approved without edits. The video itself is not committed.
 
-`slides.md` (with the `Say:` talking points), `script.md`, `alignment.json`, `grounding.json` and
-`meta.json` show exactly what the model produced and how it was checked.
+`slides.md` (with the `Say:` talking points), `script.md`, `alignment.json` and `grounding.json`
+are exactly what the model produced and how it was checked. In `meta.json` and
+`course_index.json` the internal server address (`base_url`) and absolute local paths were
+replaced after the run, so as not to publish them; nothing else was changed.

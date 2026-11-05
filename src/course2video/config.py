@@ -48,7 +48,6 @@ class TTSConfig(BaseModel):
     backend: Literal["piper", "say", "stub"] = "stub"
     piper_model: str = "models/piper/en_US-ljspeech-medium.onnx"
     piper_voices: dict[str, str] = Field(default_factory=lambda: {
-        "en": "models/piper/en_US-ljspeech-medium.onnx",
         "fr": "models/piper/fr_FR-siwis-medium.onnx",
     })
     say_voice: str = ""

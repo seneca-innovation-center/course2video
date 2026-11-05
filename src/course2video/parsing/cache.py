@@ -49,11 +49,16 @@ def parse_cached(path: Path, parser: str, *, docling_formulas: bool = True,
     doc = get_parser(parser, path, docling_formulas=docling_formulas).parse(path)
     cache_dir.mkdir(parents=True, exist_ok=True)
     stored = []
+    temp_dirs = set()
     for k, fig in enumerate(doc.figures):
         name = f"{key}-fig{k}{fig.path.suffix or '.png'}"
         shutil.copyfile(fig.path, cache_dir / name)
         stored.append({"file": name, "caption": fig.caption, "page": fig.page})
+        if fig.path.parent.name.startswith("c2v_fig_"):
+            temp_dirs.add(fig.path.parent)
         fig.path = cache_dir / name
+    for d in temp_dirs:
+        shutil.rmtree(d, ignore_errors=True)
     md_file.write_text(doc.markdown, encoding="utf-8")
     meta_file.write_text(json.dumps({"parser": doc.parser, "warnings": doc.warnings,
                                      "source": str(path), "figures": stored,

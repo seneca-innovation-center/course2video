@@ -96,7 +96,7 @@ def count_chapters(md: str) -> int:
 
     headings = re.findall(r"(?m)^#{1,3}\s+(.+?)\s*$", md)
     top = [h for h in headings if _TOP_LEVEL.match(h) and not _SUB_LEVEL.match(h)]
-    return len(top) if top else max(0, len(headings) - 1)
+    return len(top)
 
 
 def chunk_chapters(chunk: str) -> int:
