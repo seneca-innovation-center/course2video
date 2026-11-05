@@ -228,3 +228,12 @@ def test_voice_follows_the_course_language():
     assert piper_voice_for(cfg, "fr").endswith("fr_FR-siwis-medium.onnx")
     assert piper_voice_for(cfg, "en-GB").endswith("en_US-ljspeech-medium.onnx")
     assert piper_voice_for(cfg, "de") == cfg.piper_model
+
+
+def test_every_chapter_gets_a_slide_in_the_budget():
+    from course2video.slides.generate import count_chapters
+
+    md = (FRENCH / "cours" / "chapitre3_probabilites_conditionnelles.md").read_text()
+    assert count_chapters(md) == 4
+    b = plan_budget(10, source_words=1500, n_problems=3, min_theory_slides=4)
+    assert b.theory_slides >= 4 and any("4 chapters" in w for w in b.warnings)

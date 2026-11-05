@@ -81,6 +81,28 @@ def check_figures(batch, source_text: str) -> list[str]:
     return errors
 
 
+EXAMPLE_START = re.compile(r"^\s*(example|exemple|ejemplo)\b", re.I)
+
+
+def check_examples(batch, source_text: str) -> list[str]:
+    from .grounding import SMALL, numbers
+
+    source = numbers(source_text)
+    errors = []
+    for s in batch.slides:
+        for tp in s.talking_points:
+            if not EXAMPLE_START.match(tp):
+                continue
+            extra = sorted({str(n) for n in numbers(tp) - source - SMALL})
+            if extra:
+                errors.append(
+                    f"slides[id={s.id}]: the example '{tp[:60]}...' uses numbers that are not in the "
+                    f"source ({', '.join(extra[:6])}). Use an example from the source; results computed "
+                    "from a source example are fine. If the source has no example, drop it."
+                )
+    return errors
+
+
 def check_lecture_style(batch, max_bullet_words: int, min_talking_points: int = 2) -> list[str]:
     problems = []
     for s in batch.slides:

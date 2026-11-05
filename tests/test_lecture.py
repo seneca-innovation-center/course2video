@@ -119,3 +119,18 @@ def test_frac_shorthand_forms():
     from course2video.render.equations import normalize_for_mathtext
 
     assert normalize_for_mathtext(r"\frac1{14}+\frac{3}7") == r"\frac{1}{14}+\frac{3}{7}"
+
+
+def test_latex_in_titles_and_bullets_is_shown_as_plain_text():
+    from course2video.render.slide_images import pretty
+    from course2video.render.text import plain_math
+
+    assert pretty(r"Vectors in \(\mathbb{R}^n\)") == "Vectors in ℝⁿ"
+    assert plain_math(r"$P(A \cap B) = \frac{1}{6}$") == "P(A ∩ B) = 1/6"
+    assert plain_math("plain text stays") == "plain text stays"
+
+
+def test_braceless_mathbf_renders():
+    from course2video.render.equations import normalize_for_mathtext
+
+    assert normalize_for_mathtext(r"\mathbf u + \boldsymbol v") == r"\mathbf{u} + \mathbf{v}"

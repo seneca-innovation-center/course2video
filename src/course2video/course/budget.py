@@ -32,6 +32,7 @@ def plan_budget(
     words_per_minute: int = DEFAULT_WPM,
     words_per_slide: int = 220,
     problem_share: float = 0.35,
+    min_theory_slides: int = 0,
 ) -> Budget:
     warnings = []
     n_parts = n_sections_hint + n_problems
@@ -47,6 +48,12 @@ def plan_budget(
         slides_per_problem = max(2, min(4, round(problem_words / n_problems / words_per_slide)))
     theory_words = content_words - n_problems * slides_per_problem * words_per_slide
     theory_slides = max(3, round(theory_words / words_per_slide))
+    if theory_slides < min_theory_slides:
+        warnings.append(
+            f"the lecture has {min_theory_slides} chapters; giving each one a slide makes the video "
+            f"longer than the {target_minutes:g}-minute target"
+        )
+        theory_slides = min_theory_slides
 
     if source_words < content_words * 0.8:
         warnings.append(

@@ -7,6 +7,7 @@ from ..llm.base import LLMBackend
 from .models import Deck, SlideBatch
 from .validate import (
     Attempt,
+    check_examples,
     check_figures,
     check_latex,
     check_lecture_style,
@@ -33,8 +34,12 @@ How good lecturers use slides (follow this):
 
 Rules:
 - Use only facts, examples and numbers present in the source document. Do not add outside
-  knowledge, examples or numbers of your own.
-- Follow the document's order. Sub-sections may share a slide with their chapter.
+  knowledge, examples or numbers of your own: if the source has no example for an idea, give
+  no example rather than inventing one.
+- Follow the document's order. Every numbered chapter gets at least one slide; sub-sections
+  may share a slide with their chapter.
+- Titles, bullets and talking points are plain text: write symbols directly (ℝⁿ, ∩, ≤,
+  P(A|B)), never LaTeX commands or $...$. LaTeX belongs only in `equations`.
 - Keep notation exactly as in the source.
 - The source marks figures as [Figure F3: caption]. If one of them is what a slide is about
   (a diagram, a tree, a plot), set `figure` to its id and explain the figure in the talking
@@ -86,6 +91,22 @@ def chapter_map(md: str) -> dict[str, str]:
     return out
 
 
+def count_chapters(md: str) -> int:
+    from ..render.lecture import _SUB_LEVEL, _TOP_LEVEL
+
+    headings = re.findall(r"(?m)^#{1,3}\s+(.+?)\s*$", md)
+    top = [h for h in headings if _TOP_LEVEL.match(h) and not _SUB_LEVEL.match(h)]
+    return len(top) if top else max(0, len(headings) - 1)
+
+
+def chunk_chapters(chunk: str) -> int:
+    from ..render.lecture import _SUB_LEVEL, _TOP_LEVEL
+
+    headings = re.findall(r"(?m)^#{1,3}\s+(.+?)\s*$", chunk)
+    top = [h for h in headings if _TOP_LEVEL.match(h) and not _SUB_LEVEL.match(h)]
+    return len(top)
+
+
 def assign_chapters(slides, md: str) -> None:
     from ..render.lecture import display_section_name
 
@@ -114,6 +135,7 @@ def generate_deck(
         limits = [cfg.max_slides_per_chunk] * len(chunks)
     all_slides = []
     attempt_log: list[list[Attempt]] = []
+    limits = [max(limit, chunk_chapters(chunk)) for chunk, limit in zip(chunks, limits, strict=True)]
     for chunk, limit in zip(chunks, limits, strict=True):
         prompt = PROMPT.format(max_slides=limit, title=title, language=language, chunk=chunk)
         if total_slides:
@@ -128,6 +150,7 @@ def generate_deck(
             extra_checks=lambda b, chunk=chunk: (check_latex(b)
                                                  + check_lecture_style(b, cfg.max_bullet_words)
                                                  + check_figures(b, chunk)),
+            soft_checks=lambda b, chunk=chunk: check_examples(b, chunk),
         )
         attempt_log.append(attempts)
         for sl in batch.slides:

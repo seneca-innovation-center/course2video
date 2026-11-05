@@ -13,6 +13,8 @@ def normalize_for_mathtext(latex: str) -> str:
     latex = re.sub(r"\\frac\s*(\w)\s*(\w)", r"\\frac{\1}{\2}", latex)
     latex = re.sub(r"\\frac\s*(\w)\s*\{", r"\\frac{\1}{", latex)
     latex = re.sub(r"\\frac\s*(\{[^{}]*\})\s*(\w)", r"\\frac\1{\2}", latex)
+    latex = re.sub(r"\\boldsymbol", r"\\mathbf", latex)
+    latex = re.sub(r"\\(mathbf|mathrm|mathit|mathcal|mathbb)\s+([A-Za-z0-9])", r"\\\1{\2}", latex)
     latex = re.sub(r"\s*([_^])\s*", r"\1", latex)
     latex = re.sub(r"(\\[A-Za-z]+)\s+\{", r"\1{", latex)
     latex = re.sub(r"\{\s+", "{", latex)

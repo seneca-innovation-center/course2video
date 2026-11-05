@@ -46,6 +46,9 @@ _SUPERSCRIPT = str.maketrans("0123456789n+-", "⁰¹²³⁴⁵⁶⁷⁸⁹ⁿ⁺
 
 
 def pretty(text: str) -> str:
+    from .text import plain_math
+
+    text = plain_math(text)
     return re.sub(r"\^\{?([0-9n+-])\}?(?![\w{])", lambda m: m.group(1).translate(_SUPERSCRIPT), text)
 
 

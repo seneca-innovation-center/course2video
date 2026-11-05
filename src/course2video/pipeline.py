@@ -134,8 +134,11 @@ def run_stage1(
     if target:
         source_words = sum(len(p.markdown.split()) for p in parsed.values())
         n_sections = max(1, lecture_md.count("\n## ") + lecture_md.count("\n# "))
+        from .slides.generate import count_chapters
+
         budget = plan_budget(target, source_words=source_words, n_problems=len(worked),
                              n_sections_hint=min(n_sections, 8),
+                             min_theory_slides=count_chapters(lecture_md),
                              words_per_slide=cfg.script.words_per_slide)
 
     _write_json(out / "course_index.json", {

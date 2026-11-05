@@ -7,6 +7,7 @@ from pptx.util import Emu, Inches, Pt
 
 from .equations import render_equation_png
 from .lecture import Frame
+from .text import plain_math
 
 LAYOUT_TITLE, LAYOUT_SECTION, LAYOUT_TITLE_ONLY = 0, 2, 5
 
@@ -25,7 +26,7 @@ def _bullets(slide, items: list[str], top, height, size: int, width=None) -> Non
 def _content(prs, f: Frame, eq_dir: Path, figures_dir: Path | None = None):
     s = f.slide
     slide = prs.slides.add_slide(prs.slide_layouts[LAYOUT_TITLE_ONLY])
-    slide.shapes.title.text = s.title
+    slide.shapes.title.text = plain_math(s.title)
     slide.shapes.title.text_frame.paragraphs[0].font.size = Pt(36)
     body_h = Inches(5.6 - 1.1 * len(s.equations))
     fig = None
@@ -33,7 +34,7 @@ def _content(prs, f: Frame, eq_dir: Path, figures_dir: Path | None = None):
         fig = next((p for p in sorted(figures_dir.glob(f"{s.figure}.*"))
                     if p.suffix.lower() in (".png", ".jpg", ".jpeg")), None)
     text_w = Inches(6.9) if fig else Inches(11.9)
-    _bullets(slide, ["• " + b for b in s.bullets], Inches(1.5), body_h,
+    _bullets(slide, ["• " + plain_math(b) for b in s.bullets], Inches(1.5), body_h,
              24 if len(s.bullets) <= 4 else 20, width=text_w)
     if fig:
         pic = slide.shapes.add_picture(str(fig), Inches(7.9), Inches(1.6), width=Inches(4.8))

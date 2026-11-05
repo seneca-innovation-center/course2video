@@ -29,6 +29,8 @@ Rules:
 - If the exercise or the solution contains a figure ([Figure F3: caption]), put its id in
   `figure` on the slide it belongs to and explain it in the talking points. Never use an id
   that is not in the text.
+- Titles, bullets and talking points are plain text: write symbols directly (ℝⁿ, ∩, ≤,
+  P(A|B)), never LaTeX commands or $...$. LaTeX belongs only in `equations`.
 - Answer with a single JSON object and nothing else."""
 
 PROMPT = """Make exactly {n_slides} slides for this problem from {ref}: 1 "exercise" slide, then
