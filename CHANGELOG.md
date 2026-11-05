@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.0 (unreleased)
+## 0.2.0 (2026-11-05)
 
 - Bullets revealed as the narration reaches them (`render.reveal_bullets`) (#11)
 - Source figures on slides: extracted with Docling or from Markdown, numbered across the
@@ -15,6 +15,11 @@
   with it (`examples/*/output/`) and `scripts/run_gpt_oss_eval.sh` to repeat the runs (#9, #2, #3)
 - Fixes from the gpt-oss runs: no invented examples, every chapter gets a slide, plain-text
   titles and bullets, brace-less `\mathbf`, `cases` equations, decimal commas in grounding
+- `course.yaml` validated, with errors naming the file, the entry and the allowed values (#7)
+- Hardening: Docling version stored with the parse cache, pinned local-only Ollama in
+  docker-compose, LLM backoff on connection errors, 429 and 5xx (#15)
+- Review fixes: English decks use `tts.piper_model`, only numbered chapters set a minimum
+  slide count, read timeouts are not retried, Docling temp folder removed
 
 ## 0.1.0 (2026-11-04)
 
