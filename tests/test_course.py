@@ -237,3 +237,14 @@ def test_every_chapter_gets_a_slide_in_the_budget():
     assert count_chapters(md) == 4
     b = plan_budget(10, source_words=1500, n_problems=3, min_theory_slides=4)
     assert b.theory_slides >= 4 and any("4 chapters" in w for w in b.warnings)
+
+
+def test_french_decimal_commas_are_read_as_decimals():
+    from fractions import Fraction
+
+    from course2video.slides.grounding import numbers
+
+    assert Fraction("0.16") in numbers("environ 0,16", decimal_comma=True)
+    assert Fraction("0.16") not in numbers("environ 0,16")
+    assert Fraction(1) in numbers("(1, 2)", decimal_comma=True)
+    assert Fraction("2.4") not in numbers("les issues {2,4,6}", decimal_comma=True)

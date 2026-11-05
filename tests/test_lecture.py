@@ -134,3 +134,17 @@ def test_braceless_mathbf_renders():
     from course2video.render.equations import normalize_for_mathtext
 
     assert normalize_for_mathtext(r"\mathbf u + \boldsymbol v") == r"\mathbf{u} + \mathbf{v}"
+
+
+def test_cases_environment_is_rendered_as_stacked_rows(tmp_path):
+    from PIL import Image
+
+    from course2video.render.equations import render_equation_png, split_rows
+
+    latex = r"p_X(x)=\begin{cases}\frac{3}{14}&x=2\\\frac{2}{7}&x=3\\\frac{1}{14}&x=6\end{cases}"
+    rows = split_rows(latex)
+    assert rows[0].startswith("p_X(x)=") and len(rows) == 3
+    assert r"\quad x=3" in rows[1]
+    png = render_equation_png(latex, tmp_path)
+    assert png is not None and Image.open(png).height > Image.open(
+        render_equation_png(r"\frac{3}{14}", tmp_path)).height * 2
