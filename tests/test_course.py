@@ -248,3 +248,39 @@ def test_french_decimal_commas_are_read_as_decimals():
     assert Fraction("0.16") not in numbers("environ 0,16")
     assert Fraction(1) in numbers("(1, 2)", decimal_comma=True)
     assert Fraction("2.4") not in numbers("les issues {2,4,6}", decimal_comma=True)
+
+
+@pytest.mark.parametrize("doc, message", [
+    ("{path: a.md, type: exercise}", "'exercise' is not a document type; use one of: lecture, exercises"),
+    ("{path: a.md, type: solution}", "'solution' is not a document type"),
+    ("{type: lecture}", "documents.0.path"),
+    ("{path: a.md, type: lecture, select: [one]}", "documents.0.select.0"),
+    ("{path: a.md, type: lecture, chapter: 2}", "documents.0.chapter"),
+])
+def test_course_yaml_is_validated(tmp_path, doc, message):
+    from course2video.course.manifest import ManifestError
+
+    (tmp_path / "a.md").write_text("# A\n\ntext")
+    (tmp_path / "course.yaml").write_text(f"title: T\ndocuments:\n  - {doc}\n")
+    with pytest.raises(ManifestError) as e:
+        load_course(tmp_path)
+    assert message in str(e.value) and "course.yaml" in str(e.value)
+
+
+def test_course_yaml_target_minutes_must_be_positive(tmp_path):
+    from course2video.course.manifest import ManifestError
+
+    (tmp_path / "a.md").write_text("# A\n\ntext")
+    (tmp_path / "course.yaml").write_text(
+        "target_minutes: -5\ndocuments:\n  - {path: a.md, type: lecture}\n")
+    with pytest.raises(ManifestError, match="target_minutes"):
+        load_course(tmp_path)
+
+
+def test_cli_reports_an_invalid_course_yaml(tmp_path, capsys):
+    from course2video.cli import main
+
+    (tmp_path / "a.md").write_text("# A\n\ntext")
+    (tmp_path / "course.yaml").write_text("documents:\n  - {path: a.md, type: notes}\n")
+    assert main(["run", str(tmp_path), "--out", str(tmp_path / "out")]) == 2
+    assert "is not a document type" in capsys.readouterr().err

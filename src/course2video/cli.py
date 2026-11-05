@@ -35,11 +35,16 @@ def _add_common(p: argparse.ArgumentParser) -> None:
 
 
 def cmd_run(a) -> int:
+    from .course.manifest import ManifestError
     from .pipeline import run_stage1, run_stage2
 
     cfg = _apply_overrides(load_config(a.config), a)
     out = Path(a.out)
-    st = run_stage1(Path(a.input), out, cfg, language=a.language)
+    try:
+        st = run_stage1(Path(a.input), out, cfg, language=a.language)
+    except ManifestError as e:
+        print(e, file=sys.stderr)
+        return 2
     print(f"[1/2] {st['slides']} slides written to {out/'slides.json'} and {out/'slides.md'}"
           + (f" ({st['problems']} worked problems)" if st.get("problems") else ""))
     if st.get("warnings"):
