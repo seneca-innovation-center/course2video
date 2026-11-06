@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.0 (2026-11-05)
+## 0.2.0 (2026-11-06)
 
 - Bullets revealed as the narration reaches them (`render.reveal_bullets`) (#11)
 - Source figures on slides: extracted with Docling or from Markdown, numbered across the
