@@ -86,7 +86,7 @@ equation-to-speech normalisation would fix these cases.
 | Limitation | Notes |
 |---|---|
 | Equation reading | The script is asked to say formulas in words; TTS reads whatever it gets. No separate check yet |
-| Voices | English (`en_US-ljspeech-medium`) and French (`fr_FR-siwis-medium`), chosen from the deck's language (`tts.piper_voices`). Other languages fall back to the default voice with a warning |
+| Voices | English (`tts.piper_model`, default `en_US-ljspeech-medium`) and French (`tts.piper_voices.fr`, default `fr_FR-siwis-medium`), chosen from the deck's language. To use another French voice, set `tts.piper_voices: {fr: path/to/voice.onnx}`; `tts.piper_model` applies to English and to any language without an entry (with a warning) |
 | Subtitle timing | Proportional to text length within each slide, not word-aligned |
 | Pillow renderer | Simple layout; equations use matplotlib mathtext (a LaTeX subset). Unsupported LaTeX falls back to raw text |
 
