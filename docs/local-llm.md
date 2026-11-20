@@ -53,7 +53,7 @@ Or override on the command line:
 
 ```bash
 course2video run in.pdf --out out/oss --llm openai_compat \
-    --base-url http://gpu-server.internal:8000/v1 --model openai/gpt-oss-120b
+    --base-url http://gpu.example.com:8000/v1 --model openai/gpt-oss-120b
 ```
 
 ## 3. Validate
